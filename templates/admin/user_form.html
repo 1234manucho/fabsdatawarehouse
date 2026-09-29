@@ -1,0 +1,43 @@
+{% extends "admin/base_admin.html" %}
+{% block admin_title %}{{ 'Edit user' if user else 'New user' }}{% endblock %}
+{% block admin_heading %}{{ 'Edit user' if user else 'New user' }}{% endblock %}
+{% block admin_sub %}{{ user.email if user else 'Create a new account.' }}{% endblock %}
+
+{% block admin_body %}
+<div class="adm-card" style="max-width:640px">
+  <form method="post">
+    <div class="adm-field">
+      <label>Email</label>
+      <input name="email" type="email" required value="{{ user.email if user else '' }}">
+    </div>
+    <div class="adm-field">
+      <label>Full name</label>
+      <input name="full_name" value="{{ user.full_name if user else '' }}">
+    </div>
+    <div class="adm-field">
+      <label>Company</label>
+      <input name="company_name" value="{{ user.company_name if user else '' }}">
+    </div>
+    <div class="adm-field">
+      <label>Password {% if user %}(leave blank to keep current){% endif %}</label>
+      <input name="password" type="password" {% if not user %}required{% endif %} minlength="8">
+    </div>
+    <div class="adm-field">
+      <label>Role</label>
+      {% set r = user.role if user else 'user' %}
+      <select name="role">
+        <option value="user"    {{ 'selected' if r == 'user' }}>User</option>
+        <option value="manager" {{ 'selected' if r == 'manager' }}>Manager</option>
+        <option value="admin"   {{ 'selected' if r == 'admin' }}>Admin</option>
+      </select>
+    </div>
+    <label style="display:flex;gap:9px;align-items:center;font-size:12px;color:#c5cfc7;margin-bottom:20px">
+      <input type="checkbox" name="is_active_flag" {{ 'checked' if (not user) or user.is_active_flag }}>
+      Active account
+    </label>
+
+    <button class="adm-btn adm-btn-primary" type="submit">{{ 'Save changes' if user else 'Create user' }}</button>
+    <a class="adm-btn adm-btn-ghost" href="{{ url_for('admin.users') }}" style="margin-left:8px">Cancel</a>
+  </form>
+</div>
+{% endblock %}

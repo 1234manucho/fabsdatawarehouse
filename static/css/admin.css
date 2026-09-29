@@ -1,0 +1,54 @@
+/* ═════════════════════════════════════════════════════════════════
+   FABS DATA WAREHOUSE — admin.css
+   Admin-only overrides. Loaded only in admin/base_admin.html
+   ═════════════════════════════════════════════════════════════════ */
+
+/* tighter admin spacing */
+.admin-tight .glass,
+.admin-tight .glass-strong {
+  border-radius: 0.85rem;
+}
+
+/* admin table cells */
+.admin-table th {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #64748b;
+  font-weight: 600;
+}
+.admin-table td {
+  font-size: 0.8rem;
+}
+.admin-table tbody tr {
+  transition: background 0.15s;
+}
+.admin-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* side nav highlight when active */
+.nav-link.active svg {
+  color: #00E5FF;
+}
+
+/* admin badge pulse */
+.admin-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: 0.5rem;
+  font-size: 10px;
+  font-weight: 600;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+/* collapsible sidebar for narrow screens */
+@media (max-width: 1023px) {
+  #adminSidebar {
+    box-shadow: 24px 0 60px -20px rgba(0, 0, 0, 0.6);
+  }
+}

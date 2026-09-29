@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Contact — Fabs Data Warehouse{% endblock %}
+{% block meta_description %}Get in touch with Fabs Data Warehouse — sales, support, partnerships, and county deployment enquiries.{% endblock %}
+
+{% block content %}
+
+<section class="pt-10 sm:pt-16 pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-12 gap-12">
+
+      {# ── LEFT: contact info ── #}
+      <div class="lg:col-span-5 reveal">
+        <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">Contact</p>
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-white leading-[1.05] tracking-tight">
+          Let's build something <span class="grad-text">together</span>.
+        </h1>
+        <p class="mt-5 text-slate-400 leading-relaxed">
+          Whether you're a merchant, enterprise, county government or partner — we'll help you
+          design the right deployment for Fabs Data Warehouse.
+        </p>
+
+        <div class="mt-10 space-y-5">
+          {% set channels = [
+            ('Sales', 'sales@fabsdata.io', 'For pricing, demos and county deployments.', 'cyan', 'M3 8l9 6 9-6M3 6h18v12H3z'),
+            ('Support', 'support@fabsdata.io', 'For technical issues and account help.', 'teal', 'M18 10a6 6 0 10-12 0v4a2 2 0 01-2 2h2m12-6v4a2 2 0 002 2h-2M9 18h6'),
+            ('Partnerships', 'partners@fabsdata.io', 'For DHL, Mifos, Fleetbase and rail integrations.', 'gold', 'M12 4v16m8-8H4'),
+            ('Phone', '+254 700 000 000', 'Mon–Fri · 8:00 – 18:00 EAT', 'amber', 'M3 5a2 2 0 012-2h2l2 5-2 1a12 12 0 005 5l1-2 5 2v2a2 2 0 01-2 2A16 16 0 013 5z')
+          ] %}
+          {% for title, value, sub, tone, path in channels %}
+          <div class="flex gap-4 p-4 rounded-2xl glass card-hover">
+            <span class="w-10 h-10 rounded-xl grid place-items-center shrink-0 border
+              {% if tone == 'cyan' %}bg-fabs-cyan/10 border-fabs-cyan/30 text-fabs-cyan
+              {% elif tone == 'teal' %}bg-fabs-teal/10 border-fabs-teal/35 text-fabs-teal
+              {% elif tone == 'gold' %}bg-fabs-gold/10 border-fabs-gold/35 text-fabs-gold
+              {% else %}bg-fabs-amber/10 border-fabs-amber/35 text-fabs-amber{% endif %}">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="{{ path }}"/>
+              </svg>
+            </span>
+            <div class="min-w-0">
+              <p class="text-[10px] uppercase tracking-widest text-slate-500">{{ title }}</p>
+              <p class="text-sm font-bold text-white mt-0.5 truncate">{{ value }}</p>
+              <p class="text-xs text-slate-400 mt-0.5">{{ sub }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+        {# office #}
+        <div class="mt-8 p-5 rounded-2xl glass">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">Head Office</p>
+          <p class="text-sm text-white font-semibold">Fabs Data Warehouse Ltd.</p>
+          <p class="text-xs text-slate-400 mt-1 leading-relaxed">
+            Westlands Business Park<br/>
+            Waiyaki Way, Nairobi, Kenya
+          </p>
+        </div>
+      </div>
+
+      {# ── RIGHT: form ── #}
+      <div class="lg:col-span-7 reveal" style="transition-delay:.1s">
+        <form method="POST" action="{{ url_for('main.contact') }}" class="glass-strong rounded-2xl p-7 sm:p-9 grad-border space-y-5">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div>
+            <h2 class="text-2xl font-extrabold text-white tracking-tight">Send us a message</h2>
+            <p class="text-sm text-slate-400 mt-2">We respond within one business day.</p>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="full_name" class="block text-xs font-semibold text-slate-400 mb-2">Full name</label>
+              <input id="full_name" name="full_name" type="text" required placeholder="Jane Doe" class="fabs-input text-sm" />
+            </div>
+            <div>
+              <label for="company" class="block text-xs font-semibold text-slate-400 mb-2">Company</label>
+              <input id="company" name="company" type="text" placeholder="Acme Ltd" class="fabs-input text-sm" />
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="email" class="block text-xs font-semibold text-slate-400 mb-2">Work email</label>
+              <input id="email" name="email" type="email" required placeholder="jane@company.com" class="fabs-input text-sm" />
+            </div>
+            <div>
+              <label for="phone" class="block text-xs font-semibold text-slate-400 mb-2">Phone</label>
+              <input id="phone" name="phone" type="tel" placeholder="+254 712 345 678" class="fabs-input text-sm" />
+            </div>
+          </div>
+
+          <div>
+            <label for="interest" class="block text-xs font-semibold text-slate-400 mb-2">I'm interested in</label>
+            <select id="interest" name="interest" class="fabs-input text-sm">
+              <option>Payments &amp; Bulk Payouts</option>
+              <option>Biometric Security</option>
+              <option>County Revenue Collection</option>
+              <option>Tender Tracking</option>
+              <option>DHL Logistics &amp; Tracking</option>
+              <option>Petroleum Transport</option>
+              <option>Company / Merchant Onboarding</option>
+              <option>Partnership</option>
+              <option>Full Enterprise Platform</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-xs font-semibold text-slate-400 mb-2">Message</label>
+            <textarea id="message" name="message" rows="5" placeholder="Tell us about your deployment…" class="fabs-input text-sm resize-none"></textarea>
+          </div>
+
+          <label class="flex items-start gap-2.5 cursor-pointer text-xs text-slate-400 leading-relaxed">
+            <input type="checkbox" required class="w-4 h-4 mt-0.5 rounded border-fabs-line bg-fabs-deep accent-fabs-cyan shrink-0" />
+            <span>I agree to the <a href="{{ url_for('main.terms') }}" class="text-fabs-cyan hover:text-fabs-teal transition font-semibold">Terms</a> and <a href="{{ url_for('main.privacy') }}" class="text-fabs-cyan hover:text-fabs-teal transition font-semibold">Privacy Policy</a>.</span>
+          </label>
+
+          <button type="submit" class="btn-primary w-full py-3.5 rounded-xl text-sm">Send message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

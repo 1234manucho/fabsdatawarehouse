@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% block title %}Pricing — Fabs Data Warehouse{% endblock %}
+{% block meta_description %}Simple, transparent pricing for Fabs Data Warehouse — Starter, Business and Enterprise plans.{% endblock %}
+
+{% block content %}
+
+<section class="pt-10 sm:pt-16 pb-12 text-center">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+    <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">Pricing</p>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight max-w-3xl mx-auto">
+      Simple pricing that <span class="grad-text">scales with you</span>.
+    </h1>
+    <p class="mt-6 text-lg text-slate-400 max-w-2xl mx-auto">
+      No setup fees. No hidden charges. Pay only for what you use.
+    </p>
+
+    {# billing toggle #}
+    <div class="mt-8 inline-flex glass rounded-xl p-1">
+      <button type="button" data-billing="monthly" class="px-4 py-2 rounded-lg text-xs font-semibold bg-fabs-cyan/15 text-fabs-cyan transition">Monthly</button>
+      <button type="button" data-billing="annual" class="px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition">Annual <span class="text-fabs-gold">-20%</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-3 gap-5">
+
+      {% set plans = [
+        ('Starter', 'Free', 'forever', [
+          'Up to 50 payouts / month',
+          'M-Pesa & DPO rails',
+          'Basic biometric verification',
+          'DHL tracking (view only)',
+          'Community support'
+        ], 'ghost', false),
+        ('Business', 'KSh 24,900', '/month', [
+          'Up to 5,000 payouts / month',
+          'All 4 rails: M-Pesa, DPO, Pesapal, Finserve',
+          'Full biometric enrollment + iris',
+          'DHL AWB generation + customs',
+          'County revenue module',
+          'Tender tracking module',
+          'Priority email + chat support'
+        ], 'primary', true),
+        ('Enterprise', 'Custom', 'pricing', [
+          'Unlimited payouts',
+          'Dedicated settlement account',
+          'On-premise biometric deployment',
+          'Fleetbase + petroleum integration',
+          'Custom SLAs & audit reports',
+          'Dedicated account manager',
+          '24/7 phone + Slack support'
+        ], 'gold', false)
+      ] %}
+
+      {% for name, price, period, features, cta, popular in plans %}
+      <div class="relative glass-strong rounded-2xl p-7 grad-border card-hover reveal {% if popular %}ring-2 ring-fabs-cyan/40{% endif %}"
+           style="transition-delay:{{ loop.index0 * 0.08 }}s">
+        {% if popular %}
+        <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-fabs-cyan to-fabs-teal text-fabs-navy text-[10px] font-extrabold tracking-widest uppercase">
+          Most Popular
+        </span>
+        {% endif %}
+
+        <p class="text-xs font-bold tracking-[0.2em] uppercase text-fabs-cyan mb-3">{{ name }}</p>
+        <div class="flex items-baseline gap-2 mb-6">
+          <span class="text-3xl sm:text-4xl font-extrabold text-white font-mono tracking-tight">{{ price }}</span>
+          <span class="text-xs text-slate-500">/{{ period }}</span>
+        </div>
+
+        <ul class="space-y-3 mb-7">
+          {% for f in features %}
+          <li class="flex items-start gap-2.5 text-sm text-slate-300">
+            <svg class="w-4 h-4 text-fabs-cyan shrink-0 mt-1" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            {{ f }}
+          </li>
+          {% endfor %}
+        </ul>
+
+        {% if cta == 'primary' %}
+          <a href="{{ url_for('auth.signup') }}" class="btn-primary w-full py-3.5 rounded-xl text-sm block text-center">Start free trial</a>
+        {% elif cta == 'gold' %}
+          <a href="{{ url_for('main.contact') }}" class="btn-gold w-full py-3.5 rounded-xl text-sm block text-center">Talk to sales</a>
+        {% else %}
+          <a href="{{ url_for('auth.signup') }}" class="btn-ghost w-full py-3.5 rounded-xl text-sm font-semibold block text-center">Get started</a>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── FAQ strip ── #}
+<section class="pb-20 border-t border-white/5 pt-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl sm:text-3xl font-extrabold text-white text-center tracking-tight mb-10 reveal">
+      Common pricing questions
+    </h2>
+    <div class="space-y-3">
+      {% set pricing_faqs = [
+        ('What counts as a payout?', 'Each individual recipient in a bulk batch counts as one payout. Batching itself is free.'),
+        ('Are there transaction fees?', 'Rail fees vary — M-Pesa charges per transaction, DPO charges a percentage, Pesapal and Finserve vary by region. We pass through the rail fee with zero markup.'),
+        ('Can I switch plans mid-cycle?', 'Yes. Upgrades take effect immediately and we prorate the difference. Downgrades apply at the next billing cycle.'),
+        ('Do you offer county or government pricing?', 'Yes. We offer special pricing for county and public sector deployments, including IFMIS integration. Contact sales for details.')
+      ] %}
+      {% for q, a in pricing_faqs %}
+      <details class="glass rounded-2xl overflow-hidden group">
+        <summary class="flex items-center justify-between gap-4 p-5 cursor-pointer list-none">
+          <span class="font-semibold text-white text-sm">{{ q }}</span>
+          <svg class="w-5 h-5 text-fabs-cyan shrink-0 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M12 5v14M5 12h14"/>
+          </svg>
+        </summary>
+        <div class="px-5 pb-5 text-sm text-slate-400 leading-relaxed">{{ a }}</div>
+      </details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% endblock %}

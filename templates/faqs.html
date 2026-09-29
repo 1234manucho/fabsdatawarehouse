@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+{% block title %}FAQs — Fabs Data Warehouse{% endblock %}
+{% block meta_description %}Frequently asked questions about Fabs Data Warehouse payments, biometrics, bulk payouts, county collections, DHL tracking and security.{% endblock %}
+
+{% block content %}
+
+{# ── HERO ── #}
+<section class="pt-10 sm:pt-16 pb-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+    <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">Help Centre</p>
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight max-w-3xl mx-auto">
+      Frequently asked <span class="grad-text">questions</span>.
+    </h1>
+    <p class="mt-6 text-lg text-slate-400 leading-relaxed max-w-2xl mx-auto">
+      Everything you need to know about payments, biometrics, logistics, county collections and more.
+    </p>
+
+    {# search bar #}
+    <div class="mt-8 max-w-xl mx-auto relative">
+      <svg class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="M21 21l-4-4"/>
+      </svg>
+      <input type="text" placeholder="Search questions…" class="fabs-input text-sm pl-11" data-faq-search />
+    </div>
+  </div>
+</section>
+
+{# ── CATEGORY TABS ── #}
+<section class="pb-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-wrap justify-center gap-2" data-faq-tabs>
+      {% set cats = ['All', 'Payments', 'Biometrics', 'Logistics', 'County', 'Tenders', 'Security'] %}
+      {% for cat in cats %}
+      <button type="button" data-faq-cat="{{ cat }}"
+              class="px-4 py-2 rounded-xl text-xs font-semibold border transition
+              {% if loop.first %}bg-fabs-cyan/15 border-fabs-cyan/40 text-fabs-cyan{% else %}border-fabs-line text-slate-400 hover:text-white hover:border-fabs-cyan/40{% endif %}">
+        {{ cat }}
+      </button>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── FAQ LIST ── #}
+<section class="pb-20">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="space-y-3" data-faq-list>
+
+      {% set faqs = [
+        ('Payments', 'Which payment rails does Fabs Data Warehouse support?',
+         'We support M-Pesa (Safaricom), DPO, Pesapal and Finserve out of the box. All four rails share one settlement engine, so bulk payouts, collections and reconciliation happen through a single API and dashboard.'),
+        ('Payments', 'How fast are bulk payouts processed?',
+         'M-Pesa payouts settle within seconds, typically T+0. DPO, Pesapal and Finserve settlements vary between T+0 and T+1 depending on the recipient bank. All batches are processed within minutes of submission.'),
+        ('Payments', 'What currencies can I collect and disburse?',
+         'KES, TZS, UGX, RWF, NGN, ZAR, USD, EUR and GBP. Multi-currency wallets are available on business and enterprise tiers, with automatic FX at settlement.'),
+        ('Biometrics', 'How does biometric verification work?',
+         'Every high-value payout passes through a fingerprint or iris check via the open-source Pay-off API. Users enroll once, then authorize individual transactions in under a second. All biometric data is hashed and stored per Kenya Data Protection Act.'),
+        ('Biometrics', 'Can biometric data be shared with third parties?',
+         'No. Biometric templates are cryptographically hashed and stored on encrypted infrastructure. They are never sold, shared or used for anything other than authorizing your own transactions.'),
+        ('Logistics', 'How is DHL integrated?',
+         'We are an official DHL partner. You can generate AWB labels, book multi-carrier pickups, manage customs paperwork and track shipments in real time — all through MyDHL+ and the DHL Shipping Partner API, right inside your Fabs Data Warehouse dashboard.'),
+        ('Logistics', 'Does Fabs Data Warehouse support cash-on-delivery?',
+         'Yes. When a shipment is dispatched, we automatically create a collection request against M-Pesa or DPO. Once the courier confirms delivery, the customer is charged and funds settle into your account.'),
+        ('County', 'How does county revenue collection work?',
+         'Residents pay for parking, markets, rates, permits and other county services via M-Pesa C2B or agent float. Each revenue stream is mapped with GIS coordinates and exported in IFMIS-ready format for treasury reporting.'),
+        ('County', 'Which counties use this platform?',
+         'We currently serve 12 counties across Kenya, with new deployments rolling out each quarter. Reach out to sales for a county-specific demo and integration plan.'),
+        ('Tenders', 'Can I evaluate tender bids on the platform?',
+         'Yes. Publish tenders, collect quotations, score bids against weighted criteria, track milestones and link payroll and payment schedules to each award — all in one place. Compatible with Symphony and MindX Evaluate workflows.'),
+        ('Security', 'Is Fabs Data Warehouse PCI-DSS compliant?',
+         'Yes. We are PCI-DSS aligned, encrypt all data at rest and in transit, enforce TLS 1.3, and require biometric authorization on high-value payouts. Full audit logs are available on all tiers.'),
+        ('Security', 'What happens if a payout is disputed?',
+         'Every transaction carries an immutable audit trail with device fingerprint, biometric score, IP and timestamps. Disputes can be raised in the dashboard and resolved through the same rail that processed the original transaction.')
+      ] %}
+
+      {% for cat, q, a in faqs %}
+      <details class="faq-item glass rounded-2xl overflow-hidden group" data-faq-cat="{{ cat }}">
+        <summary class="flex items-center justify-between gap-4 p-5 cursor-pointer list-none">
+          <span class="flex items-start gap-3">
+            <span class="hidden sm:inline-block px-2 py-1 rounded-md text-[9px] font-extrabold tracking-wider border
+              {% if cat == 'Payments' %}bg-fabs-cyan/10 border-fabs-cyan/30 text-fabs-cyan
+              {% elif cat == 'Biometrics' %}bg-fabs-teal/10 border-fabs-teal/35 text-fabs-teal
+              {% elif cat == 'Logistics' %}bg-fabs-gold/10 border-fabs-gold/35 text-fabs-gold
+              {% elif cat == 'County' %}bg-fabs-amber/10 border-fabs-amber/35 text-fabs-amber
+              {% elif cat == 'Tenders' %}bg-purple-500/10 border-purple-500/30 text-purple-300
+              {% else %}bg-blue-500/10 border-blue-500/30 text-blue-300{% endif %}">
+              {{ cat|upper }}
+            </span>
+            <span class="font-semibold text-white text-sm sm:text-base leading-relaxed">{{ q }}</span>
+          </span>
+          <svg class="w-5 h-5 text-fabs-cyan shrink-0 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" d="M12 5v14M5 12h14"/>
+          </svg>
+        </summary>
+        <div class="px-5 pb-5 pl-5 sm:pl-[5.5rem] text-sm text-slate-400 leading-relaxed">{{ a }}</div>
+      </details>
+      {% endfor %}
+    </div>
+
+    {# no results #}
+    <div class="hidden text-center py-12" data-faq-empty>
+      <p class="text-slate-400">No questions match your search.</p>
+    </div>
+  </div>
+</section>
+
+{# ── STILL HAVE QUESTIONS ── #}
+<section class="pb-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="rounded-3xl glass-strong grad-border p-8 sm:p-12 text-center relative overflow-hidden">
+      <div class="absolute -inset-20 bg-gradient-to-tr from-fabs-cyan/15 to-fabs-gold/15 blur-3xl pointer-events-none"></div>
+      <div class="relative">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Still have questions?</h2>
+        <p class="mt-4 text-slate-400 max-w-lg mx-auto">Our team responds within one business day. Or browse the docs for integration guides.</p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a href="{{ url_for('main.index') }}#contact" class="btn-primary px-6 py-3.5 rounded-xl text-sm">Contact Support</a>
+          <a href="#" class="btn-ghost px-6 py-3.5 rounded-xl text-sm font-semibold">Read Documentation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // Search filter
+  const search = document.querySelector('[data-faq-search]');
+  const items  = document.querySelectorAll('.faq-item');
+  const empty  = document.querySelector('[data-faq-empty]');
+
+  search?.addEventListener('input', () => {
+    const q = search.value.toLowerCase().trim();
+    let visible = 0;
+    items.forEach(el => {
+      const match = el.textContent.toLowerCase().includes(q);
+      el.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    empty.classList.toggle('hidden', visible > 0);
+  });
+
+  // Category tabs
+  const tabs = document.querySelectorAll('[data-faq-cat]');
+  const tabButtons = document.querySelectorAll('[data-faq-tabs] [data-faq-cat]');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.dataset.faqCat;
+      tabButtons.forEach(b => {
+        b.className = 'px-4 py-2 rounded-xl text-xs font-semibold border transition border-fabs-line text-slate-400 hover:text-white hover:border-fabs-cyan/40';
+      });
+      btn.className = 'px-4 py-2 rounded-xl text-xs font-semibold border transition bg-fabs-cyan/15 border-fabs-cyan/40 text-fabs-cyan';
+      items.forEach(el => {
+        el.classList.toggle('hidden', cat !== 'All' && el.dataset.faqCat !== cat);
+      });
+    });
+  });
+</script>
+{% endblock %}

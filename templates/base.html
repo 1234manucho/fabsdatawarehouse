@@ -1,0 +1,470 @@
+{# ═════════════════════════════════════════════════════════════════
+   FABS DATA WAREHOUSE — base.html
+   Dark charcoal + Safaricom light green
+   ═════════════════════════════════════════════════════════════════ #}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1A1D21" />
+  <meta name="color-scheme" content="dark" />
+
+  <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}" />
+
+  <title>{% block title %}Fabs Data Warehouse — Payments, Security & Tracking{% endblock %}</title>
+  <meta name="description"
+        content="{% block meta_description %}Fabs Data Warehouse — one platform for bulk payouts, Safaricom M-Pesa, DPO, Pesapal & Finserve payments, county collections, biometric security, tender tracking, petroleum logistics and DHL-partnered shipment tracking.{% endblock %}" />
+  <meta name="author" content="Fabs Data Warehouse Ltd." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="{{ request.url }}" />
+
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}" />
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/logo-mark.svg') }}" />
+
+  {# ── Open Graph ── #}
+  <meta property="og:site_name"   content="Fabs Data Warehouse" />
+  <meta property="og:type"        content="website" />
+  <meta property="og:title"       content="Fabs Data Warehouse — Payments, Security & Tracking" />
+  <meta property="og:description" content="One platform for M-Pesa, DPO, Pesapal & Finserve payments, biometrics, county collections, tenders and DHL logistics." />
+  <meta property="og:url"         content="{{ request.url }}" />
+  <meta property="og:image"       content="{{ url_for('static', filename='img/og-image.svg', _external=True) }}" />
+  <meta property="og:image:width"  content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale"       content="en_KE" />
+
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="Fabs Data Warehouse" />
+  <meta name="twitter:description" content="One platform for payments, biometrics, county collections, tenders and DHL logistics." />
+  <meta name="twitter:image"       content="{{ url_for('static', filename='img/og-image.svg', _external=True) }}" />
+
+  {# ── Tailwind + config ── #}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg:       '#1A1D21',
+              surface:  '#23272E',
+              surface2: '#2A2F36',
+              surface3: '#33383F',
+              line:     '#3A4048',
+              line2:    '#4A5058',
+              green:    '#4ED16A',
+              green2:   '#39B54A',
+              green3:   '#2E8B3D',
+              greenSoft:'#1E3324',
+              text:     '#E8EAED',
+              muted:    '#9AA0A6',
+              muted2:   '#6B7280',
+              // partner brand colors
+              mpesa:    '#43B02A',
+              saf:      '#39B54A',
+              dhl:      '#FFCC00',
+              dhlred:   '#D40511',
+              dpo:      '#2E6FD9',
+              pesapal:  '#F58220',
+              finserve: '#B03060',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+          boxShadow: {
+            soft:    '0 1px 2px rgba(0,0,0,.25), 0 4px 16px rgba(0,0,0,.25)',
+            card:    '0 4px 24px -8px rgba(0,0,0,.5)',
+            green:   '0 8px 32px -10px rgba(78,209,106,.55)',
+            greenSm: '0 4px 16px -6px rgba(78,209,106,.45)',
+          },
+          keyframes: {
+            marquee: {
+              from: { transform: 'translateX(0)' },
+              to:   { transform: 'translateX(-50%)' },
+            },
+            floaty: {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%':     { transform: 'translateY(-10px)' },
+            },
+            pulseSoft: {
+              '0%,100%': { opacity: '1' },
+              '50%':     { opacity: '.55' },
+            },
+            dashFlow: {
+              'to': { strokeDashoffset: '-200' },
+            },
+            ping2: {
+              '75%,100%': { transform: 'scale(2.2)', opacity: '0' },
+            },
+          },
+          animation: {
+            marquee:   'marquee 30s linear infinite',
+            floaty:    'floaty 5s ease-in-out infinite',
+            pulseSoft: 'pulseSoft 2.4s ease-in-out infinite',
+            dashFlow:  'dashFlow 4s linear infinite',
+            ping2:     'ping2 1.8s cubic-bezier(0,0,.2,1) infinite',
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap"
+        rel="stylesheet" />
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+  {% block head_extra %}{% endblock %}
+</head>
+
+<body class="bg-brand-bg text-brand-text font-sans antialiased selection:bg-brand-green/30 selection:text-white">
+
+{# ── Logo macro — light green hexagon ── #}
+{% macro fabs_logo(size=42) %}
+<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 64 64" fill="none"
+     xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="fabsGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#6FE57F"/>
+      <stop offset="100%" stop-color="#39B54A"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 2 58 17v30L32 62 6 47V17Z"
+        fill="url(#fabsGrad)" stroke="#2E8B3D" stroke-width="2" stroke-linejoin="round"/>
+  <rect x="21" y="17" width="22" height="5.5" rx="2.75" fill="#FFFFFF"/>
+  <rect x="21" y="28" width="14" height="5.5" rx="2.75" fill="#FFFFFF" opacity="0.85"/>
+  <rect x="21" y="39" width="10" height="5.5" rx="2.75" fill="#FFFFFF" opacity="0.7"/>
+  <circle cx="45" cy="41.5" r="3.2" fill="#FFFFFF"/>
+</svg>
+{% endmacro %}
+
+{# ── Partner logo macro — real-looking brand chips ── #}
+{% macro partner_logo(name) %}
+{% if name == 'safaricom' %}
+  <svg viewBox="0 0 140 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Safaricom">
+    <circle cx="14" cy="14" r="11" fill="#39B54A"/>
+    <path d="M14 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z" fill="#fff"/>
+    <path d="M7 22c1.6-2.2 4-3.4 7-3.4s5.4 1.2 7 3.4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <text x="32" y="20" font-family="Inter, sans-serif" font-weight="800" font-size="15" fill="#39B54A" letter-spacing="-.3">safaricom</text>
+  </svg>
+{% elif name == 'mpesa' %}
+  <svg viewBox="0 0 110 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="M-Pesa">
+    <rect x="0" y="3" width="108" height="22" rx="4" fill="#43B02A"/>
+    <text x="54" y="19" font-family="Inter, sans-serif" font-weight="900" font-size="13" fill="#fff" text-anchor="middle" letter-spacing="1.2">M-PESA</text>
+  </svg>
+{% elif name == 'dhl' %}
+  <svg viewBox="0 0 110 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="DHL">
+    <rect x="0" y="4" width="108" height="20" rx="2" fill="#FFCC00"/>
+    <text x="54" y="20" font-family="Inter, sans-serif" font-weight="900" font-size="16" fill="#D40511" text-anchor="middle" font-style="italic" letter-spacing="1.5">DHL</text>
+  </svg>
+{% elif name == 'dpo' %}
+  <svg viewBox="0 0 120 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="DPO Pay">
+    <rect x="0" y="4" width="42" height="20" rx="4" fill="#2E6FD9"/>
+    <text x="21" y="19" font-family="Inter, sans-serif" font-weight="900" font-size="12" fill="#fff" text-anchor="middle" letter-spacing=".5">DPO</text>
+    <text x="50" y="20" font-family="Inter, sans-serif" font-weight="800" font-size="15" fill="#2E6FD9">Pay</text>
+  </svg>
+{% elif name == 'pesapal' %}
+  <svg viewBox="0 0 130 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Pesapal">
+    <circle cx="14" cy="14" r="11" fill="#F58220"/>
+    <path d="M14 6v8l5 4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="30" y="20" font-family="Inter, sans-serif" font-weight="800" font-size="15" fill="#F58220" letter-spacing="-.3">pesapal</text>
+  </svg>
+{% elif name == 'finserve' %}
+  <svg viewBox="0 0 120 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Finserve">
+    <text x="60" y="19" font-family="Inter, sans-serif" font-weight="800" font-size="15" fill="#B03060" text-anchor="middle" letter-spacing="-.3">Finserve</text>
+    <line x1="18" y1="24" x2="102" y2="24" stroke="#B03060" stroke-width="1.8" stroke-linecap="round"/>
+  </svg>
+{% elif name == 'mifos' %}
+  <svg viewBox="0 0 100 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Mifos">
+    <rect x="0" y="4" width="100" height="20" rx="4" fill="#2C5F8A"/>
+    <text x="50" y="19" font-family="Inter, sans-serif" font-weight="800" font-size="12" fill="#fff" text-anchor="middle" letter-spacing="1">MIFOS</text>
+  </svg>
+{% elif name == 'fleetbase' %}
+  <svg viewBox="0 0 130 28" class="h-7 w-auto" xmlns="http://www.w3.org/2000/svg" aria-label="Fleetbase">
+    <rect x="0" y="4" width="128" height="20" rx="4" fill="#1F2937" stroke="#4ED16A" stroke-width="1"/>
+    <text x="64" y="19" font-family="Inter, sans-serif" font-weight="800" font-size="11" fill="#4ED16A" text-anchor="middle" letter-spacing="1">FLEETBASE</text>
+  </svg>
+{% endif %}
+{% endmacro %}
+
+<a href="#main-content"
+   class="absolute -top-24 left-4 z-[100] bg-brand-green text-brand-bg font-bold px-4 py-2.5 rounded-lg focus:top-4 transition-all">
+  Skip to content
+</a>
+
+<!-- ═══════════════════ NAVBAR ═══════════════════ -->
+<header id="navbar" class="fixed top-0 inset-x-0 z-50 transition-all duration-300">
+  <div class="bg-brand-bg/95 backdrop-blur-md border-b border-brand-line">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav class="py-3.5 flex items-center justify-between" aria-label="Primary">
+
+        {# ── Brand ── #}
+        <a href="{{ url_for('main.index') }}" class="flex items-center gap-3 shrink-0">
+          {{ fabs_logo(40) }}
+          <span class="leading-none">
+            <span class="block text-white font-extrabold tracking-tight text-[17px] sm:text-lg">
+              FABS<span class="text-brand-green"> DATA</span>
+            </span>
+            <span class="block text-[9.5px] sm:text-[10px] font-semibold tracking-[0.28em] text-brand-green/80 uppercase">
+              Warehouse
+            </span>
+          </span>
+        </a>
+
+        {# ── Desktop nav ── #}
+        <div class="hidden lg:flex items-center gap-1 text-sm font-medium">
+          <a href="{{ url_for('main.index') }}#services"   class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Services</a>
+          <a href="{{ url_for('main.index') }}#biometrics" class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Biometrics</a>
+          <a href="{{ url_for('main.index') }}#payouts"    class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Payouts</a>
+          <a href="{{ url_for('main.index') }}#tenders"    class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Tenders</a>
+          <a href="{{ url_for('main.index') }}#tracking"   class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Tracking</a>
+          <a href="{{ url_for('main.faqs') }}"             class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">FAQs</a>
+          <a href="{{ url_for('main.contact') }}"          class="px-3.5 py-2 rounded-lg text-brand-muted hover:text-brand-green hover:bg-brand-surface transition">Contact</a>
+        </div>
+
+        {# ── Auth ── #}
+        <div class="hidden lg:flex items-center gap-2.5">
+          {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+              <a href="{{ url_for('admin.index') }}"
+                 class="px-4 py-2 rounded-lg text-sm font-semibold text-brand-green border border-brand-green/30 hover:bg-brand-greenSoft transition">
+                Admin
+              </a>
+            {% endif %}
+            <a href="{{ url_for('dashboard.index') }}"
+               class="px-4 py-2 rounded-lg text-sm font-semibold text-brand-green border border-brand-green/40 hover:bg-brand-greenSoft transition">
+              Dashboard
+            </a>
+            <a href="{{ url_for('auth.logout') }}"
+               class="btn-primary px-4 py-2 rounded-lg text-sm">
+              Sign out
+            </a>
+          {% else %}
+            <a href="{{ url_for('auth.login') }}"
+               class="px-4 py-2 rounded-lg text-sm font-semibold text-brand-text hover:bg-brand-surface transition">
+              Sign in
+            </a>
+            <a href="{{ url_for('auth.signup') }}"
+               class="btn-primary px-4 py-2 rounded-lg text-sm">
+              Get Started
+            </a>
+          {% endif %}
+        </div>
+
+        {# ── Mobile toggle ── #}
+        <button id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false"
+                aria-controls="mobileMenu"
+                class="lg:hidden p-2 rounded-lg text-brand-text hover:bg-brand-surface">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+        </button>
+      </nav>
+
+      {# ── Mobile menu ── #}
+      <div id="mobileMenu" class="lg:hidden hidden pb-4 space-y-1">
+        <a href="{{ url_for('main.index') }}#services"   class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Services</a>
+        <a href="{{ url_for('main.index') }}#biometrics" class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Biometrics</a>
+        <a href="{{ url_for('main.index') }}#payouts"    class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Bulk Payouts</a>
+        <a href="{{ url_for('main.index') }}#tenders"    class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Tenders</a>
+        <a href="{{ url_for('main.index') }}#tracking"   class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Tracking</a>
+        <a href="{{ url_for('main.faqs') }}"             class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">FAQs</a>
+        <a href="{{ url_for('main.about') }}"            class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">About</a>
+        <a href="{{ url_for('main.pricing') }}"          class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Pricing</a>
+        <a href="{{ url_for('main.contact') }}"          class="block px-3 py-2.5 rounded-lg hover:bg-brand-surface text-brand-muted">Contact</a>
+
+        <div class="pt-3 mt-2 border-t border-brand-line flex flex-col gap-2">
+          {% if current_user.is_authenticated %}
+            {% if current_user.is_admin %}
+              <a href="{{ url_for('admin.index') }}" class="text-center px-4 py-2.5 rounded-lg text-sm border border-brand-green/40 text-brand-green">Admin Panel</a>
+            {% endif %}
+            <a href="{{ url_for('dashboard.index') }}" class="btn-primary text-center px-4 py-2.5 rounded-lg text-sm">Dashboard</a>
+            <a href="{{ url_for('auth.logout') }}"      class="text-center px-4 py-2.5 rounded-lg text-sm border border-brand-line text-brand-muted hover:bg-brand-surface">Sign out</a>
+          {% else %}
+            <a href="{{ url_for('auth.login') }}"  class="text-center px-4 py-2.5 rounded-lg text-sm border border-brand-line text-brand-muted hover:bg-brand-surface">Sign in</a>
+            <a href="{{ url_for('auth.signup') }}" class="btn-primary text-center px-4 py-2.5 rounded-lg text-sm">Get Started Free</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════ FLASH MESSAGES ═══════════════════ -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div id="flashZone" class="fixed top-24 right-4 z-[60] space-y-2 w-[min(92vw,380px)]"
+         role="status" aria-live="polite">
+      {% for category, message in messages %}
+        {% set tone = 'border-brand-green/40 bg-brand-greenSoft text-brand-green' %}
+        {% if category == 'error'   %}{% set tone = 'border-red-500/40 bg-red-500/10 text-red-300' %}{% endif %}
+        {% if category == 'danger'  %}{% set tone = 'border-red-500/40 bg-red-500/10 text-red-300' %}{% endif %}
+        {% if category == 'success' %}{% set tone = 'border-brand-green/50 bg-brand-greenSoft text-brand-green' %}{% endif %}
+        {% if category == 'warning' %}{% set tone = 'border-amber-500/40 bg-amber-500/10 text-amber-300' %}{% endif %}
+        <div class="flash-item bg-brand-surface border {{ tone }} rounded-xl px-4 py-3 text-sm flex items-start gap-3 shadow-card">
+          <span class="mt-0.5" aria-hidden="true">●</span>
+          <span class="flex-1">{{ message }}</span>
+          <button type="button" onclick="this.parentElement.remove()"
+                  class="opacity-60 hover:opacity-100 transition" aria-label="Dismiss">✕</button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main id="main-content" class="pt-[68px]">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ═══════════════════ FOOTER ═══════════════════ -->
+<footer class="mt-24 bg-brand-surface border-t border-brand-line">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+
+    {# ═══════════════ PROMINENT PARTNER LOGO STRIP ═══════════════ #}
+    <div class="mb-12 pb-12 border-b border-brand-line">
+      <p class="text-center text-[11px] uppercase tracking-[0.3em] text-brand-muted2 mb-7">
+        Integrated Payment Rails &amp; Logistics Partners
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-3 max-w-5xl mx-auto">
+
+        {# Safaricom #}
+        <a href="#" title="Safaricom"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('safaricom') }}
+        </a>
+
+        {# M-Pesa #}
+        <a href="#" title="M-Pesa"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('mpesa') }}
+        </a>
+
+        {# DHL #}
+        <a href="#" title="DHL"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('dhl') }}
+        </a>
+
+        {# DPO #}
+        <a href="#" title="DPO Pay"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('dpo') }}
+        </a>
+
+        {# Pesapal #}
+        <a href="#" title="Pesapal"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('pesapal') }}
+        </a>
+
+        {# Finserve #}
+        <a href="#" title="Finserve"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('finserve') }}
+        </a>
+
+        {# Mifos #}
+        <a href="#" title="Mifos / Fineract"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('mifos') }}
+        </a>
+
+        {# Fleetbase #}
+        <a href="#" title="Fleetbase"
+           class="partner-tile bg-brand-bg border border-brand-line rounded-xl px-4 py-5 flex items-center justify-center h-20 hover:border-brand-green/50 transition-all">
+          {{ partner_logo('fleetbase') }}
+        </a>
+      </div>
+    </div>
+
+    {# ═══════════════ FOOTER LINKS ═══════════════ #}
+    <div class="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+
+      <div class="lg:col-span-2">
+        <div class="flex items-center gap-3 mb-4">
+          {{ fabs_logo(40) }}
+          <span class="leading-none">
+            <span class="block text-white font-extrabold tracking-tight">FABS<span class="text-brand-green"> DATA</span></span>
+            <span class="block text-[10px] font-semibold tracking-[0.28em] text-brand-green/80 uppercase">Warehouse</span>
+          </span>
+        </div>
+
+        <p class="text-sm text-brand-muted max-w-sm leading-relaxed">
+          One secure warehouse for payments, biometric security, tender intelligence,
+          county revenue, petroleum logistics and DHL-partnered enterprise tracking.
+        </p>
+
+        <p class="mt-6 text-xs text-brand-muted2">
+          Nairobi, Kenya · Est. 2021
+        </p>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Platform</h4>
+        <ul class="space-y-2.5 text-sm text-brand-muted">
+          <li><a href="{{ url_for('main.index') }}#services"   class="hover:text-brand-green transition">Payments &amp; Collections</a></li>
+          <li><a href="{{ url_for('main.index') }}#payouts"    class="hover:text-brand-green transition">Bulk Payouts</a></li>
+          <li><a href="{{ url_for('main.index') }}#biometrics" class="hover:text-brand-green transition">Biometric Security</a></li>
+          <li><a href="{{ url_for('main.index') }}#tenders"    class="hover:text-brand-green transition">Tender Tracking</a></li>
+          <li><a href="{{ url_for('main.index') }}#tracking"   class="hover:text-brand-green transition">DHL Shipment Tracking</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Solutions</h4>
+        <ul class="space-y-2.5 text-sm text-brand-muted">
+          <li><a href="{{ url_for('county.index') }}"    class="hover:text-brand-green transition">County Revenue</a></li>
+          <li><a href="#" class="hover:text-brand-green transition">Petroleum Transport</a></li>
+          <li><a href="{{ url_for('companies.index') }}" class="hover:text-brand-green transition">Company Management</a></li>
+          <li><a href="{{ url_for('merchants.index') }}" class="hover:text-brand-green transition">Merchant Onboarding</a></li>
+          <li><a href="{{ url_for('payments.index') }}"  class="hover:text-brand-green transition">Aggregator APIs</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-white font-semibold mb-4 text-sm">Company</h4>
+        <ul class="space-y-2.5 text-sm text-brand-muted">
+          <li><a href="{{ url_for('main.about') }}"   class="hover:text-brand-green transition">About Us</a></li>
+          <li><a href="{{ url_for('main.pricing') }}" class="hover:text-brand-green transition">Pricing</a></li>
+          <li><a href="{{ url_for('main.faqs') }}"    class="hover:text-brand-green transition">FAQs</a></li>
+          <li><a href="{{ url_for('main.contact') }}" class="hover:text-brand-green transition">Contact Sales</a></li>
+          <li><a href="{{ url_for('auth.signup') }}"  class="hover:text-brand-green transition">Create Account</a></li>
+          <li><a href="{{ url_for('auth.login') }}"   class="hover:text-brand-green transition">Sign In</a></li>
+          <li><a href="/api/health"                   class="hover:text-brand-green transition">System Status</a></li>
+        </ul>
+
+        <div class="mt-5 flex gap-2">
+          <a href="#" aria-label="X (Twitter)" class="w-9 h-9 grid place-items-center rounded-lg border border-brand-line hover:border-brand-green hover:text-brand-green transition text-brand-muted">𝕏</a>
+          <a href="#" aria-label="LinkedIn"    class="w-9 h-9 grid place-items-center rounded-lg border border-brand-line hover:border-brand-green hover:text-brand-green transition text-brand-muted">in</a>
+          <a href="#" aria-label="GitHub"      class="w-9 h-9 grid place-items-center rounded-lg border border-brand-line hover:border-brand-green hover:text-brand-green transition text-brand-muted">⌘</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-6 border-t border-brand-line flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-brand-muted2">
+        © <span data-year>{{ current_year }}</span> Fabs Data Warehouse. All rights reserved.
+      </p>
+      <div class="flex items-center gap-5 text-xs text-brand-muted2">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-green pulse-dot"></span>
+          All systems operational
+        </span>
+        <a href="{{ url_for('main.privacy') }}" class="hover:text-brand-green transition">Privacy</a>
+        <a href="{{ url_for('main.terms') }}"   class="hover:text-brand-green transition">Terms</a>
+        <a href="#"                             class="hover:text-brand-green transition">PCI-DSS</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

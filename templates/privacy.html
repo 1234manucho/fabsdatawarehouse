@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy — Fabs Data Warehouse{% endblock %}
+
+{% block content %}
+<section class="pt-10 sm:pt-16 pb-20">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 reveal">
+    <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">Legal</p>
+    <h1 class="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight">Privacy Policy</h1>
+    <p class="mt-4 text-sm text-slate-500">Last updated: {{ current_year }}</p>
+
+    <div class="mt-10 space-y-8 text-slate-400 leading-relaxed">
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">1. Who We Are</h2>
+        <p>Fabs Data Warehouse Ltd. ("Fabs Data Warehouse", "we", "our") operates a unified platform for payments, biometric security, logistics tracking, tender management and county revenue collection. Our registered office is in Nairobi, Kenya.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">2. Data We Collect</h2>
+        <p>We collect account information (name, email, phone, company), transaction data (amounts, recipients, rails used), biometric templates (fingerprint and iris hashes), device fingerprints, IP addresses and audit logs. Biometric data is used solely for authorizing your own transactions and is never shared.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">3. How We Use Your Data</h2>
+        <p>To process payments and collections, verify identity, prevent fraud, comply with AML/KYC obligations, provide customer support, and improve the platform. We do not sell your data.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">4. Data Sharing</h2>
+        <p>We share data only with: (a) payment rails you transact on (M-Pesa, DPO, Pesapal, Finserve), (b) DHL and Fleetbase for logistics operations, (c) regulators when legally required, and (d) service providers under strict data processing agreements.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">5. Security</h2>
+        <p>All data is encrypted in transit (TLS 1.3) and at rest (AES-256). We are PCI-DSS aligned and comply with the Kenya Data Protection Act, 2019. Biometric templates are cryptographically hashed and stored separately from personal identifiers.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">6. Your Rights</h2>
+        <p>You have the right to access, correct, export or delete your personal data. To exercise these rights, contact privacy@fabsdata.io. We respond within 30 days.</p>
+      </div>
+
+      <div>
+        <h2 class="text-xl font-bold text-white mb-3">7. Contact</h2>
+        <p>For privacy enquiries: privacy@fabsdata.io<br/>Fabs Data Warehouse Ltd., Westlands Business Park, Nairobi, Kenya.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

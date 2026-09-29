@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Fabs Data favicon">
+  <defs>
+    <linearGradient id="favGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="100%" stop-color="#FFB800"/>
+    </linearGradient>
+  </defs>
+  <path d="M32 4 56 18v28L32 60 8 46V18Z"
+        fill="#050B1A"
+        stroke="url(#favGrad)"
+        stroke-width="4"
+        stroke-linejoin="round"/>
+  <rect x="22" y="19" width="20" height="6" rx="3" fill="#00E5FF"/>
+  <rect x="22" y="29" width="13" height="6" rx="3" fill="#00E5FF" opacity="0.7"/>
+  <rect x="22" y="39" width="9"  height="6" rx="3" fill="#FFB800"/>
+</svg>

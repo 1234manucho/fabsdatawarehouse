@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}403 — Access Denied{% endblock %}
+
+{% block content %}
+<section class="min-h-[calc(100vh-6rem)] flex items-center py-12">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <p class="text-[10rem] sm:text-[14rem] font-extrabold leading-none grad-text font-mono">403</p>
+    <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight -mt-6">Access denied</h1>
+    <p class="mt-4 text-slate-400 leading-relaxed max-w-lg mx-auto">
+      You don't have permission to view this resource. Contact your administrator if you believe this is a mistake.
+    </p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="{{ url_for('dashboard.index') }}" class="btn-primary px-6 py-3 rounded-xl text-sm">Go to dashboard</a>
+      <a href="{{ url_for('main.index') }}" class="btn-ghost px-6 py-3 rounded-xl text-sm font-semibold">Back home</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" fill="none" width="280" height="64" role="img" aria-label="Fabs Data Warehouse">
+  <defs>
+    <linearGradient id="fabsLogoGrad" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#00E5FF"/>
+      <stop offset="55%"  stop-color="#00B8A9"/>
+      <stop offset="100%" stop-color="#FFB800"/>
+    </linearGradient>
+    <linearGradient id="fabsTextGrad" x1="0" y1="0" x2="220" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%"   stop-color="#FFFFFF"/>
+      <stop offset="70%"  stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hexagon mark -->
+  <path d="M32 2 58 17v30L32 62 6 47V17Z"
+        fill="#0A1428"
+        stroke="url(#fabsLogoGrad)"
+        stroke-width="3"
+        stroke-linejoin="round"/>
+  <rect x="21" y="17" width="22" height="5.5" rx="2.75" fill="#00E5FF"/>
+  <rect x="21" y="28" width="14" height="5.5" rx="2.75" fill="#00E5FF" opacity="0.75"/>
+  <rect x="21" y="39" width="10" height="5.5" rx="2.75" fill="#FFB800"/>
+  <circle cx="45" cy="41.5" r="3.2" fill="#00E5FF"/>
+
+  <!-- Wordmark -->
+  <text x="78" y="30"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="22"
+        font-weight="800"
+        letter-spacing="-0.5"
+        fill="url(#fabsTextGrad)">FABS DATA</text>
+  <text x="78" y="48"
+        font-family="Inter, system-ui, sans-serif"
+        font-size="9"
+        font-weight="700"
+        letter-spacing="3.6"
+        fill="#00E5FF"
+        opacity="0.75">WAREHOUSE</text>
+</svg>

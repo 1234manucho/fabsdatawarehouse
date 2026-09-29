@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}County Revenue — Fabs Data Warehouse{% endblock %}
+
+{% block content %}
+<section class="py-10 sm:py-14">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 reveal">
+      <div>
+        <p class="text-xs font-bold tracking-[0.25em] text-fabs-amber uppercase mb-2">Module</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">County Revenue Collection</h1>
+        <p class="text-slate-400 mt-2 text-sm">M-Pesa C2B, GIS-mapped revenue streams, IFMIS-ready exports.</p>
+      </div>
+      <a href="#" class="btn-gold px-5 py-3 rounded-xl text-sm inline-flex items-center gap-2 w-fit">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+        Add Revenue Stream
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      {% set kpis = [('Collected Today', 'KSh 1.8M', 'cyan'), ('Active Counties', '12', 'teal'), ('Streams', '48', 'gold'), ('Residents', '32K+', 'amber')] %}
+      {% for label, value, tone in kpis %}
+      <div class="glass rounded-2xl p-5 card-hover">
+        <p class="text-[10px] uppercase tracking-widest text-slate-500 mb-2">{{ label }}</p>
+        <p class="text-2xl font-extrabold font-mono
+          {% if tone == 'cyan' %}text-fabs-cyan{% elif tone == 'teal' %}text-fabs-teal{% elif tone == 'gold' %}text-fabs-gold{% else %}text-fabs-amber{% endif %}">{{ value }}</p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="glass-strong rounded-2xl p-10 grad-border text-center">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-fabs-amber/10 border border-fabs-amber/35 grid place-items-center mb-5">
+        <svg class="w-7 h-7 text-fabs-amber" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-2">County module ready</h2>
+      <p class="text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">Per-stream dashboards for parking, markets, rates, permits. GIS heatmaps, agent float management, and one-click IFMIS export.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

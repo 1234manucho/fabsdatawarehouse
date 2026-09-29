@@ -1,0 +1,250 @@
+{# ═════════════════════════════════════════════════════════════════
+   FABS DATA WAREHOUSE — admin/base_admin.html
+   Admin layout with sidebar navigation
+   ═════════════════════════════════════════════════════════════════ #}
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050B1A" />
+  <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}" />
+  <title>{% block title %}Admin — Fabs Data Warehouse{% endblock %}</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><path d='M32 2 58 17v30L32 62 6 47V17Z' fill='%230A1428' stroke='%2300E5FF' stroke-width='4'/><rect x='22' y='18' width='20' height='5' rx='2.5' fill='%2300E5FF'/></svg>" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: {
+        colors: { fabs: { navy:'#050B1A', deep:'#0A1428', card:'#0F1E38', line:'#1B3157', cyan:'#00E5FF', teal:'#00B8A9', gold:'#FFB800', amber:'#FF7A00', mpesa:'#43B02A', dpo:'#1B4F9C' } },
+        fontFamily: { sans:['Inter','system-ui','sans-serif'], mono:['JetBrains Mono','monospace'] },
+        boxShadow: { glow: '0 0 40px -8px rgba(0,229,255,.45)' }
+      }}
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    html, body { background: #050B1A; }
+    body { -webkit-font-smoothing: antialiased; }
+    ::-webkit-scrollbar{ width: 10px; height: 10px; }
+    ::-webkit-scrollbar-track{ background:#050B1A; }
+    ::-webkit-scrollbar-thumb{ background:#1B3157; border-radius:99px; }
+    ::-webkit-scrollbar-thumb:hover{ background:#00B8A9; }
+    .glass{ background: rgba(15,30,56,.55); backdrop-filter: blur(16px); border:1px solid rgba(0,229,255,.12); }
+    .glass-strong{ background: rgba(10,20,40,.86); backdrop-filter: blur(20px); border:1px solid rgba(0,229,255,.18); }
+    .grad-text{ background: linear-gradient(92deg,#00E5FF 0%,#00B8A9 45%,#FFB800 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .grad-border{ position: relative; }
+    .grad-border::before{
+      content:''; position:absolute; inset:0; border-radius:inherit; padding:1px;
+      background:linear-gradient(135deg, rgba(0,229,255,.55), rgba(0,184,169,.15) 40%, rgba(255,184,0,.45));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events:none;
+    }
+    .card-hover{ transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s; }
+    .card-hover:hover{ transform: translateY(-4px); border-color: rgba(0,229,255,.45); }
+    .btn-primary{ background: linear-gradient(92deg,#00E5FF,#00B8A9); color:#02121f; font-weight:700; transition:.3s; box-shadow: 0 10px 34px -12px rgba(0,229,255,.75); }
+    .btn-primary:hover{ transform: translateY(-2px); box-shadow: 0 18px 44px -12px rgba(0,229,255,.95); }
+    .btn-ghost{ border: 1px solid rgba(255,255,255,.15); color:#e2e8f0; transition:.3s; }
+    .btn-ghost:hover{ border-color: rgba(0,229,255,.45); background: rgba(0,229,255,.06); }
+    .fabs-input{ width:100%; background:rgba(15,30,56,.6); border:1px solid rgba(0,229,255,.15); border-radius:.75rem; padding:.6rem 1rem; color:#e2e8f0; transition:.25s; font-size: .875rem; }
+    .fabs-input:focus{ outline:none; border-color: rgba(0,229,255,.55); box-shadow: 0 0 0 3px rgba(0,229,255,.12); }
+    .nav-link{ display:flex; align-items:center; gap:.75rem; padding:.7rem .9rem; border-radius:.65rem; font-size:.85rem; font-weight:500; color:#94a3b8; transition:.2s; }
+    .nav-link:hover{ background: rgba(255,255,255,.04); color:#fff; }
+    .nav-link.active{ background: linear-gradient(92deg, rgba(0,229,255,.15), rgba(0,184,169,.08)); color:#00E5FF; border-left: 2px solid #00E5FF; padding-left: .7rem; }
+    .pulse-dot{ position:relative; }
+    .pulse-dot::after{ content:''; position:absolute; inset:-4px; border-radius:9999px; border:1px solid rgba(0,229,255,.6); animation: ping 1.8s cubic-bezier(0,0,.2,1) infinite; }
+    @keyframes ping{ 75%,100%{ transform:scale(2.1); opacity:0; } }
+    .bg-grid{ position: fixed; inset:0; z-index:-2; pointer-events:none;
+      background-image: linear-gradient(rgba(0,229,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,255,.04) 1px, transparent 1px);
+      background-size: 64px 64px;
+      -webkit-mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 80%);
+              mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 30%, transparent 80%);
+    }
+    input, select, textarea{ color-scheme: dark; }
+  </style>
+  {% block head_extra %}{% endblock %}
+</head>
+
+<body class="text-slate-300 font-sans antialiased">
+
+{% macro fabs_logo(size=36) %}
+<svg width="{{ size }}" height="{{ size }}" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <defs><linearGradient id="fabsHexGradA" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+    <stop offset="0%" stop-color="#00E5FF"/><stop offset="55%" stop-color="#00B8A9"/><stop offset="100%" stop-color="#FFB800"/>
+  </linearGradient></defs>
+  <path d="M32 2 58 17v30L32 62 6 47V17Z" fill="#0A1428" stroke="url(#fabsHexGradA)" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="21" y="17" width="22" height="5.5" rx="2.75" fill="#00E5FF"/>
+  <rect x="21" y="28" width="14" height="5.5" rx="2.75" fill="#00E5FF" opacity="0.75"/>
+  <rect x="21" y="39" width="10" height="5.5" rx="2.75" fill="#FFB800"/>
+</svg>
+{% endmacro %}
+
+<div class="bg-grid"></div>
+
+<div class="flex min-h-screen">
+
+  {# ═══════════════ SIDEBAR ═══════════════ #}
+  <aside id="adminSidebar" class="fixed lg:sticky top-0 left-0 h-screen w-64 shrink-0 z-40 glass-strong border-r border-white/5 -translate-x-full lg:translate-x-0 transition-transform duration-300">
+    <div class="flex flex-col h-full">
+
+      {# brand #}
+      <div class="p-5 border-b border-white/5">
+        <a href="{{ url_for('admin.index') if 'admin.index' in url_for.__globals__ else url_for('main.index') }}" class="flex items-center gap-3">
+          {{ fabs_logo(36) }}
+          <span class="leading-none">
+            <span class="block text-white font-extrabold tracking-tight text-sm">FABS<span class="grad-text"> ADMIN</span></span>
+            <span class="block text-[9px] font-semibold tracking-[0.28em] text-fabs-cyan/70 uppercase mt-0.5">Control Panel</span>
+          </span>
+        </a>
+      </div>
+
+      {# nav #}
+      <nav class="flex-1 overflow-y-auto p-3 space-y-1">
+        <p class="px-3 pt-3 pb-2 text-[10px] uppercase tracking-widest text-slate-600 font-semibold">Overview</p>
+        <a href="{{ url_for('admin.index') }}" class="nav-link {% if active == 'dashboard' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
+        <a href="{{ url_for('admin.analytics') }}" class="nav-link {% if active == 'analytics' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6m4 6V9m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+          Analytics
+        </a>
+
+        <p class="px-3 pt-5 pb-2 text-[10px] uppercase tracking-widest text-slate-600 font-semibold">Operations</p>
+        <a href="{{ url_for('admin.users') }}" class="nav-link {% if active == 'users' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M9 11a4 4 0 100-8 4 4 0 000 8zm8 9v-1a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Users
+        </a>
+        <a href="{{ url_for('admin.transactions') }}" class="nav-link {% if active == 'transactions' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h2m4 0h2m-9 4h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Transactions
+        </a>
+        <a href="{{ url_for('admin.payouts') }}" class="nav-link {% if active == 'payouts' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+          Payout Batches
+        </a>
+        <a href="{{ url_for('admin.biometrics') }}" class="nav-link {% if active == 'biometrics' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 11c0 3.5-.5 5-2 7M5 12a7 7 0 0114 0"/></svg>
+          Biometrics
+        </a>
+        <a href="{{ url_for('admin.logistics') }}" class="nav-link {% if active == 'logistics' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zm10 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          DHL Logistics
+        </a>
+
+        <p class="px-3 pt-5 pb-2 text-[10px] uppercase tracking-widest text-slate-600 font-semibold">Configuration</p>
+        <a href="{{ url_for('admin.merchants') }}" class="nav-link {% if active == 'merchants' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7l2-4h14l2 4M3 7h18v13H3zM9 12h6"/></svg>
+          Merchants
+        </a>
+        <a href="{{ url_for('admin.settings') }}" class="nav-link {% if active == 'settings' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.14.35.51.6.91.6H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          Settings
+        </a>
+        <a href="{{ url_for('admin.reports') }}" class="nav-link {% if active == 'reports' %}active{% endif %}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6M9 8h6M5 3h14a1 1 0 011 1v16a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z"/></svg>
+          Reports
+        </a>
+      </nav>
+
+      {# user footer #}
+      <div class="p-3 border-t border-white/5">
+        <div class="flex items-center gap-3 p-3 rounded-xl glass">
+          <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-fabs-cyan to-fabs-teal grid place-items-center font-extrabold text-fabs-navy text-xs">
+            {{ current_user.full_name[:1] if current_user.is_authenticated else 'A' }}
+          </div>
+          <div class="min-w-0 flex-1">
+            <p class="text-xs font-bold text-white truncate">{{ current_user.full_name if current_user.is_authenticated else 'Admin' }}</p>
+            <p class="text-[10px] text-slate-500 truncate">{{ current_user.email if current_user.is_authenticated else 'admin@fabsdata.io' }}</p>
+          </div>
+          <a href="{{ url_for('auth.logout') }}" class="text-slate-500 hover:text-red-400 transition" aria-label="Sign out">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  {# overlay on mobile #}
+  <div id="sidebarOverlay" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+  {# ═══════════════ MAIN ═══════════════ #}
+  <div class="flex-1 min-w-0">
+
+    {# top bar #}
+    <header class="sticky top-0 z-30 glass-strong border-b border-white/5">
+      <div class="px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <button id="sidebarToggle" class="lg:hidden p-2 rounded-lg text-slate-300 hover:bg-white/5">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="min-w-0">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500">Admin</p>
+            <h1 class="text-base font-bold text-white truncate">{% block page_title %}Dashboard{% endblock %}</h1>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg glass text-[10px] font-semibold text-emerald-400">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> LIVE
+          </span>
+          <button class="p-2 rounded-lg text-slate-400 hover:bg-white/5" aria-label="Notifications">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.4-1.4A2 2 0 0118 14.2V11a6 6 0 10-12 0v3.2a2 2 0 01-.6 1.4L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+          </button>
+          <a href="{{ url_for('main.index') }}" class="hidden sm:inline-flex btn-ghost px-3 py-2 rounded-lg text-xs font-semibold">View Site</a>
+        </div>
+      </div>
+    </header>
+
+    {# flash #}
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+      <div class="px-4 sm:px-6 lg:px-8 pt-4 space-y-2">
+        {% for category, message in messages %}
+          {% set tone = 'border-fabs-cyan/40 bg-fabs-cyan/10 text-fabs-cyan' %}
+          {% if category == 'error' %}{% set tone = 'border-red-500/40 bg-red-500/10 text-red-300' %}{% endif %}
+          {% if category == 'success' %}{% set tone = 'border-emerald-500/40 bg-emerald-500/10 text-emerald-300' %}{% endif %}
+          {% if category == 'warning' %}{% set tone = 'border-fabs-gold/40 bg-fabs-gold/10 text-fabs-gold' %}{% endif %}
+          <div class="glass-strong border {{ tone }} rounded-xl px-4 py-3 text-sm">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    {% endwith %}
+
+    {# content #}
+    <main class="px-4 sm:px-6 lg:px-8 py-6">
+      {% block content %}{% endblock %}
+    </main>
+
+    {# footer #}
+    <footer class="mt-12 border-t border-white/5 px-4 sm:px-6 lg:px-8 py-6">
+      <p class="text-xs text-slate-500 text-center">© {{ current_year }} Fabs Data Warehouse · Admin Panel v0.1</p>
+    </footer>
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('adminSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const toggle  = document.getElementById('sidebarToggle');
+  const close   = () => { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); };
+  toggle?.addEventListener('click', () => {
+    sidebar.classList.toggle('-translate-x-full');
+    overlay.classList.toggle('hidden');
+  });
+  overlay?.addEventListener('click', close);
+
+  window.fabsToast = function (msg, tone = 'info') {
+    const tones = { info:'border-fabs-cyan/40 bg-fabs-cyan/10 text-fabs-cyan', success:'border-emerald-500/40 bg-emerald-500/10 text-emerald-300', error:'border-red-500/40 bg-red-500/10 text-red-300', warning:'border-fabs-gold/40 bg-fabs-gold/10 text-fabs-gold' };
+    const t = document.createElement('div');
+    t.className = `fixed top-20 right-4 z-[60] glass-strong border rounded-xl px-4 py-3 text-sm shadow-xl ${tones[tone]||tones.info}`;
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(),400); }, 4000);
+  };
+</script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

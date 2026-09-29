@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block title %}About — Fabs Data Warehouse{% endblock %}
+{% block meta_description %}Learn about Fabs Data Warehouse — our mission, team, and the infrastructure behind Kenya's unified payments, biometrics and logistics platform.{% endblock %}
+
+{% block content %}
+
+{# ── HERO ── #}
+<section class="pt-10 sm:pt-16 pb-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-3xl reveal">
+      <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">About Us</p>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.05] tracking-tight">
+        We build the <span class="grad-text">infrastructure</span> behind modern African commerce.
+      </h1>
+      <p class="mt-6 text-lg text-slate-400 leading-relaxed">
+        Fabs Data Warehouse unifies payments, biometric security, county revenue, tender intelligence,
+        petroleum logistics and DHL-partnered shipment tracking into one secure warehouse —
+        so enterprises and governments can move money, goods and data with confidence.
+      </p>
+    </div>
+
+    {# ── Mission stats ── #}
+    <div class="mt-14 grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {% set stats = [
+        ('2021', '', 'Founded', ''),
+        ('120', '+', 'Team Members', ''),
+        ('240', '+', 'Enterprise Clients', ''),
+        ('14', '', 'Countries Served', '')
+      ] %}
+      {% for num, suffix, label, prefix in stats %}
+      <div class="glass rounded-2xl p-5 text-center card-hover reveal" style="transition-delay:{{ loop.index0 * 0.07 }}s">
+        <p class="text-3xl font-extrabold text-white font-mono tracking-tight">
+          <span data-count="{{ num }}" data-suffix="{{ suffix }}" data-prefix="{{ prefix }}">{{ prefix }}0{{ suffix }}</span>
+        </p>
+        <p class="mt-1.5 text-[11px] uppercase tracking-widest text-slate-500">{{ label }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── MISSION ── #}
+<section class="py-20 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="reveal">
+        <p class="text-xs font-bold tracking-[0.25em] text-fabs-teal uppercase mb-3">Our Mission</p>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+          One warehouse. <span class="grad-text">Every workflow.</span>
+        </h2>
+        <p class="mt-5 text-slate-400 leading-relaxed">
+          Businesses and governments in Africa have been forced to juggle a dozen disconnected tools —
+          one for payments, another for payroll, a third for logistics, a fourth for compliance.
+          We built Fabs Data Warehouse to end that fragmentation.
+        </p>
+        <p class="mt-4 text-slate-400 leading-relaxed">
+          Our platform brings every financial and operational workflow under one authenticated session,
+          one dashboard, and one auditable ledger — powered by M-Pesa, DPO, Pesapal, Finserve,
+          Mifos and DHL.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 reveal" style="transition-delay:.1s">
+        {% set values = [
+          ('Security First', 'Biometric authorization and PCI-DSS alignment on every transaction.', 'cyan'),
+          ('Open by Design', 'REST APIs, webhooks and open-source foundations — no vendor lock-in.', 'teal'),
+          ('Built for Africa', 'M-Pesa, county revenue and petroleum hauling at the core.', 'gold'),
+          ('Partner Power', 'DHL, Fleetbase, Mifos and more — integrated day one.', 'amber')
+        ] %}
+        {% for title, body, tone in values %}
+        <div class="glass rounded-2xl p-5 card-hover">
+          <span class="w-9 h-9 rounded-lg grid place-items-center mb-3 border
+            {% if tone == 'cyan' %}bg-fabs-cyan/10 border-fabs-cyan/30 text-fabs-cyan
+            {% elif tone == 'teal' %}bg-fabs-teal/10 border-fabs-teal/35 text-fabs-teal
+            {% elif tone == 'gold' %}bg-fabs-gold/10 border-fabs-gold/35 text-fabs-gold
+            {% else %}bg-fabs-amber/10 border-fabs-amber/35 text-fabs-amber{% endif %}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </span>
+          <p class="font-bold text-white text-sm mb-1">{{ title }}</p>
+          <p class="text-xs text-slate-400 leading-relaxed">{{ body }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ── TIMELINE ── #}
+<section class="py-20 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl reveal">
+      <p class="text-xs font-bold tracking-[0.25em] text-fabs-gold uppercase mb-3">Our Journey</p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+        From one rail to <span class="grad-text">fourteen countries</span>.
+      </h2>
+    </div>
+
+    <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {% set timeline = [
+        ('2021', 'Founded in Nairobi', 'Launched M-Pesa bulk payouts for a single logistics client.'),
+        ('2022', 'Biometrics + DPO', 'Added fingerprint verification and DPO card collections.'),
+        ('2023', 'DHL Partnership', 'Official logistics partner agreement signed.'),
+        ('2024', 'County + Tenders', 'Deployed county revenue collections and tender tracking across 12 counties.'),
+        ('2025', 'Pesapal + Finserve', 'Expanded rail coverage across East and West Africa.'),
+        ('2026', '14 Countries', 'Now processing over KSh 4.2M daily across 14 countries.')
+      ] %}
+      {% for year, title, body in timeline %}
+      <div class="relative glass rounded-2xl p-6 card-hover reveal" style="transition-delay:{{ loop.index0 * 0.06 }}s">
+        <p class="text-2xl font-extrabold font-mono grad-text leading-none mb-3">{{ year }}</p>
+        <p class="font-bold text-white text-sm mb-2">{{ title }}</p>
+        <p class="text-xs text-slate-400 leading-relaxed">{{ body }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── LEADERSHIP ── #}
+<section class="py-20 border-t border-white/5">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto text-center reveal">
+      <p class="text-xs font-bold tracking-[0.25em] text-fabs-cyan uppercase mb-3">Leadership</p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+        The team behind the <span class="grad-text">warehouse</span>.
+      </h2>
+    </div>
+
+    <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {% set team = [
+        ('FA', 'Founder & CEO', 'Former fintech lead with 12+ years in mobile money across East Africa.'),
+        ('BK', 'Chief Technology Officer', 'Built high-throughput payment rails for regional banks and telcos.'),
+        ('MN', 'Head of Security', 'Cybersecurity veteran specialising in biometrics and PCI-DSS compliance.'),
+        ('GO', 'Head of Partnerships', 'Leads DHL, Mifos and county government integrations.')
+      ] %}
+      {% for initials, role, bio in team %}
+      <div class="glass rounded-2xl p-6 card-hover reveal" style="transition-delay:{{ loop.index0 * 0.06 }}s">
+        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-fabs-cyan to-fabs-teal grid place-items-center font-extrabold text-fabs-navy text-lg mb-4">
+          {{ initials }}
+        </div>
+        <p class="font-bold text-white text-sm">{{ role }}</p>
+        <p class="text-xs text-slate-400 leading-relaxed mt-2">{{ bio }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{# ── CTA ── #}
+<section class="py-20 border-t border-white/5">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+    <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight tracking-tight">
+      Want to work with us?
+    </h2>
+    <p class="mt-4 text-slate-400">Join 240+ enterprises and governments already running on Fabs Data Warehouse.</p>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="{{ url_for('auth.signup') }}" class="btn-primary px-6 py-3.5 rounded-xl text-sm">Create Free Account</a>
+      <a href="{{ url_for('main.index') }}#contact" class="btn-ghost px-6 py-3.5 rounded-xl text-sm font-semibold">Talk to Sales</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

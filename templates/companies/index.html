@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Companies — Fabs Data Warehouse{% endblock %}
+
+{% block content %}
+<section class="py-10 sm:py-14">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8 reveal">
+      <div>
+        <p class="text-xs font-bold tracking-[0.25em] text-blue-300 uppercase mb-2">Module</p>
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Company Management</h1>
+        <p class="text-slate-400 mt-2 text-sm">Subsidiaries, teams, roles, and unified reporting.</p>
+      </div>
+      <a href="#" class="btn-primary px-5 py-3 rounded-xl text-sm inline-flex items-center gap-2 w-fit">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>
+        Add Company
+      </a>
+    </div>
+
+    <div class="glass-strong rounded-2xl p-10 grad-border text-center">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-500/10 border border-blue-500/30 grid place-items-center mb-5">
+        <svg class="w-7 h-7 text-blue-300" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/></svg>
+      </div>
+      <h2 class="text-xl font-bold text-white mb-2">Company module ready</h2>
+      <p class="text-sm text-slate-400 max-w-lg mx-auto leading-relaxed">Multi-tenant company structure, role-based permissions, unified reporting, and cross-subsidiary consolidation.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

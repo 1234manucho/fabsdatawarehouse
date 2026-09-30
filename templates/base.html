@@ -63,7 +63,7 @@
 {% macro fabs_logo(size=42) -%}
   <span class="fabs-company-logo" style="--logo-height:{{ size * 1.4 }}px">
     <img src="{{ url_for('static', filename='images/fabs-brand-v2.png') }}" alt="FABS Trading" width="2035" height="773" data-fabs-brand decoding="async">
-    <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small>DATA WAREHOUSE</small></span>
+    <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small></small></span>
   </span>
 {%- endmacro %}
 {% macro partner_logo(name) -%}

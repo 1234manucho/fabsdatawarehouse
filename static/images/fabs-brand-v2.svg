@@ -1,29 +1,43 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2035 773" width="2035" height="773" role="img" aria-label="FABS Trading — Data Warehouse">
   <title>FABS Trading — Data Warehouse</title>
 
-  <!-- ── F mark ─────────────────────────────────────────── -->
-  <g>
-    <!-- black outer ring, open on the right -->
-    <path d="M 545 205 A 248 248 0 1 0 550 548"
-          fill="none" stroke="#1a1a1a" stroke-width="74" stroke-linecap="butt"/>
-    <!-- red wedge filling the lower-right -->
-    <path d="M 330 388 L 545 205 A 248 248 0 0 1 550 548 Z" fill="#ED3138"/>
-    <!-- black geometric F -->
-    <path d="M 212 205 H 425 L 378 278 H 268 V 352 H 365 L 318 425 H 268 V 560 H 212 Z"
-          fill="#1a1a1a"/>
+  <!-- ═══ F mark ═══════════════════════════════════════════ -->
+
+  <!-- Red crescent wedge (drawn first so it sits behind the ring) -->
+  <path d="M 469 206
+           C 580 280, 590 500, 480 610
+           C 420 660, 370 665, 348 641
+           A 250 250 0 0 0 469 206 Z"
+        fill="#ED3138"/>
+
+  <!-- Black outer ring (opening on the right) -->
+  <path d="M 447 232 A 216 216 0 1 0 447 558"
+        fill="none" stroke="#121212" stroke-width="68" stroke-linecap="butt"/>
+
+  <!-- Black geometric F -->
+  <path d="M 215 268
+           L 408 268
+           L 374 320
+           L 273 320
+           L 273 373
+           L 385 373
+           L 348 424
+           L 273 424
+           L 273 541
+           L 215 541
+           Z"
+        fill="#121212"/>
+
+  <!-- ═══ FABS TRADING ═════════════════════════════════════ -->
+  <g font-family="Inter, 'Helvetica Neue', Arial, sans-serif" font-weight="900">
+    <text x="620" y="430" font-size="210" fill="#ED3138" letter-spacing="-2">FABS</text>
+    <text x="1100" y="430" font-size="210" fill="#121212" letter-spacing="-2">TRADING</text>
   </g>
 
-  <!-- ── FABS TRADING ───────────────────────────────────── -->
-  <g font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
-     font-weight="900" font-size="205" letter-spacing="-5">
-    <text x="640" y="408" fill="#ED3138">FABS</text>
-    <text x="1128" y="408" fill="#1a1a1a">TRADING</text>
-  </g>
-
-  <!-- ── DATA WAREHOUSE (replaces "GLOBAL E-COMMERCE") ─── -->
-  <text x="643" y="530"
+  <!-- ═══ DATA WAREHOUSE (replaces GLOBAL E-COMMERCE) ══════ -->
+  <text x="625" y="560"
         font-family="Inter, 'Helvetica Neue', Arial, sans-serif"
-        font-weight="700" font-size="64" fill="#1a1a1a" letter-spacing="15">
+        font-weight="700" font-size="72" fill="#121212" letter-spacing="18">
     DATA WAREHOUSE
   </text>
 </svg>

@@ -226,13 +226,175 @@
   </div>
 </section>
 
-  <section class="fdx-fleet-section" id="petroleum" aria-labelledby="fdx-fleet-title"><div class="fdx-wrap fdx-fleet-grid"><div class="fdx-fleet-photo">{{ photo('petroleum') }}<div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div></div><div class="fdx-fleet-copy"><p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p><h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2><p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p><div class="fdx-fleet-features"><div>{{ icon('truck') }}<h3>Transport &amp; security</h3><p>Vehicle records, dispatch, trip oversight and incident follow-up.</p></div><div>{{ icon('file') }}<h3>Driver documents</h3><p>Licence and document uploads, expiry reviews and organised records.</p></div><div>{{ icon('shield') }}<h3>Vetting &amp; employment</h3><p>Driver applications, checks, human review and employment records.</p></div><div>{{ icon('payout') }}<h3>Salary disbursements</h3><p>Approved driver payroll batches and payment reconciliation.</p></div></div><a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">Plan your fleet solution {{ icon('arrow') }}</a></div></div></section>
+  <section class="fdx-fleet-section" id="petroleum" aria-labelledby="fdx-fleet-title">
+  <div class="fdx-wrap fdx-fleet-grid">
+    <div class="fdx-fleet-photo">
+      <span class="fdx-photo"><img src="/static/images/operations/petroleum.jpg" alt="Petroleum tanker parked at a service station" width="1600" height="1067" loading="lazy" decoding="async"></span>
+      <div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div>
+    </div>
+    <div class="fdx-fleet-copy">
+      <p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p>
+      <h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2>
+      <p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p>
+      <div class="fdx-fleet-features">
+        <div>
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+          <h3>Transport &amp; security</h3>
+          <p>Vehicle records, dispatch, trip oversight and incident follow-up.</p>
+        </div>
+        <div>
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
+          <h3>Driver documents</h3>
+          <p>Licence and document uploads, expiry reviews and organised records.</p>
+        </div>
+        <div>
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>
+          <h3>Vetting &amp; employment</h3>
+          <p>Driver applications, checks, human review and employment records.</p>
+        </div>
+        <div>
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
+          <h3>Salary disbursements</h3>
+          <p>Approved driver payroll batches and payment reconciliation.</p>
+        </div>
+      </div>
+      <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">
+        Plan your fleet solution
+        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title"><div class="fdx-wrap"><div class="fdx-section-head"><div><p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p><h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2></div><p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p></div><div class="fdx-editorial-grid"><article class="fdx-editorial">{{ photo('county') }}<div><span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span><h3>Make collections easier to account for.</h3><p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p><a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions {{ icon('arrow') }}</a></div></article><article class="fdx-editorial">{{ photo('documents') }}<div><span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span><h3>Give records and deadlines a home.</h3><p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p><a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management {{ icon('arrow') }}</a></div></article><article class="fdx-editorial">{{ photo('infrastructure') }}<div><span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span><h3>Add technical capacity where it counts.</h3><p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p><a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope {{ icon('arrow') }}</a></div></article></div></div></section>
+<section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title">
+  <div class="fdx-wrap">
+    <div class="fdx-section-head">
+      <div>
+        <p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p>
+        <h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2>
+      </div>
+      <p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p>
+    </div>
+    <div class="fdx-editorial-grid">
+      <article class="fdx-editorial">
+        <span class="fdx-photo"><img src="/static/images/operations/county.jpg" alt="Aerial view of an urban car park" width="1600" height="1067" loading="lazy" decoding="async"></span>
+        <div>
+          <span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span>
+          <h3>Make collections easier to account for.</h3>
+          <p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p>
+          <a class="fdx-text-link" href="{{ url_for('county.index') }}">
+            County revenue solutions
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </article>
 
-  <section class="fdx-process-section" aria-labelledby="fdx-process-title"><div class="fdx-wrap"><div class="fdx-process-heading"><p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p><h2 id="fdx-process-title">A practical way to work together.</h2></div><ol class="fdx-process"><li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li><li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li><li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li><li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li></ol></div></section>
+      <article class="fdx-editorial">
+        <span class="fdx-photo"><img src="/static/images/operations/documents.jpg" alt="Business files, payment terminal and calculator on a desk" width="1600" height="1067" loading="lazy" decoding="async"></span>
+        <div>
+          <span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span>
+          <h3>Give records and deadlines a home.</h3>
+          <p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p>
+          <a class="fdx-text-link" href="{{ url_for('companies.index') }}">
+            Company management
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </article>
 
-  <section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title"><div class="fdx-wrap fdx-contact-grid"><div class="fdx-contact-copy"><p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p><h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2><p>Need payment aggregation, stronger onboarding, transport visibility or extra IT capacity? Tell us what you are building and where you need support.</p><div class="fdx-contact-note">{{ icon('file') }}<div><h3>Make the first conversation useful.</h3><p>Share your organisation, the service you need, your current systems and your intended timeline.</p></div></div><a class="fdx-text-link" href="{{ url_for('auth.signup') }}">Ready to explore? Create an account {{ icon('arrow') }}</a><div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div></div><form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><h3>Tell us what you need.</h3><p>Fields marked * are required.</p><div class="fdx-form-row"><div class="fdx-field"><label for="fdx-full-name">Full name *</label><input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name"></div><div class="fdx-field"><label for="fdx-company">Company / organisation</label><input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation"></div></div><div class="fdx-field"><label for="fdx-email">Work email *</label><input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com"></div><div class="fdx-field"><label for="fdx-interest">How can we help?</label><select id="fdx-interest" name="interest"><option value="payments">Payments, payouts, merchants &amp; APIs</option><option value="biometrics">Face-to-ID &amp; biometric security</option><option value="county">County revenue collection</option><option value="tenders">Tender tracking</option><option value="logistics">Import, export &amp; shipment tracking</option><option value="petroleum">Petroleum, fleets &amp; driver management</option><option value="enterprise">Company management &amp; IT support</option></select></div><div class="fdx-field"><label for="fdx-message">Project details *</label><textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea></div><button class="fdx-button fdx-button-red" type="submit">Send project enquiry {{ icon('arrow') }}</button><p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p></form></div></section>
+      <article class="fdx-editorial">
+        <span class="fdx-photo"><img src="/static/images/operations/infrastructure.jpg" alt="Computer equipment in an IT workspace" width="1600" height="1067" loading="lazy" decoding="async"></span>
+        <div>
+          <span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span>
+          <h3>Add technical capacity where it counts.</h3>
+          <p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p>
+          <a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">
+            Discuss your support scope
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="fdx-process-section" aria-labelledby="fdx-process-title">
+  <div class="fdx-wrap">
+    <div class="fdx-process-heading">
+      <p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p>
+      <h2 id="fdx-process-title">A practical way to work together.</h2>
+    </div>
+    <ol class="fdx-process">
+      <li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li>
+      <li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li>
+      <li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li>
+      <li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title">
+  <div class="fdx-wrap fdx-contact-grid">
+    <div class="fdx-contact-copy">
+      <p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p>
+      <h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2>
+      <p>Need payment aggregation, stronger onboarding, transport visibility or extra IT capacity? Tell us what you are building and where you need support.</p>
+      <div class="fdx-contact-note">
+        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
+        <div>
+          <h3>Make the first conversation useful.</h3>
+          <p>Share your organisation, the service you need, your current systems and your intended timeline.</p>
+        </div>
+      </div>
+      <a class="fdx-text-link" href="{{ url_for('auth.signup') }}">
+        Ready to explore? Create an account
+        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </a>
+      <div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div>
+    </div>
+
+    <form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <h3>Tell us what you need.</h3>
+      <p>Fields marked * are required.</p>
+      <div class="fdx-form-row">
+        <div class="fdx-field">
+          <label for="fdx-full-name">Full name *</label>
+          <input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name">
+        </div>
+        <div class="fdx-field">
+          <label for="fdx-company">Company / organisation</label>
+          <input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation">
+        </div>
+      </div>
+      <div class="fdx-field">
+        <label for="fdx-email">Work email *</label>
+        <input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com">
+      </div>
+      <div class="fdx-field">
+        <label for="fdx-interest">How can we help?</label>
+        <select id="fdx-interest" name="interest">
+          <option value="payments">Payments, payouts, merchants &amp; APIs</option>
+          <option value="biometrics">Face-to-ID &amp; biometric security</option>
+          <option value="county">County revenue collection</option>
+          <option value="tenders">Tender tracking</option>
+          <option value="logistics">Import, export &amp; shipment tracking</option>
+          <option value="petroleum">Petroleum, fleets &amp; driver management</option>
+          <option value="enterprise">Company management &amp; IT support</option>
+        </select>
+      </div>
+      <div class="fdx-field">
+        <label for="fdx-message">Project details *</label>
+        <textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea>
+      </div>
+      <button class="fdx-button fdx-button-red" type="submit">
+        Send project enquiry
+        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+      </button>
+      <p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p>
+    </form>
+  </div>
+</section>
 </div>
 {% endblock %}
 {% block scripts %}

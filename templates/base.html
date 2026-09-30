@@ -13,8 +13,7 @@
   <meta name="author" content="FABS Trading">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ request.url }}">
-  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='images/fabs-brand-v2.svg') }}">
-  <link rel="alternate icon" type="image/png" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
   <meta property="og:site_name" content="FABS Trading · Data Warehouse">
   <meta property="og:type" content="website">
@@ -63,7 +62,7 @@
 <body class="bg-brand-bg text-brand-text font-sans antialiased">
 {% macro fabs_logo(size=42) -%}
   <span class="fabs-company-logo" style="--logo-height:{{ size * 1.4 }}px">
-    <img src="{{ url_for('static', filename='images/fabs-brand-v2.svg') }}" alt="FABS Trading — Data Warehouse" width="2035" height="773" data-fabs-brand decoding="async">
+    <img src="{{ url_for('static', filename='images/fabs-brand-v2.png') }}" alt="FABS Trading" width="2035" height="773" data-fabs-brand decoding="async">
     <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small>DATA WAREHOUSE</small></span>
   </span>
 {%- endmacro %}

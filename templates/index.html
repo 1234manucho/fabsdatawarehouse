@@ -1,1106 +1,316 @@
 {% extends "base.html" %}
-{% block title %}Fabs Data Warehouse — Payments, Security & Logistics{% endblock %}
-{% block meta_description %}Bring payments, bulk payouts, biometric security, county revenue, tenders and DHL logistics into one connected Fabs Data Warehouse workspace.{% endblock %}
+{% block title %}FABS Data Warehouse | Payments, Security & Business Operations{% endblock %}
+{% block meta_description %}Payment aggregation, collections, bulk payouts, identity verification, county revenue, fleet operations and shipment tracking. Build your next business solution with FABS Data Warehouse.{% endblock %}
+{% block head_extra %}
+<link rel="preconnect" href="https://images.pexels.com" crossorigin>
+<script>
+/* Remote operational photography → packaged photograph → neutral placeholder.
+   Install before the images are parsed, so even early failures are recovered. */
+(() => {
+  const placeholder = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
+  document.addEventListener('error', event => {
+    const image = event.target;
+    if (!(image instanceof HTMLImageElement) || !image.hasAttribute('data-home-image')) return;
+    event.stopImmediatePropagation();
+    image.removeAttribute('srcset');
+    if (!image.dataset.localTried) {
+      image.dataset.localTried = 'true';
+      image.src = image.dataset.fallbackSrc;
+    } else if (!image.dataset.placeholderTried) {
+      image.dataset.placeholderTried = 'true';
+      image.src = placeholder;
+    }
+  }, true);
+})();
+</script>
+<noscript><style>.fdx-remote{display:none!important}.fdx-motion-button{display:none!important}</style></noscript>
+{% endblock %}
 {% block content %}
-{#
-  FABS DATA WAREHOUSE · Homepage refresh
-  Save as templates/index.html alongside templates/base.html.
-  Flask renders index.html; Jinja inserts this content into base.html's content block.
-  base.html supplies the document shell, navigation and footer.
-  FABS Trading white/red theme. Shared colours are defined in static/css/style.css.
-  Existing endpoints: auth.signup and main.contact. Existing CSRF and field names retained.
-  Original photographs and provider logos are served from static/images/.
-  Hero is a real-photo slideshow with pan/zoom, not a live camera or video stream.
-  Change slide order/captions in fdw_slides. Styles and scripts are scoped to #fdw-home.
-  Source credits and integration notes are at the end of the template.
-#}
-{% set fdw_media = {
-  'team': url_for('static', filename='images/fdw/team.webp'),
-  'scan': url_for('static', filename='images/fdw/scan.webp'),
-  'biometric': url_for('static', filename='images/fdw/biometric.webp'),
-  'iris': url_for('static', filename='images/fdw/iris.webp'),
-  'payouts': url_for('static', filename='images/fdw/payouts.webp'),
-  'mobile': url_for('static', filename='images/fdw/mobile.webp'),
-  'collaboration': url_for('static', filename='images/fdw/collaboration.webp'),
-  'pos': url_for('static', filename='images/fdw/pos.webp'),
-  'parcels': url_for('static', filename='images/fdw/parcels.webp'),
-  'merchant': url_for('static', filename='images/fdw/merchant.webp'),
-  'community': url_for('static', filename='images/fdw/community.webp'),
-  'operations': url_for('static', filename='images/fdw/operations.webp'),
-  'support': url_for('static', filename='images/fdw/support.webp'),
-  'mpesa': url_for('static', filename='images/partners/mpesa.png'),
-  'safaricom': url_for('static', filename='images/partners/safaricom.svg'),
-  'dhl': url_for('static', filename='images/partners/dhl.svg'),
-  'dpo': url_for('static', filename='images/partners/dpo.png'),
-  'finserve': url_for('static', filename='images/partners/finserve.png'),
-  'pesapal': url_for('static', filename='images/partners/pesapal.png'),
-  'visa': url_for('static', filename='images/partners/visa.svg'),
-  'mastercard': url_for('static', filename='images/partners/mastercard.svg')
+{# Each photo is a real equipment/infrastructure photograph. No portrait stock imagery. #}
+{% set photos = {
+ 'port':(24244232,'Container stacks and handling equipment at a shipping terminal'),
+ 'payments':(12935098,'Point-of-sale payment terminal on a merchant counter'),
+ 'petroleum':(30115404,'Petroleum tanker parked at a service station'),
+ 'infrastructure':(5092815,'Computer equipment in an IT workspace'),
+ 'security':(430208,'Building security cameras and their connections'),
+ 'documents':(8296948,'Business files, payment terminal and calculator on a desk'),
+ 'county':(29380377,'Aerial view of an urban car park'),
+ 'warehouse':(5156696,'Warehouse aisles with organised stock and storage shelves')
 } %}
-{% set fdw_slides = [
-  {'key':'team','name':'People & business','title':'Better together. Built to grow.','text':'Bring your people, payments and everyday operations together.','alt':'Three smiling colleagues collaborating around a laptop','position':'64% 40%'},
-  {'key':'scan','name':'Biometric security','title':'A more personal kind of security.','text':'Explore fingerprint and iris verification in your connected workspace.','alt':'A person pressing a finger on an illuminated biometric access scanner','position':'64% 45%'},
-  {'key':'collaboration','name':'Bulk payouts','title':'Your team. One connected payment flow.','text':'Prepare, review and track payroll and supplier payment batches.','alt':'A diverse team reviewing work together on a laptop','position':'65% 43%'},
-  {'key':'parcels','name':'Commerce & delivery','title':'Small moments. Global possibilities.','text':'Connect your orders, parcels and delivery milestones with DHL.','alt':'Two small business owners preparing products and packing orders','position':'66% 43%'},
-  {'key':'community','name':'Communities','title':'Every business has a story.','text':'Bring merchants, county collections and everyday services closer together.','alt':'A market trader at her colourful stall','position':'64% 45%'}
-] %}
-{% set fdw_brands = [
-  {'key':'mpesa','name':'M-PESA','caption':'Mobile money'},
-  {'key':'safaricom','name':'Safaricom','caption':'Connectivity'},
-  {'key':'dhl','name':'DHL','caption':'Logistics partner'},
-  {'key':'dpo','name':'DPO / Network','caption':'Payment gateway'},
-  {'key':'finserve','name':'Finserve','caption':'Financial services'},
-  {'key':'pesapal','name':'Pesapal','caption':'Payment gateway'},
-  {'key':'visa','name':'Visa','caption':'Card payments'},
-  {'key':'mastercard','name':'Mastercard','caption':'Card payments'}
-] %}
-{% macro fdw_icon(name, cls='') -%}
-<svg class="fdw-icon {{ cls }}" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-{% if name == 'arrow' %}<path d="M5 12h14m-5-5 5 5-5 5"/>
-{% elif name == 'diagonal' %}<path d="M6 18 18 6M6 6h12v12"/>
-{% elif name == 'chevron' %}<path d="m9 5 7 7-7 7"/>
-{% elif name == 'check' %}<path d="m5 12 4 4L19 6"/>
-{% elif name == 'payments' %}<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h3"/>
-{% elif name == 'shield' %}<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6l8-3Z"/><path d="m8 12 3 3 5-6"/>
-{% elif name == 'package' %}<path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm0 9 9-4M12 12 3 8m9 4v10M7.5 5.5l9 5v5"/>
-{% elif name == 'building' %}<path d="M4 21V7l8-4 8 4v14M2 21h20M9 21v-5h6v5M8 8h1m6 0h1M8 12h1m6 0h1"/>
-{% elif name == 'document' %}<path d="M6 3h8l4 4v14H6zM14 3v5h4M9 12h6M9 16h6"/>
-{% elif name == 'people' %}<circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3m1-16a3 3 0 0 1 0 6m5 10v-3a6 6 0 0 0-3-5"/>
-{% elif name == 'fingerprint' %}<path d="M3 12a9 9 0 0 1 18 0M6 13v-1a6 6 0 0 1 12 0c0 4-.4 6-1.5 8M9 19c1.2-2 1.5-4 1.5-7a1.5 1.5 0 0 1 3 0c0 4 .2 5 1 7M6 17c1-1 1.5-3 1.5-5M11 22c1-2 1.5-3 1.5-5"/>
-{% elif name == 'eye' %}<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>
-{% elif name == 'layers' %}<path d="m12 3 10 5-10 5L2 8l10-5ZM2 12l10 5 10-5M2 16l10 5 10-5"/>
-{% elif name == 'globe' %}<circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18"/>
-{% elif name == 'pause' %}<path d="M9 5v14M15 5v14" stroke-width="3"/>
-{% elif name == 'play' %}<path d="m8 5 11 7-11 7V5Z" fill="currentColor" stroke="none"/>
-{% elif name == 'mail' %}<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 6 9 7 9-7"/>
-{% endif %}
-</svg>
+{% macro photo(name, extra='', eager=false) -%}
+<span class="fdx-photo {{ extra }}">
+  <img class="fdx-remote" src="https://images.pexels.com/photos/{{ photos[name][0] }}/pexels-photo-{{ photos[name][0] }}.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1600&amp;q=85" data-home-image data-fallback-src="{{ url_for('static', filename='images/operations/' ~ name ~ '.jpg') }}" alt="{{ photos[name][1] }}" width="1600" height="1067" loading="{{ 'eager' if eager else 'lazy' }}" decoding="async">
+  <noscript><img src="{{ url_for('static', filename='images/operations/' ~ name ~ '.jpg') }}" alt="{{ photos[name][1] }}" width="1600" height="1067" loading="lazy"></noscript>
+</span>
 {%- endmacro %}
-<style>
-/* Standalone, scoped CSS: does not require a particular Tailwind config. */
-#fdw-home{--fdw-bg:var(--fabs-white);--fdw-panel:var(--fabs-white);--fdw-line:var(--fabs-line);--fdw-ink:var(--fabs-ink);--fdw-muted:var(--fabs-muted);--fdw-accent:var(--fabs-red-strong);--fdw-accent-hover:var(--fabs-red-hover);--fdw-accent-soft:var(--fabs-red-strong);--fdw-accent-rgb:237,49,56;--fdw-on-accent:#fff;--fdw-button:var(--fabs-red-strong);--fdw-deep:var(--fabs-paper);--fdw-radius:18px;background:var(--fdw-bg);color:var(--fdw-ink);font-family:Inter,"Segoe UI",Arial,sans-serif;font-size:16px;line-height:1.6;text-align:left;isolation:isolate;overflow:clip;width:100%}
-#fdw-home *,#fdw-home *::before,#fdw-home *::after{box-sizing:border-box}
-#fdw-home h1,#fdw-home h2,#fdw-home h3,#fdw-home p,#fdw-home figure{margin:0}
-#fdw-home h1,#fdw-home h2,#fdw-home h3{color:inherit;font-family:inherit;font-style:normal}
-#fdw-home a{color:inherit;text-decoration:none}
-#fdw-home button,#fdw-home input,#fdw-home select,#fdw-home textarea{font:inherit}
-#fdw-home button{cursor:pointer}
-#fdw-home button:disabled{cursor:default}
-#fdw-home button,#fdw-home a,#fdw-home input,#fdw-home textarea,#fdw-home select{-webkit-tap-highlight-color:transparent}
-#fdw-home :focus-visible{outline:3px solid var(--fdw-accent);outline-offset:5px}
-#fdw-home img{display:block;max-width:100%;height:auto}
-#fdw-home [hidden]{display:none!important}
-#fdw-home .fdw-wrap{width:min(1248px,calc(100% - 96px));margin-inline:auto}
-#fdw-home .fdw-section{padding-block:100px;scroll-margin-top:100px}
-#fdw-home .fdw-overline{display:flex;align-items:center;gap:10px;color:var(--fdw-accent);text-transform:uppercase;font-size:11px;font-weight:650;letter-spacing:2.1px;line-height:1.5;margin-bottom:20px}
-#fdw-home .fdw-overline::before{content:"";height:7px;width:7px;border-radius:50%;background:currentColor;flex-shrink:0}
-#fdw-home .fdw-title{font-size:clamp(32px,3.3vw,47px);font-weight:550;line-height:1.13;letter-spacing:-1.8px;max-width:650px;text-wrap:balance}
-#fdw-home .fdw-title em{font-style:normal;color:var(--fdw-accent)}
-#fdw-home .fdw-body{font-size:15px;color:var(--fdw-muted);line-height:1.8;max-width:520px;margin-top:22px}
-#fdw-home .fdw-icon{display:inline-block;width:21px;height:21px;flex-shrink:0;vertical-align:middle}
-#fdw-home .fdw-btn{min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:18px;padding:13px 22px;border:1px solid transparent;border-radius:7px;font-size:13px;font-weight:650;line-height:1.4;transition:background .2s,transform .2s,border-color .2s;white-space:normal}
-#fdw-home .fdw-btn:hover{transform:translateY(-2px)}
-#fdw-home .fdw-btn-primary{background:var(--fdw-button);color:var(--fdw-on-accent)}
-#fdw-home .fdw-btn-primary:hover{background:var(--fdw-accent-hover)}
-#fdw-home .fdw-btn-secondary{background:var(--fdw-panel);border-color:var(--fdw-line);color:white;backdrop-filter:blur(12px)}
-#fdw-home .fdw-btn-secondary:hover{background:var(--fdw-panel)}
-#fdw-home .fdw-link{display:inline-flex;align-items:center;gap:14px;font-size:13px;font-weight:600;color:var(--fdw-accent);padding-block:8px}
-#fdw-home .fdw-link .fdw-icon{transition:transform .2s}
-#fdw-home .fdw-link:hover .fdw-icon{transform:translateX(4px)}
-#fdw-home .fdw-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-/* Five-photo hero. First image and copy remain visible without JavaScript. */
-#fdw-home .fdw-hero{position:relative;min-height:720px;background:var(--fdw-panel);display:flex;flex-direction:column;justify-content:space-between}
-#fdw-home .fdw-hero-media,#fdw-home .fdw-slide,#fdw-home .fdw-hero-shade{position:absolute;inset:0;overflow:hidden}
-#fdw-home .fdw-slide{opacity:0;transition:opacity 1.15s ease;pointer-events:none;z-index:0}
-#fdw-home .fdw-slide.is-active{opacity:1;z-index:1}
-#fdw-home .fdw-slide img{width:100%;height:100%;object-fit:cover;max-width:none;transform:scale(1.08);filter:saturate(.82)}
-#fdw-home .fdw-slide.is-active img{animation:fdw-drift 6s linear both}
-#fdw-home .fdw-hero.is-paused .fdw-slide.is-active img{animation-play-state:paused}
-#fdw-home .fdw-hero-shade{z-index:2;background:linear-gradient(90deg,rgba(18,24,32,.94) 0%,rgba(18,24,32,.82) 33%,rgba(18,24,32,.3) 70%,rgba(18,24,32,.22)),linear-gradient(0deg,rgba(18,24,32,.94),transparent 40%)}
-#fdw-home .fdw-hero-inner{position:relative;z-index:3;padding-top:75px;padding-bottom:48px;display:grid;grid-template-columns:minmax(0,1.65fr) minmax(0,1fr);gap:40px;align-items:end;flex:1}
-#fdw-home .fdw-hero .fdw-overline{font-size:10px;letter-spacing:2.4px;margin-bottom:26px}
-#fdw-home .fdw-hero h1{font-size:clamp(47px,5.1vw,74px);font-weight:560;letter-spacing:-3.5px;line-height:1.05;max-width:710px;text-wrap:balance}
-#fdw-home .fdw-hero h1 span{color:var(--fdw-accent);display:block}
-#fdw-home .fdw-hero-summary{font-size:15px;line-height:1.85;color:var(--fdw-muted);max-width:470px;margin-top:27px}
-#fdw-home .fdw-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
-#fdw-home .fdw-hero-footnote{display:flex;gap:17px;flex-wrap:wrap;align-items:center;font-size:11px;color:var(--fdw-muted);margin-top:25px}
-#fdw-home .fdw-hero-footnote span{display:flex;gap:6px;align-items:center}
-#fdw-home .fdw-hero-footnote .fdw-icon{width:13px;height:13px;color:var(--fdw-accent)}
-#fdw-home .fdw-spotlight{border:1px solid var(--fdw-line);background:var(--fdw-panel);backdrop-filter:blur(22px);border-radius:14px;max-width:302px;padding:24px;justify-self:end;margin-bottom:22px;box-shadow:0 12px 45px #00000022}
-#fdw-home .fdw-spotlight-top{display:flex;justify-content:space-between;gap:14px;align-items:center;margin-bottom:21px;color:var(--fdw-accent);font-size:10px;letter-spacing:2px;text-transform:uppercase}
-#fdw-home .fdw-spotlight h2{font-size:25px;font-weight:500;line-height:1.25;letter-spacing:-.7px}
-#fdw-home .fdw-spotlight p{font-size:12px;color:var(--fdw-muted);line-height:1.7;margin-top:13px}
-#fdw-home .fdw-spotlight .fdw-link{margin-top:15px;font-size:11px}
-#fdw-home .fdw-hero-bottom{position:relative;z-index:4;padding-bottom:27px}
-#fdw-home .fdw-carousel-top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:17px}
-#fdw-home .fdw-carousel-caption{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--fdw-muted);display:flex;align-items:center;gap:10px}
-#fdw-home .fdw-carousel-controls{display:flex;align-items:center;gap:8px}
-#fdw-home .fdw-counter{font-size:11px;letter-spacing:1px;color:var(--fdw-muted);font-variant-numeric:tabular-nums;margin-right:12px}
-#fdw-home .fdw-round{border-radius:50%;width:34px;height:34px;border:1px solid var(--fdw-line);background:var(--fdw-panel);color:var(--fdw-muted);display:grid;place-items:center;padding:0;transition:background .2s}
-#fdw-home .fdw-round:hover{background:rgba(var(--fdw-accent-rgb),.2)}
-#fdw-home .fdw-round .fdw-icon{width:15px;height:15px}
-#fdw-home .fdw-round-prev .fdw-icon{transform:rotate(180deg)}
-#fdw-home .fdw-slide-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:23px}
-#fdw-home .fdw-slide-tab{border:0;border-top:2px solid var(--fdw-line);position:relative;padding:15px 0 5px;display:flex;gap:11px;align-items:center;text-align:left;background:transparent;color:var(--fdw-muted);font-size:12px;line-height:1.4}
-#fdw-home .fdw-slide-tab .fdw-tab-no{font-size:9px;color:var(--fdw-muted)}
-#fdw-home .fdw-slide-tab.is-active{color:var(--fdw-accent)}
-#fdw-home .fdw-slide-tab::before{position:absolute;content:"";left:0;top:-2px;height:2px;width:100%;background:var(--fdw-accent);transform:scaleX(0);transform-origin:left}
-#fdw-home .fdw-slide-tab.is-active::before{transform:scaleX(1)}
-#fdw-home .fdw-hero.is-running .fdw-slide-tab.is-active::before{animation:fdw-progress 5s linear both}
-#fdw-home .fdw-hero.is-paused .fdw-slide-tab.is-active::before{animation-play-state:paused}
-/* Full-colour logos on bright panels. */
-#fdw-home .fdw-ecosystem{background:var(--fdw-panel);color:var(--fdw-muted);padding:35px 0 30px;border-bottom:1px solid var(--fdw-line)}
-#fdw-home .fdw-ecosystem-heading{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:25px}
-#fdw-home .fdw-ecosystem-heading h2{font-size:13px;font-weight:650;letter-spacing:.1px}
-#fdw-home .fdw-ecosystem-heading p{font-size:11px;color:var(--fdw-muted)}
-#fdw-home .fdw-brand-grid{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:10px}
-#fdw-home .fdw-brand{background:var(--fdw-panel);border:1px solid var(--fdw-line);border-radius:9px;min-height:95px;padding:15px 8px 10px;display:flex;flex-direction:column;justify-content:space-between;align-items:center;gap:10px;transition:transform .2s,box-shadow .2s}
-#fdw-home .fdw-brand:hover{transform:translateY(-3px);box-shadow:0 6px 18px #1218200c}
-#fdw-home .fdw-brand img{width:112px;height:37px;object-fit:contain;max-width:100%}
-#fdw-home .fdw-brand[data-brand="mpesa"] img{height:37px;width:90px}
-#fdw-home .fdw-brand[data-brand="dhl"] img{width:108px}
-#fdw-home .fdw-brand[data-brand="mastercard"] img{width:66px}
-#fdw-home .fdw-brand[data-brand="visa"] img{width:76px}
-#fdw-home .fdw-brand span{font-size:9px;color:var(--fdw-muted);white-space:nowrap}
-#fdw-home .fdw-ecosystem-note{font-size:10px;color:var(--fdw-muted);margin-top:16px}
-/* Photo-led modules. */
-#fdw-home .fdw-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-bottom:39px}
-#fdw-home .fdw-section-heading .fdw-body{max-width:330px;font-size:13px;margin:0 0 4px}
-#fdw-home .fdw-service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:21px}
-#fdw-home .fdw-service{border:1px solid var(--fdw-line);border-radius:12px;overflow:hidden;background:var(--fdw-panel);display:flex;flex-direction:column;transition:transform .25s,border-color .25s}
-#fdw-home .fdw-service:hover{transform:translateY(-4px);border-color:var(--fdw-line),.33)}
-#fdw-home .fdw-service-image{height:201px;position:relative;overflow:hidden;background:var(--fdw-panel)}
-#fdw-home .fdw-service-image::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 50%,#12182055)}
-#fdw-home .fdw-service-image img{width:100%;height:100%;object-fit:cover;transition:transform .6s;filter:saturate(.75)}
-#fdw-home .fdw-service:hover .fdw-service-image img{transform:scale(1.045)}
-#fdw-home .fdw-service-no{position:absolute;z-index:1;left:17px;top:15px;border:1px solid var(--fdw-line);border-radius:50%;height:31px;width:31px;display:grid;place-items:center;font-size:9px;background:var(--fdw-panel);backdrop-filter:blur(8px);color:var(--fdw-muted)}
-#fdw-home .fdw-service-content{padding:24px;display:flex;flex-direction:column;flex:1}
-#fdw-home .fdw-service-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
-#fdw-home .fdw-service-heading h3{font-size:19px;font-weight:550;letter-spacing:-.4px}
-#fdw-home .fdw-service-heading .fdw-icon{color:var(--fdw-accent);width:22px;height:22px}
-#fdw-home .fdw-service-content p{color:var(--fdw-muted);font-size:12px;line-height:1.85;margin-top:12px;margin-bottom:15px}
-#fdw-home .fdw-service-content .fdw-link{margin-top:auto;font-size:11px}
-#fdw-home .fdw-value-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-block:1px solid var(--fdw-line);margin-top:40px}
-#fdw-home .fdw-value-strip div{display:flex;align-items:center;justify-content:center;gap:12px;padding:24px 10px;font-size:11px;color:var(--fdw-muted)}
-#fdw-home .fdw-value-strip div+div{border-left:1px solid var(--fdw-line)}
-#fdw-home .fdw-value-strip .fdw-icon{color:var(--fdw-accent);width:18px;height:18px}
-/* Alternating feature sections. */
-#fdw-home .fdw-alternate{background:var(--fdw-panel);border-block:1px solid var(--fdw-line)}
-#fdw-home .fdw-split{display:grid;grid-template-columns:1fr 1fr;gap:82px;align-items:center}
-#fdw-home .fdw-feature-visual{position:relative;min-width:0}
-#fdw-home .fdw-feature-photo{height:510px;overflow:hidden;border-radius:14px;background:var(--fdw-panel)}
-#fdw-home .fdw-feature-photo img{height:100%;width:100%;object-fit:cover;filter:saturate(.8)}
-#fdw-home .fdw-feature-photo::after{position:absolute;inset:0;border-radius:14px;content:"";background:linear-gradient(0deg,#12182066,transparent 65%);pointer-events:none}
-#fdw-home .fdw-photo-label{position:absolute;left:22px;top:22px;padding:9px 12px;border-radius:5px;background:var(--fdw-panel);border:1px solid var(--fdw-line);backdrop-filter:blur(12px);font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:var(--fdw-muted);z-index:1}
-#fdw-home .fdw-payment-card{position:absolute;bottom:24px;left:24px;right:24px;background:var(--fdw-panel);color:var(--fdw-muted);border-radius:11px;padding:21px;box-shadow:0 15px 45px #12182044;z-index:1}
-#fdw-home .fdw-payment-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;font-size:11px;font-weight:650}
-#fdw-home .fdw-mini-label{font-size:9px;font-weight:500;letter-spacing:.9px;text-transform:uppercase;color:var(--fdw-muted)}
-#fdw-home .fdw-payment-card-logos{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-#fdw-home .fdw-payment-card-logos div{display:flex;justify-content:center;align-items:center;padding:10px 7px;border:1px solid var(--fdw-line);border-radius:6px;background:white;height:53px}
-#fdw-home .fdw-payment-card-logos img{max-width:100%;width:80px;height:27px;object-fit:contain}
-#fdw-home .fdw-points{list-style:none;padding:0;margin:25px 0}
-#fdw-home .fdw-points li{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--fdw-muted);line-height:1.7;margin-bottom:14px}
-#fdw-home .fdw-points .fdw-icon{width:15px;height:15px;color:var(--fdw-accent);margin-top:4px}
-#fdw-home .fdw-payment-pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;border-top:1px solid var(--fdw-line);padding-top:24px;margin-top:29px}
-#fdw-home .fdw-payment-pillars strong{font-size:13px;font-weight:550;display:block;color:var(--fdw-accent)}
-#fdw-home .fdw-payment-pillars span{display:block;color:var(--fdw-muted);font-size:10px;margin-top:5px}
-#fdw-home .fdw-security-photo img{filter:saturate(.45) brightness(.8);object-position:center}
-#fdw-home .fdw-security-scan{position:absolute;inset:100px 90px 135px;border:1px solid var(--fdw-line),.33);border-radius:18px;display:flex;align-items:center;justify-content:center;background:var(--fdw-panel);backdrop-filter:blur(4px);z-index:1;color:var(--fdw-accent-soft)}
-#fdw-home .fdw-security-scan .fdw-icon{width:128px;height:128px;stroke-width:.75;filter:drop-shadow(0 0 20px rgba(var(--fdw-accent-rgb),.2))}
-#fdw-home .fdw-scan-line{height:1px;position:absolute;left:12%;right:12%;background:var(--fdw-accent-soft);box-shadow:0 0 20px 4px rgba(var(--fdw-accent-rgb),.33);top:15%;animation:fdw-scan 4s ease-in-out infinite alternate}
-#fdw-home .fdw-security-bottom{position:absolute;left:24px;right:24px;bottom:24px;z-index:1;background:var(--fdw-panel);border:1px solid var(--fdw-line),.25);padding:17px;border-radius:9px;display:flex;align-items:center;gap:14px;backdrop-filter:blur(12px)}
-#fdw-home .fdw-security-bottom>.fdw-icon{width:31px;height:31px;color:var(--fdw-accent)}
-#fdw-home .fdw-security-bottom strong{font-size:12px;display:block;font-weight:550}
-#fdw-home .fdw-security-bottom small{font-size:10px;color:var(--fdw-muted);display:block;margin-top:3px}
-#fdw-home .fdw-security-methods{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
-#fdw-home .fdw-security-methods span{display:flex;align-items:center;gap:10px;border:1px solid var(--fdw-line);padding:11px 15px;border-radius:7px;font-size:12px}
-#fdw-home .fdw-security-methods .fdw-icon{color:var(--fdw-accent)}
-/* DHL feature. */
-#fdw-home .fdw-logistics{padding-top:0}
-#fdw-home .fdw-logistics-box{border:1px solid var(--fdw-line);border-radius:17px;overflow:hidden;background:var(--fdw-panel);display:grid;grid-template-columns:1.1fr 1fr}
-#fdw-home .fdw-logistics-photo{position:relative;min-height:540px;overflow:hidden;background:var(--fdw-panel)}
-#fdw-home .fdw-logistics-photo>img{height:100%;width:100%;object-fit:cover;filter:saturate(.7)}
-#fdw-home .fdw-logistics-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#121820ed,transparent 66%)}
-#fdw-home .fdw-dhl-badge{position:absolute;top:25px;left:25px;background:#fc0;padding:15px 20px;border-radius:5px;width:129px;z-index:1}
-#fdw-home .fdw-dhl-badge img{height:20px;width:90px;object-fit:contain}
-#fdw-home .fdw-logistics-caption{position:absolute;z-index:1;left:31px;right:31px;bottom:33px}
-#fdw-home .fdw-logistics-caption p{font-size:11px;text-transform:uppercase;letter-spacing:1.7px;color:var(--fdw-accent);margin-bottom:10px}
-#fdw-home .fdw-logistics-caption h3{font-size:33px;line-height:1.2;font-weight:500;max-width:320px;letter-spacing:-1px}
-#fdw-home .fdw-logistics-content{padding:48px 44px;align-self:center}
-#fdw-home .fdw-logistics-content .fdw-title{font-size:36px}
-#fdw-home .fdw-journey{margin-top:27px;padding-top:21px;border-top:1px solid var(--fdw-line)}
-#fdw-home .fdw-journey-head{font-size:9px;color:var(--fdw-muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:15px;display:flex;justify-content:space-between;gap:10px}
-#fdw-home .fdw-journey-steps{display:flex;justify-content:space-between;position:relative;padding-top:7px;margin:0 0 12px;list-style:none;gap:9px}
-#fdw-home .fdw-journey-steps::before{content:"";position:absolute;top:12px;left:5px;right:12px;height:1px;background:var(--fdw-panel)}
-#fdw-home .fdw-journey-steps li{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;font-size:9px;color:var(--fdw-muted)}
-#fdw-home .fdw-journey-steps li::before{content:"";width:11px;height:11px;border:2px solid var(--fdw-accent);border-radius:50%;background:var(--fdw-panel)}
-/* Industry cards. */
-#fdw-home .fdw-industries{padding-top:8px}
-#fdw-home .fdw-industry-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:21px}
-#fdw-home .fdw-industry{position:relative;min-height:380px;border-radius:12px;overflow:hidden;border:1px solid var(--fdw-line);scroll-margin-top:100px;background:var(--fdw-panel);display:flex;align-items:end}
-#fdw-home .fdw-industry>img{position:absolute;inset:0;object-fit:cover;height:100%;width:100%;filter:saturate(.65);transition:transform .6s}
-#fdw-home .fdw-industry::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#121820f5 5%,#12182091 60%,#12182011)}
-#fdw-home .fdw-industry:hover>img{transform:scale(1.045)}
-#fdw-home .fdw-industry-content{position:relative;z-index:1;padding:26px;width:100%}
-#fdw-home .fdw-industry-content>span{display:block;color:var(--fdw-muted);font-size:9px;letter-spacing:1.8px;text-transform:uppercase;margin-bottom:13px}
-#fdw-home .fdw-industry h3{font-size:25px;font-weight:500;letter-spacing:-.7px;margin-bottom:12px}
-#fdw-home .fdw-industry p{font-size:12px;color:var(--fdw-muted);line-height:1.8;max-width:290px}
-#fdw-home .fdw-industry .fdw-link{margin-top:14px;font-size:11px}
-/* Onboarding and contact. */
-#fdw-home .fdw-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:45px;gap:30px}
-#fdw-home .fdw-step{border-top:1px solid var(--fdw-line),.31);padding-top:24px}
-#fdw-home .fdw-step-number{color:var(--fdw-accent);font-size:31px;font-weight:400;letter-spacing:-1px;display:block;margin-bottom:24px}
-#fdw-home .fdw-step h3{font-size:16px;font-weight:550;margin-bottom:11px}
-#fdw-home .fdw-step p{font-size:12px;color:var(--fdw-muted);line-height:1.85}
-#fdw-home .fdw-contact{background:var(--fdw-panel)}
-#fdw-home .fdw-contact-box{display:grid;grid-template-columns:1fr 1fr;gap:78px;align-items:start}
-#fdw-home .fdw-contact .fdw-title{font-size:clamp(34px,3.6vw,51px)}
-#fdw-home .fdw-contact-thumb{height:163px;border-radius:11px;overflow:hidden;margin-top:32px;position:relative;border:1px solid var(--fdw-line)}
-#fdw-home .fdw-contact-thumb img{height:100%;width:100%;object-fit:cover;object-position:50% 42%;filter:saturate(.55)}
-#fdw-home .fdw-contact-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#121820e0,transparent)}
-#fdw-home .fdw-contact-thumb span{position:absolute;left:21px;bottom:21px;z-index:1;font-size:13px;max-width:170px;line-height:1.5}
-#fdw-home .fdw-contact-form{background:var(--fdw-panel);border:1px solid var(--fdw-line);border-radius:15px;padding:31px}
-#fdw-home .fdw-contact-form h3{font-size:20px;font-weight:500;letter-spacing:-.4px;margin-bottom:23px}
-#fdw-home .fdw-form-row{display:grid;grid-template-columns:1fr 1fr;gap:15px}
-#fdw-home .fdw-field{margin-bottom:16px;min-width:0}
-#fdw-home .fdw-field label{display:block;font-size:11px;font-weight:500;color:var(--fdw-muted);margin-bottom:8px}
-#fdw-home .fdw-field input,#fdw-home .fdw-field select,#fdw-home .fdw-field textarea{display:block;width:100%;border:1px solid var(--fdw-line);background:var(--fdw-panel);color:var(--fdw-muted);border-radius:6px;padding:12px 13px;font-size:12px;min-height:45px;outline-offset:2px}
-#fdw-home .fdw-field textarea{resize:vertical;min-height:102px}
-#fdw-home .fdw-field input::placeholder,#fdw-home .fdw-field textarea::placeholder{color:var(--fdw-muted);opacity:1}
-#fdw-home .fdw-field option{background:var(--fdw-panel);color:var(--fdw-muted)}
-#fdw-home .fdw-contact-form .fdw-btn{width:100%;margin-top:3px}
-#fdw-home .fdw-form-note{font-size:10px;color:var(--fdw-muted);line-height:1.65;margin-top:15px}
-#fdw-home .fdw-endline{border-top:1px solid var(--fdw-line);padding-block:26px;margin-top:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-#fdw-home .fdw-endline strong{font-size:11px;font-weight:500;letter-spacing:1.7px;color:var(--fdw-muted);text-transform:uppercase}
-#fdw-home .fdw-endline span{font-size:10px;color:var(--fdw-muted)}
-#fdw-home .fdw-contact.fdw-section{padding-bottom:0}
-@keyframes fdw-drift{from{transform:scale(1.08) translate3d(-.5%,0,0)}to{transform:scale(1.015) translate3d(.5%,0,0)}}
-@keyframes fdw-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-@keyframes fdw-scan{from{top:15%}to{top:85%}}
-@media(min-width:1600px){ #fdw-home .fdw-hero{min-height:770px}#fdw-home .fdw-hero h1{font-size:78px}}
-@media(max-width:1100px){ #fdw-home .fdw-wrap{width:calc(100% - 64px)}#fdw-home .fdw-brand-grid{grid-template-columns:repeat(4,minmax(0,1fr))}#fdw-home .fdw-split{gap:44px}#fdw-home .fdw-contact-box{gap:45px}#fdw-home .fdw-hero-inner{grid-template-columns:1.8fr 1fr;gap:20px}#fdw-home .fdw-spotlight{padding:21px}#fdw-home .fdw-feature-photo{height:480px}#fdw-home .fdw-logistics-content{padding:35px}#fdw-home .fdw-security-scan{left:50px;right:50px}}
-@media(max-width:800px){ #fdw-home .fdw-wrap{width:calc(100% - 44px)}#fdw-home .fdw-section{padding-block:68px}#fdw-home .fdw-hero{min-height:700px}#fdw-home .fdw-hero-inner{grid-template-columns:1fr;padding-top:58px;padding-bottom:26px}#fdw-home .fdw-hero h1{font-size:62px;max-width:630px}#fdw-home .fdw-spotlight{display:none}#fdw-home .fdw-hero-summary{max-width:490px}#fdw-home .fdw-section-heading{align-items:start;gap:25px}#fdw-home .fdw-section-heading .fdw-body{max-width:260px}#fdw-home .fdw-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#fdw-home .fdw-split{gap:37px;grid-template-columns:1fr}#fdw-home .fdw-feature-photo{height:430px}#fdw-home .fdw-security-scan{inset:80px 25% 120px}#fdw-home .fdw-security .fdw-feature-visual{order:2}#fdw-home .fdw-logistics-box{grid-template-columns:1fr}#fdw-home .fdw-logistics-photo{height:350px;min-height:0}#fdw-home .fdw-logistics-content{padding:35px}#fdw-home .fdw-logistics{padding-top:0}#fdw-home .fdw-industry-grid{grid-template-columns:1fr 1fr}#fdw-home .fdw-industry:last-child{grid-column:1/-1;min-height:330px}#fdw-home .fdw-industry:last-child .fdw-industry-content{max-width:440px}#fdw-home .fdw-steps{grid-template-columns:1fr 1fr;gap:32px}#fdw-home .fdw-contact-box{grid-template-columns:1fr;gap:32px}#fdw-home .fdw-contact-thumb{max-width:510px}#fdw-home .fdw-value-strip{grid-template-columns:1fr 1fr}#fdw-home .fdw-value-strip div:nth-child(3){border-left:0}#fdw-home .fdw-value-strip div:nth-child(n+3){border-top:1px solid var(--fdw-line)}}
-@media(max-width:560px){ #fdw-home .fdw-wrap{width:calc(100% - 36px)}#fdw-home .fdw-section{padding-block:55px}#fdw-home .fdw-title{font-size:33px;letter-spacing:-1.25px}#fdw-home .fdw-overline{font-size:9px;letter-spacing:1.8px;margin-bottom:16px}#fdw-home .fdw-hero{min-height:730px}#fdw-home .fdw-hero-inner{padding-top:44px;display:block;padding-bottom:28px}#fdw-home .fdw-hero h1{font-size:47px;line-height:1.06;letter-spacing:-2.3px}#fdw-home .fdw-hero .fdw-overline{font-size:8px;letter-spacing:1.5px;margin-bottom:24px}#fdw-home .fdw-hero-summary{font-size:13px;line-height:1.85;margin-top:23px;max-width:345px}#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#121820e8,#1218206b),linear-gradient(0deg,#121820ef,transparent 65%)}#fdw-home .fdw-actions{gap:9px;margin-top:24px}#fdw-home .fdw-btn{padding:13px 16px;font-size:11px;gap:12px;min-height:48px}#fdw-home .fdw-hero-footnote{font-size:9px;gap:13px;margin-top:23px}#fdw-home .fdw-carousel-caption{font-size:8px;letter-spacing:1px;gap:7px;max-width:160px}#fdw-home .fdw-carousel-caption .fdw-icon{width:16px;height:16px}#fdw-home .fdw-carousel-controls{gap:6px}#fdw-home .fdw-counter{margin-right:5px;font-size:9px}#fdw-home .fdw-round{width:31px;height:31px}#fdw-home .fdw-slide-nav{gap:10px}#fdw-home .fdw-slide-tab{display:flex;flex-direction:column;align-items:flex-start;gap:7px;font-size:8px;min-height:60px;padding-top:12px}#fdw-home .fdw-slide-tab .fdw-tab-no{font-size:8px}#fdw-home .fdw-hero-bottom{padding-bottom:15px}#fdw-home .fdw-ecosystem{padding:26px 0}#fdw-home .fdw-ecosystem-heading{display:block;margin-bottom:18px}#fdw-home .fdw-ecosystem-heading h2{font-size:12px}#fdw-home .fdw-ecosystem-heading p{font-size:10px;margin-top:5px}#fdw-home .fdw-brand-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}#fdw-home .fdw-brand{min-height:94px;padding:16px 10px 11px}#fdw-home .fdw-brand img{width:112px;height:36px}#fdw-home .fdw-brand span{font-size:9px}#fdw-home .fdw-ecosystem-note{font-size:9px;line-height:1.7}#fdw-home .fdw-section-heading{display:block;margin-bottom:28px}#fdw-home .fdw-section-heading .fdw-body{max-width:100%;margin-top:19px;font-size:13px}#fdw-home .fdw-service-grid{grid-template-columns:1fr;gap:18px}#fdw-home .fdw-service-image{height:210px}#fdw-home .fdw-service-content{padding:22px}#fdw-home .fdw-service-content p{font-size:13px}#fdw-home .fdw-value-strip{margin-top:28px}#fdw-home .fdw-value-strip div{font-size:9px;gap:8px;padding:20px 6px}#fdw-home .fdw-feature-photo{height:405px}#fdw-home .fdw-payment-card{left:15px;right:15px;bottom:15px;padding:16px}#fdw-home .fdw-payment-card-logos{gap:6px}#fdw-home .fdw-payment-card-head{font-size:10px}#fdw-home .fdw-mini-label{font-size:7px}#fdw-home .fdw-body{font-size:13px}#fdw-home .fdw-points li{font-size:12px}#fdw-home .fdw-payment-pillars{gap:9px}#fdw-home .fdw-payment-pillars strong{font-size:12px}#fdw-home .fdw-payment-pillars span{font-size:9px}#fdw-home .fdw-security-scan{inset:75px 21% 125px}#fdw-home .fdw-security-scan .fdw-icon{width:100px;height:100px}#fdw-home .fdw-security-bottom{left:16px;right:16px;bottom:16px;padding:16px}#fdw-home .fdw-security-methods span{font-size:11px}#fdw-home .fdw-logistics{padding-top:0}#fdw-home .fdw-logistics-photo{height:350px}#fdw-home .fdw-logistics-content{padding:28px 22px}#fdw-home .fdw-logistics-content .fdw-title{font-size:32px}#fdw-home .fdw-logistics-caption{left:23px;bottom:27px}#fdw-home .fdw-logistics-caption h3{font-size:30px}#fdw-home .fdw-industry-grid{grid-template-columns:1fr}#fdw-home .fdw-industry:last-child{grid-column:auto;min-height:370px}#fdw-home .fdw-industry{min-height:370px}#fdw-home .fdw-steps{gap:24px 20px;margin-top:33px}#fdw-home .fdw-step h3{font-size:14px}#fdw-home .fdw-step p{font-size:11px}#fdw-home .fdw-step-number{font-size:29px;margin-bottom:17px}#fdw-home .fdw-contact-form{padding:23px 19px}#fdw-home .fdw-form-row{grid-template-columns:1fr;gap:0}#fdw-home .fdw-field input,#fdw-home .fdw-field select,#fdw-home .fdw-field textarea{font-size:16px}#fdw-home .fdw-endline{margin-top:46px;align-items:flex-start;flex-direction:column;gap:8px}#fdw-home .fdw-endline strong{font-size:10px}#fdw-home .fdw-contact.fdw-section{padding-bottom:0}}
-@media(prefers-reduced-motion:reduce){ #fdw-home *,#fdw-home *::before,#fdw-home *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}#fdw-home .fdw-slide img{transform:none!important}}
-/* Original brand marks, real photography, FABS Trading red actions. */
-#fdw-home .fdw-btn-primary{background:var(--fdw-button);box-shadow:0 3px 0 #1218201a;font-weight:650}
-#fdw-home .fdw-btn-primary:hover{background:var(--fdw-accent-hover);box-shadow:0 6px 24px rgba(var(--fdw-accent-rgb),.14)}
-#fdw-home .fdw-btn-secondary{border-color:var(--fdw-line),.67);background:var(--fdw-panel)}
-#fdw-home .fdw-slide img{filter:saturate(1.02)}
-#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#121820f2 0%,#121820d9 29%,#12182052 58%,#1218200a 82%),linear-gradient(0deg,#121820f0,transparent 42%)}
-#fdw-home .fdw-hero-inner{padding-top:65px;padding-bottom:45px}
-#fdw-home .fdw-hero h1{font-size:clamp(50px,5.4vw,78px);max-width:650px}
-#fdw-home .fdw-spotlight{background:var(--fdw-panel);border-color:var(--fdw-line);backdrop-filter:blur(18px)}
-#fdw-home .fdw-service-image img,#fdw-home .fdw-industry>img,#fdw-home .fdw-logistics-photo>img,#fdw-home .fdw-contact-thumb img{filter:none}
-#fdw-home .fdw-service-image img{object-position:50% 32%}
-#fdw-home .fdw-service-image{height:224px}
-#fdw-home .fdw-service:nth-child(3) .fdw-service-image img{object-position:50% 32%}
-#fdw-home .fdw-service:nth-child(4) .fdw-service-image img{object-position:60% 38%}
-#fdw-home .fdw-service:nth-child(5) .fdw-service-image img{object-position:50% 45%}
-#fdw-home .fdw-industry>img{object-position:58% 40%}
-#fdw-home .fdw-logistics-photo>img{object-position:63% center}
-#fdw-home .fdw-payout-layout{gap:36px;align-items:stretch;grid-template-columns:1fr 1.04fr}
-#fdw-home .fdw-payment-lifestyle{display:flex;flex-direction:column;min-width:0}
-#fdw-home .fdw-payment-gallery{position:relative;flex:1;min-height:485px;border-radius:15px;overflow:hidden;background:var(--fdw-panel)}
-#fdw-home .fdw-payment-photo{position:absolute;inset:0;opacity:0;transition:opacity .55s ease;pointer-events:none}
-#fdw-home .fdw-payment-photo.is-active{opacity:1}
-#fdw-home .fdw-payment-photo img{height:100%;width:100%;object-fit:cover;object-position:50% 35%}
-#fdw-home .fdw-payment-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#121820ea,transparent 56%)}
-#fdw-home .fdw-lifestyle-caption{position:absolute;left:28px;right:28px;bottom:29px;color:var(--fdw-muted);z-index:2}
-#fdw-home .fdw-lifestyle-caption p{font-size:28px;line-height:1.18;letter-spacing:-.7px;max-width:350px;margin-bottom:13px}
-#fdw-home .fdw-lifestyle-caption>span{font-size:11px;color:var(--fdw-muted);line-height:1.6}
-#fdw-home .fdw-photo-choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:13px}
-#fdw-home .fdw-photo-choices button{background:var(--fdw-panel);color:var(--fdw-muted);border:1px solid var(--fdw-line);border-radius:6px;min-height:45px;font-size:10px;padding:9px;line-height:1.45;transition:background .2s}
-#fdw-home .fdw-photo-choices button.is-active{background:var(--fdw-accent);color:var(--fdw-on-accent);border-color:var(--fdw-accent)}
-#fdw-home .fdw-payment-provider-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:15px}
-#fdw-home .fdw-payment-provider-row div{height:63px;display:flex;align-items:center;justify-content:center;padding:11px;background:var(--fdw-panel);border:1px solid var(--fdw-line);border-radius:8px}
-#fdw-home .fdw-payment-provider-row img{width:104px;height:32px;object-fit:contain}
-#fdw-home .fdw-demo{border:1px solid var(--fdw-line);border-radius:15px;background:var(--fdw-panel);box-shadow:0 15px 40px #1218201c;min-width:0}
-#fdw-home .fdw-payout-demo{padding:27px}
-#fdw-home .fdw-demo-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;margin-bottom:21px}
-#fdw-home .fdw-demo-kicker{color:var(--fdw-muted);font-size:9px;letter-spacing:1.45px;text-transform:uppercase;line-height:1.6;display:block;margin-bottom:7px}
-#fdw-home .fdw-demo-heading h3{font-size:22px;line-height:1.2;font-weight:550;letter-spacing:-.65px}
-#fdw-home .fdw-demo-badge{flex-shrink:0;border:1px solid var(--fdw-line),.4);background:var(--fdw-panel);color:var(--fdw-accent-soft);border-radius:5px;padding:6px 8px;font-size:8px;letter-spacing:.6px;line-height:1.4;white-space:nowrap;text-transform:uppercase}
-#fdw-home .fdw-batch-presets{display:flex;align-items:center;gap:8px;margin-bottom:20px}
-#fdw-home .fdw-batch-presets button{border:1px solid transparent;border-radius:5px;padding:7px 11px;font-size:11px;color:var(--fdw-muted);background:var(--fdw-panel)}
-#fdw-home .fdw-batch-presets button.is-active{color:var(--fdw-on-accent);border-color:var(--fdw-accent);background:var(--fdw-accent);font-weight:600}
-#fdw-home .fdw-batch-presets>span{margin-left:auto;font-size:8px;letter-spacing:1px;color:var(--fdw-muted)}
-#fdw-home .fdw-control-label,#fdw-home .fdw-demo-fields label{display:block;font-size:11px;color:var(--fdw-muted);margin-bottom:9px;line-height:1.45}
-#fdw-home .fdw-rail-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:18px}
-#fdw-home .fdw-rail-picker button{background:var(--fdw-panel);border:1px solid var(--fdw-line);color:var(--fdw-muted);border-radius:6px;font-size:11px;min-height:39px;padding:8px 5px;line-height:1.4}
-#fdw-home .fdw-rail-picker button.is-active{border-color:var(--fdw-accent);background:var(--fdw-accent);color:var(--fdw-on-accent);font-weight:600}
-#fdw-home .fdw-demo-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-#fdw-home .fdw-demo-fields input{display:block;width:100%;min-width:0;background:var(--fdw-panel);border:1px solid var(--fdw-line);border-radius:6px;padding:12px;color:var(--fdw-muted);font-size:16px;line-height:1.4}
-#fdw-home .fdw-demo-error{font-size:11px;color:var(--fdw-muted);line-height:1.65;margin-top:9px}
-#fdw-home .fdw-batch-total{margin:19px 0 12px;padding:18px 0;border-block:1px solid var(--fdw-line);display:flex;justify-content:space-between;align-items:end;gap:14px}
-#fdw-home .fdw-batch-total>div>span{font-size:10px;color:var(--fdw-muted);display:block;margin-bottom:6px}
-#fdw-home .fdw-batch-total strong{font-size:29px;font-weight:550;letter-spacing:-1px;line-height:1.2;color:var(--fdw-accent);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-#fdw-home .fdw-batch-total>span{font-size:10px;line-height:1.5;color:var(--fdw-muted);text-align:right;max-width:90px;flex-shrink:0}
-#fdw-home .fdw-recipient-header,#fdw-home .fdw-recipient{display:grid;grid-template-columns:1.5fr 1fr .75fr;align-items:center;gap:8px}
-#fdw-home .fdw-recipient-header{color:var(--fdw-muted);text-transform:uppercase;font-size:8px;letter-spacing:.8px;padding:9px 0}
-#fdw-home .fdw-recipient-header span:nth-child(n+2){text-align:right}
-#fdw-home .fdw-recipient{font-size:10px;line-height:1.6;padding:8px 0;color:var(--fdw-muted);border-top:1px solid var(--fdw-line)}
-#fdw-home .fdw-recipient>span:first-child{display:flex;align-items:center;gap:8px;min-width:0}
-#fdw-home .fdw-recipient i{font-size:8px;font-style:normal;background:var(--fdw-panel);width:25px;height:25px;display:grid;place-items:center;border-radius:50%;color:var(--fdw-muted);flex-shrink:0}
-#fdw-home .fdw-recipient>span:nth-child(2){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-#fdw-home .fdw-recipient-status{font-size:8px;justify-self:end;background:var(--fdw-panel);color:var(--fdw-muted);padding:4px 7px;border-radius:5px;white-space:nowrap}
-#fdw-home .fdw-payout-demo.is-complete .fdw-recipient-status{background:var(--fdw-accent);color:var(--fdw-on-accent)}
-#fdw-home .fdw-sample-count{font-size:9px;color:var(--fdw-muted);margin-top:9px}
-#fdw-home .fdw-demo-stages{list-style:none;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:22px 0 18px;counter-reset:fdw-stages}
-#fdw-home .fdw-demo-stages li{font-size:10px;color:var(--fdw-muted);border-top:2px solid var(--fdw-line);padding-top:9px;display:flex;align-items:center;gap:6px;line-height:1.5;counter-increment:fdw-stages}
-#fdw-home .fdw-demo-stages li::before{content:counter(fdw-stages);font-size:8px;width:17px;height:17px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;border:1px solid var(--fdw-line)}
-#fdw-home .fdw-demo-stages li.is-active{border-color:var(--fdw-accent);color:var(--fdw-accent-soft)}
-#fdw-home .fdw-demo-stages li.is-done{border-color:var(--fdw-accent);color:var(--fdw-accent-soft)}
-#fdw-home .fdw-demo-stages li.is-done::before{background:var(--fdw-accent);color:var(--fdw-on-accent);border-color:var(--fdw-accent);content:'✓';font-weight:700}
-#fdw-home .fdw-demo-actions{display:flex;align-items:center;gap:16px}
-#fdw-home .fdw-demo-actions .fdw-btn{flex:1;min-width:0;padding-inline:14px;font-size:12px}
-#fdw-home .fdw-demo-reset{padding:10px 3px;color:var(--fdw-muted);background:none;border:0;font-size:11px;min-height:44px}
-#fdw-home .fdw-demo-feedback{font-size:11px;color:var(--fdw-muted);line-height:1.6;margin-top:14px;min-height:35px}
-#fdw-home .fdw-demo-disclosure{font-size:9px;color:var(--fdw-muted);margin-top:9px;line-height:1.6}
-#fdw-home .fdw-demo button:disabled,#fdw-home .fdw-demo input:disabled{opacity:.62;cursor:default}
-#fdw-home .fdw-feature-end{display:flex;justify-content:space-between;align-items:center;gap:20px;border-top:1px solid var(--fdw-line);margin-top:29px;padding-top:20px}
-#fdw-home .fdw-feature-end p{font-size:12px;color:var(--fdw-muted)}
-#fdw-home .fdw-security-layout{grid-template-columns:.95fr 1.05fr;gap:65px;align-items:center}
-#fdw-home .fdw-bio-tabs{display:flex;gap:11px;flex-wrap:wrap;margin-top:29px}
-#fdw-home .fdw-bio-tabs button{display:flex;align-items:center;gap:10px;padding:13px 17px;background:var(--fdw-panel);border:1px solid var(--fdw-line);color:var(--fdw-muted);border-radius:7px;font-size:12px}
-#fdw-home .fdw-bio-tabs button.is-active{background:var(--fdw-accent);color:var(--fdw-on-accent);border-color:var(--fdw-accent)}
-#fdw-home .fdw-bio-description{border-left:2px solid var(--fdw-accent);padding:3px 0 4px 19px;margin-top:25px}
-#fdw-home .fdw-bio-description h3{font-size:18px;line-height:1.3;font-weight:500;margin-bottom:9px}
-#fdw-home .fdw-bio-description p{font-size:12px;color:var(--fdw-muted);line-height:1.8;max-width:385px}
-#fdw-home .fdw-biometric-demo{overflow:hidden}
-#fdw-home .fdw-bio-photo-frame{position:relative;height:340px;overflow:hidden;background:var(--fdw-panel)}
-#fdw-home .fdw-bio-photo{position:absolute;inset:0;opacity:0;transition:opacity .5s;pointer-events:none}
-#fdw-home .fdw-bio-photo.is-active{opacity:1}
-#fdw-home .fdw-bio-photo img{width:100%;height:100%;object-fit:cover;object-position:56% center}
-#fdw-home .fdw-bio-photo[data-bio-photo="iris"] img{object-position:50% 46%}
-#fdw-home .fdw-bio-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#121820e8,transparent 55%)}
-#fdw-home .fdw-bio-photo-top{position:absolute;top:19px;left:21px;right:21px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:2}
-#fdw-home .fdw-bio-photo-top>span:last-child{font-size:9px;letter-spacing:.8px;padding:7px 9px;border:1px solid var(--fdw-line);border-radius:5px;color:var(--fdw-muted);background:var(--fdw-panel);backdrop-filter:blur(9px)}
-#fdw-home .fdw-bio-photo-caption{position:absolute;bottom:22px;left:24px;right:24px;z-index:2}
-#fdw-home .fdw-bio-photo-caption>span{display:block;color:var(--fdw-accent);font-size:9px;letter-spacing:1.3px;text-transform:uppercase;margin-bottom:8px}
-#fdw-home .fdw-bio-photo-caption>strong{display:block;font-weight:500;font-size:23px;line-height:1.25;letter-spacing:-.5px;color:var(--fdw-muted)}
-#fdw-home .fdw-sample-scan{display:none;position:absolute;inset:18% 12% auto;height:2px;background:var(--fdw-accent-soft);box-shadow:0 0 20px 5px rgba(var(--fdw-accent-rgb),.5);z-index:2}
-#fdw-home .fdw-biometric-demo.is-running .fdw-sample-scan{display:block;animation:fdw-scan 1.8s ease-in-out infinite alternate}
-#fdw-home .fdw-bio-console{padding:26px}
-#fdw-home .fdw-bio-console-heading{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:21px}
-#fdw-home .fdw-bio-console-heading h3{font-size:19px;font-weight:500;line-height:1.3;letter-spacing:-.3px}
-#fdw-home .fdw-bio-console-heading>.fdw-icon{width:31px;height:31px;color:var(--fdw-accent)}
-#fdw-home .fdw-progress-track{height:5px;background:var(--fdw-panel);border-radius:4px;overflow:hidden}
-#fdw-home .fdw-progress-track>span{height:100%;display:block;width:0;background:var(--fdw-accent);transition:width .45s ease}
-#fdw-home .fdw-bio-console .fdw-demo-stages{margin-top:15px}
-#fdw-home .fdw-biometric-demo.is-complete .fdw-bio-console-heading h3{color:var(--fdw-accent)}
-@media(max-width:1100px){ #fdw-home .fdw-payout-layout{gap:25px}#fdw-home .fdw-payout-demo{padding:22px}#fdw-home .fdw-demo-heading{display:block}#fdw-home .fdw-demo-heading .fdw-demo-badge{margin-top:12px;display:inline-block}#fdw-home .fdw-security-layout{gap:35px}#fdw-home .fdw-bio-console{padding:23px}#fdw-home .fdw-batch-total strong{font-size:25px}}
-@media(max-width:800px){ #fdw-home .fdw-payout-layout,#fdw-home .fdw-security-layout{grid-template-columns:1fr;gap:33px}#fdw-home .fdw-payment-gallery{min-height:505px}#fdw-home .fdw-payment-photo img{object-position:50% 28%}#fdw-home .fdw-demo-heading{display:flex}#fdw-home .fdw-demo-heading .fdw-demo-badge{margin:0}#fdw-home .fdw-batch-total strong{font-size:32px}#fdw-home .fdw-demo-fields{gap:20px}#fdw-home .fdw-payout-demo{padding:30px}#fdw-home .fdw-security-copy{max-width:600px}#fdw-home .fdw-bio-photo-frame{height:380px}#fdw-home .fdw-hero h1{font-size:65px}#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#121820eb,#12182030),linear-gradient(0deg,#121820f0,transparent 55%)}}
-@media(max-width:560px){ #fdw-home .fdw-hero-inner{padding-top:49px;padding-bottom:24px}#fdw-home .fdw-hero h1{font-size:49px;line-height:1.07;letter-spacing:-2.1px}#fdw-home .fdw-hero{min-height:730px}#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#121820dd,#1218205e),linear-gradient(0deg,#121820f0,transparent 75%)}#fdw-home .fdw-service-image{height:236px}#fdw-home .fdw-payment-gallery{min-height:425px}#fdw-home .fdw-lifestyle-caption{left:21px;right:21px;bottom:24px}#fdw-home .fdw-lifestyle-caption p{font-size:26px}#fdw-home .fdw-lifestyle-caption>span{font-size:10px}#fdw-home .fdw-photo-choices{gap:7px}#fdw-home .fdw-photo-choices button{font-size:9px;padding:8px 6px}#fdw-home .fdw-payment-provider-row{gap:8px}#fdw-home .fdw-payment-provider-row div{height:56px;padding:9px}#fdw-home .fdw-payment-provider-row img{height:28px}#fdw-home .fdw-payout-demo{padding:22px 17px}#fdw-home .fdw-demo-heading{display:block;margin-bottom:17px}#fdw-home .fdw-demo-heading h3{font-size:22px}#fdw-home .fdw-demo-heading .fdw-demo-badge{display:inline-block;margin-top:12px}#fdw-home .fdw-batch-presets{gap:7px;margin-bottom:20px}#fdw-home .fdw-batch-presets>span{font-size:7px;letter-spacing:.5px}#fdw-home .fdw-demo-fields{gap:11px}#fdw-home .fdw-demo-fields label{font-size:10px;min-height:28px}#fdw-home .fdw-demo-fields input{font-size:16px;padding:11px 8px}#fdw-home .fdw-batch-total strong{font-size:27px}#fdw-home .fdw-batch-total>span{font-size:9px;max-width:65px}#fdw-home .fdw-recipient{font-size:9px;gap:5px;grid-template-columns:1.45fr 1fr .8fr}#fdw-home .fdw-recipient-header{font-size:7px;letter-spacing:.4px;grid-template-columns:1.45fr 1fr .8fr}#fdw-home .fdw-recipient i{width:21px;height:21px;font-size:7px}#fdw-home .fdw-recipient>span:first-child{gap:5px}#fdw-home .fdw-recipient-status{font-size:7px;padding:3px 5px}#fdw-home .fdw-demo-actions{gap:13px}#fdw-home .fdw-demo-actions .fdw-btn{font-size:11px;padding-inline:9px;gap:8px}#fdw-home .fdw-demo-actions .fdw-icon{width:18px;height:18px}#fdw-home .fdw-demo-disclosure{font-size:9px}#fdw-home .fdw-feature-end{display:block}#fdw-home .fdw-feature-end p{font-size:11px;margin-bottom:9px}#fdw-home .fdw-bio-tabs{gap:9px}#fdw-home .fdw-bio-tabs button{font-size:11px;padding:12px 13px}#fdw-home .fdw-bio-photo-frame{height:300px}#fdw-home .fdw-bio-photo-top{top:15px;left:16px;right:16px;gap:7px}#fdw-home .fdw-bio-photo-top>span:last-child{font-size:8px}#fdw-home .fdw-bio-photo-caption{left:19px;right:19px;bottom:21px}#fdw-home .fdw-bio-photo-caption>strong{font-size:22px}#fdw-home .fdw-bio-console{padding:22px 17px}#fdw-home .fdw-bio-console-heading h3{font-size:18px}#fdw-home .fdw-demo-stages li{font-size:9px}}
-@media(prefers-reduced-motion:reduce){ #fdw-home .fdw-sample-scan{display:none!important}#fdw-home .fdw-progress-track>span{transition:none}#fdw-home .fdw-payment-photo,#fdw-home .fdw-bio-photo{transition:none}}
-
-
-/* FABS Trading light surfaces and readable text over photographs. */
-#fdw-home .fdw-hero{background:#f5f6f7;color:var(--fdw-ink);min-height:690px}
-#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#fffffff5 0%,#ffffffed 28%,#ffffff61 63%,#ffffff08 88%),linear-gradient(0deg,#fff 0%,#ffffffdb 12%,transparent 50%)}
-#fdw-home .fdw-hero h1{font-weight:650;letter-spacing:-3px}
-#fdw-home .fdw-hero h1 span{color:var(--fabs-red)}
-#fdw-home .fdw-hero-summary{color:#414a54}
-#fdw-home .fdw-hero-footnote,#fdw-home .fdw-carousel-caption,#fdw-home .fdw-counter{color:#424b55}
-#fdw-home .fdw-spotlight{background:#ffffffed;border:1px solid #fff;box-shadow:0 12px 45px #12182014}
-#fdw-home .fdw-spotlight p{color:var(--fdw-muted)}
-#fdw-home .fdw-spotlight h2{color:var(--fdw-ink)}
-#fdw-home .fdw-btn-primary{color:#fff;background:var(--fabs-red-strong);box-shadow:0 4px 14px #ed313818}
-#fdw-home .fdw-btn-primary:hover{background:var(--fabs-red-hover)}
-#fdw-home .fdw-btn-secondary{background:#ffffffed;border-color:#b7bec7;color:var(--fdw-ink)}
-#fdw-home .fdw-btn-secondary:hover{background:#fff;border-color:var(--fabs-red)}
-#fdw-home .fdw-round{background:#fff;border-color:#cbd1d8;color:var(--fdw-ink)}
-#fdw-home .fdw-round:hover{background:var(--fabs-red-soft);border-color:var(--fabs-red)}
-#fdw-home .fdw-slide-tab{border-top-color:#cdd2d8;color:#46505b;font-weight:550}
-#fdw-home .fdw-slide-tab .fdw-tab-no{color:#69717a}
-#fdw-home .fdw-slide-tab.is-active{color:var(--fabs-red-strong)}
-#fdw-home .fdw-ecosystem{background:var(--fabs-paper);color:var(--fdw-ink);border-color:var(--fdw-line)}
-#fdw-home .fdw-ecosystem-heading h2{font-size:14px}
-#fdw-home .fdw-brand{background:#fff}
-#fdw-home .fdw-brand:hover{box-shadow:0 6px 18px #1218200c}
-#fdw-home .fdw-service{background:#fff;box-shadow:0 5px 18px #12182005}
-#fdw-home .fdw-service:hover{box-shadow:0 14px 30px #1218200c}
-#fdw-home .fdw-service-image{background:#f1f2f4}
-#fdw-home .fdw-service-no{background:#ffffffed;color:var(--fabs-red-strong);border-color:#fff;font-weight:700}
-#fdw-home .fdw-value-strip{background:var(--fabs-paper)}
-#fdw-home .fdw-alternate{background:var(--fabs-paper)}
-#fdw-home .fdw-demo,#fdw-home .fdw-contact-form{background:#fff;border:1px solid var(--fdw-line);box-shadow:0 15px 40px #12182008}
-#fdw-home .fdw-photo-choices button,#fdw-home .fdw-rail-picker button,#fdw-home .fdw-batch-presets button,#fdw-home .fdw-bio-tabs button{background:#fff;color:#46505b;border:1px solid #cdd2d8}
-#fdw-home .fdw-photo-choices button.is-active,#fdw-home .fdw-rail-picker button.is-active,#fdw-home .fdw-batch-presets button.is-active,#fdw-home .fdw-bio-tabs button.is-active{background:var(--fabs-red-strong);border-color:var(--fabs-red-strong);color:#fff}
-#fdw-home .fdw-payment-provider-row div{background:#fff;border-color:var(--fdw-line)}
-#fdw-home .fdw-demo-fields input,#fdw-home .fdw-field input,#fdw-home .fdw-field select,#fdw-home .fdw-field textarea,#fdw-home .fdw-field option{background:#fff;color:var(--fdw-ink);border-color:#b8c0c9;color-scheme:light}
-#fdw-home .fdw-demo-fields input:focus,#fdw-home .fdw-field input:focus,#fdw-home .fdw-field select:focus,#fdw-home .fdw-field textarea:focus{border-color:var(--fabs-red);box-shadow:0 0 0 3px #ed313814}
-#fdw-home .fdw-demo-badge{color:var(--fabs-red-strong);background:var(--fabs-red-soft);border-color:#f5b8bc}
-#fdw-home .fdw-demo-error{color:#a41e25}
-#fdw-home .fdw-recipient i{background:var(--fabs-red-soft);color:var(--fabs-red-strong)}
-#fdw-home .fdw-recipient-status{background:var(--fabs-paper);color:#4f5965}
-#fdw-home .fdw-payout-demo.is-complete .fdw-recipient-status{background:#fff0f1;color:var(--fabs-red-strong)}
-#fdw-home .fdw-demo-stages li.is-active,#fdw-home .fdw-demo-stages li.is-done{color:var(--fabs-red-strong)}
-#fdw-home .fdw-progress-track{background:#e7e9ed}
-#fdw-home .fdw-bio-photo-frame,#fdw-home .fdw-payment-gallery{background:#e6e8eb}
-#fdw-home .fdw-logistics-box{background:var(--fabs-paper);border-color:var(--fdw-line)}
-#fdw-home .fdw-journey-steps::before{background:#d5a5a8}
-#fdw-home .fdw-journey-steps li::before{background:#fff}
-#fdw-home .fdw-industry,#fdw-home .fdw-contact-thumb,#fdw-home .fdw-logistics-photo{background:#121820;color:#fff}
-#fdw-home .fdw-industry-content>span,#fdw-home .fdw-logistics-caption p,#fdw-home .fdw-bio-photo-caption>span{color:#fff;font-weight:650}
-#fdw-home .fdw-industry p,#fdw-home .fdw-lifestyle-caption>span{color:#f0f2f5}
-#fdw-home .fdw-lifestyle-caption{color:#fff}
-#fdw-home .fdw-photo-label{background:#121820a6;color:#fff;border-color:#ffffff66}
-#fdw-home .fdw-industry .fdw-link{color:#fff;text-decoration:underline;text-underline-offset:5px;text-decoration-color:#ed3138}
-#fdw-home .fdw-industry-content h3,#fdw-home .fdw-logistics-caption h3,#fdw-home .fdw-bio-photo-caption>strong,#fdw-home .fdw-photo-label{color:#fff}
-#fdw-home .fdw-bio-photo-top>span:last-child{background:#121820b3;color:#fff;border-color:#ffffff66}
-#fdw-home .fdw-sample-scan{background:#ff848a;box-shadow:0 0 20px 5px #ed313850}
-#fdw-home .fdw-contact{background:#fff}
-#fdw-home .fdw-contact-form{background:var(--fabs-paper)}
-#fdw-home .fdw-field label,#fdw-home .fdw-control-label,#fdw-home .fdw-demo-fields label{color:#353e48;font-weight:550}
-#fdw-home .fdw-field label span{color:var(--fabs-red-strong)}
-#fdw-home .fdw-endline strong{color:var(--fdw-ink)}
-@media(max-width:800px){ #fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#fffffff2,#ffffffa6 68%,#ffffff35),linear-gradient(0deg,#fff,transparent 75%)}}
-@media(max-width:560px){ #fdw-home .fdw-hero{min-height:690px}#fdw-home .fdw-hero-shade{background:linear-gradient(90deg,#fffffff5,#ffffffd1 68%,#ffffff80),linear-gradient(0deg,#fff 5%,transparent 80%)}#fdw-home .fdw-hero h1{font-size:clamp(34px,10.8vw,48px);letter-spacing:-1.6px;text-wrap:initial}}
-</style>
-<div id="fdw-home">
-  <section class="fdw-hero" id="fdw-hero" aria-labelledby="fdw-hero-title" aria-roledescription="carousel" aria-label="Explore the Fabs platform">
-    <div class="fdw-hero-media" id="fdw-slides">
-      {% for slide in fdw_slides %}
-      <div class="fdw-slide {{ 'is-active' if loop.first else '' }}" data-slide="{{ loop.index0 }}" role="group" aria-roledescription="slide" aria-label="{{ loop.index }} of {{ fdw_slides|length }}: {{ slide.name }}" aria-hidden="{{ 'false' if loop.first else 'true' }}">
-        <img src="{{ fdw_media[slide.key] }}" alt="{{ slide.alt }}" width="1600" height="1067" decoding="async" {% if loop.first %}fetchpriority="high" loading="eager"{% else %}loading="eager"{% endif %} style="object-position:{{ slide.position }}">
+{% macro icon(name) -%}
+<svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+{% if name=='arrow' %}<path d="M5 12h14m-6-6 6 6-6 6"/>
+{% elif name=='card' %}<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>
+{% elif name=='payout' %}<path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
+{% elif name=='shield' %}<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/>
+{% elif name=='file' %}<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/>
+{% elif name=='box' %}<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5M12 13v9M7 5.7l9 5"/>
+{% elif name=='building' %}<path d="M3 21h18M5 21V8h14v13M3 8l9-5 9 5M9 11v6M15 11v6"/>
+{% elif name=='truck' %}<path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>
+{% elif name=='company' %}<path d="M4 21V3h11v18M15 9h5v12M2 21h20M8 7h3M8 11h3M8 15h3M8 21v-3h3v3"/>
+{% elif name=='store' %}<path d="M4 10v11h16V10M3 10l2-7h14l2 7M3 10c0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0M9 21v-6h6v6"/>
+{% elif name=='code' %}<path d="m8 7-5 5 5 5m8-10 5 5-5 5M14 4l-4 16"/>
+{% elif name=='server' %}<rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5"/>
+{% elif name=='face' %}<path d="M3 8V4h4m10 0h4v4M3 16v4h4m10 0h4v-4"/><circle cx="12" cy="10" r="3"/><path d="M7 18c0-5 10-5 10 0"/>
+{% elif name=='id' %}<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M5 16c0-4 6-4 6 0M14 10h5M14 14h4"/>
+{% elif name=='check' %}<path d="m5 12 4 4L19 6"/>
+{% elif name=='link' %}<path d="m9 15 6-6M7 14l-2 2a3 3 0 0 0 4 4l4-4m-2-8 4-4a3 3 0 0 1 4 4l-2 2"/>
+{% endif %}</svg>
+{%- endmacro %}
+<div id="fdw-home" class="fdx-home">
+  <section class="fdx-hero" aria-labelledby="fdx-hero-title">
+    <div class="fdx-wrap fdx-hero-grid">
+      <div class="fdx-hero-copy">
+        <p class="fdx-eyebrow"><span class="fdx-mark"></span> FABS DATA WAREHOUSE</p>
+        <h1 id="fdx-hero-title">Payments.<br>Security.<br><span>Forward motion.</span></h1>
+        <p class="fdx-hero-lead">Collect payments. Protect identities. Keep business moving.</p>
+        <p class="fdx-hero-description">We connect payment aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
+        <div class="fdx-actions"><a class="fdx-button fdx-button-red" href="#contact">Discuss your project {{ icon('arrow') }}</a><a class="fdx-button fdx-button-outline" href="#services">Explore our services</a></div>
+        <div class="fdx-hero-tags"><span>Payment aggregation</span><span>Identity &amp; security</span><span>Business operations</span></div>
       </div>
-      {% endfor %}
-    </div>
-    <div class="fdw-hero-shade" aria-hidden="true"></div>
-    <div class="fdw-wrap fdw-hero-inner">
-      <div class="fdw-hero-copy">
-        <p class="fdw-overline">FABS Trading · Data Warehouse</p>
-        <h1 id="fdw-hero-title">Your people.<br>Your business.<span>All connected.</span></h1>
-        <p class="fdw-hero-summary">Bring the human side of business together with smart payments, biometric security and connected operations. One Fabs Data Warehouse workspace, powered by FABS Trading Global E-Commerce.</p>
-        <div class="fdw-actions">
-          <a class="fdw-btn fdw-btn-primary" href="{{ url_for('auth.signup') }}">Create your account {{ fdw_icon('arrow') }}</a>
-          <a class="fdw-btn fdw-btn-secondary" href="#services">Explore the platform {{ fdw_icon('diagonal') }}</a>
+      <div class="fdx-hero-visual">
+        <div class="fdx-orbit-label fdx-orbit-label-top"><span></span> CONNECTED BY DESIGN</div>
+        <div class="fdx-globe" id="fdx-globe-wrap">
+          <img class="fdx-globe-static" src="{{ url_for('static', filename='images/operations/globe.svg') }}" width="560" height="560" alt="Globe illustration centred on Africa">
+          <canvas id="fdx-globe" width="560" height="560" aria-hidden="true"></canvas>
         </div>
-        <div class="fdw-hero-footnote"><span>{{ fdw_icon('check') }} One secure login</span><span>{{ fdw_icon('check') }} Modular workspace</span><span>{{ fdw_icon('check') }} Built for your team</span></div>
-      </div>
-      <aside class="fdw-spotlight" aria-label="Featured platform module">
-        <div class="fdw-spotlight-top"><span data-spotlight-name>People &amp; business</span>{{ fdw_icon('globe') }}</div>
-        <h2 data-spotlight-title>Better together. Built to grow.</h2>
-        <p data-spotlight-text>Bring your people, payments and everyday operations together.</p>
-        <a class="fdw-link" data-spotlight-link href="#services">Discover the possibilities {{ fdw_icon('arrow') }}</a>
-      </aside>
-    </div>
-    <div class="fdw-wrap fdw-hero-bottom">
-      <div class="fdw-carousel-top">
-        <p class="fdw-carousel-caption">{{ fdw_icon('layers') }} People. Payments. Possibilities.</p>
-        <div class="fdw-carousel-controls" hidden>
-          <span class="fdw-counter"><span data-slide-current>01</span> / 05</span>
-          <button type="button" class="fdw-round fdw-round-prev" data-slide-prev aria-label="Previous hero image" aria-controls="fdw-slides">{{ fdw_icon('chevron') }}</button>
-          <button type="button" class="fdw-round" data-slide-pause aria-label="Pause automatic slideshow" aria-pressed="false" aria-controls="fdw-slides"><span data-pause-icon>{{ fdw_icon('pause') }}</span><span data-play-icon hidden>{{ fdw_icon('play') }}</span></button>
-          <button type="button" class="fdw-round" data-slide-next aria-label="Next hero image" aria-controls="fdw-slides">{{ fdw_icon('chevron') }}</button>
+        <span class="fdx-globe-tag fdx-globe-tag-one">{{ icon('card') }} Payments</span><span class="fdx-globe-tag fdx-globe-tag-two">{{ icon('shield') }} Identity</span><span class="fdx-globe-tag fdx-globe-tag-three">{{ icon('box') }} Movement</span>
+        <div class="fdx-scenes" aria-label="Operational photography">
+          <div class="fdx-scene" data-scene="0">{{ photo('port','',true) }}<span>Import &amp; export logistics</span></div>
+          <div class="fdx-scene" data-scene="1" hidden>{{ photo('petroleum') }}<span>Petroleum &amp; fleet operations</span></div>
+          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payment solutions</span></div>
+          <div class="fdx-scene-controls" aria-label="Choose a photograph"><button type="button" data-scene-select="0" aria-label="Show import and export logistics" aria-pressed="true"></button><button type="button" data-scene-select="1" aria-label="Show petroleum and fleet operations" aria-pressed="false"></button><button type="button" data-scene-select="2" aria-label="Show merchant payment solutions" aria-pressed="false"></button></div>
         </div>
+        <button class="fdx-motion-button" id="fdx-motion" type="button" aria-pressed="false">Pause animation <span aria-hidden="true">Ⅱ</span></button>
       </div>
-      <div class="fdw-slide-nav" aria-label="Choose a hero image">
-        {% for slide in fdw_slides %}
-        <button class="fdw-slide-tab {{ 'is-active' if loop.first else '' }}" data-slide-to="{{ loop.index0 }}" type="button" aria-label="Show image {{ loop.index }}: {{ slide.name }}" aria-pressed="{{ 'true' if loop.first else 'false' }}" aria-controls="fdw-slides" disabled><span class="fdw-tab-no">0{{ loop.index }}</span><span>{{ slide.name }}</span></button>
-        {% endfor %}
+    </div>
+    <div class="fdx-hero-bottom"><div class="fdx-wrap"><p>One partner. Connected services.</p><span>For businesses that collect, protect and move.</span><a href="#services" aria-label="Discover what we do">↓</a></div></div>
+  </section>
+
+  <section class="fdx-section fdx-intro" aria-labelledby="fdx-intro-title">
+    <div class="fdx-wrap">
+      <div class="fdx-section-head"><div><p class="fdx-eyebrow">YOUR BUSINESS, BETTER CONNECTED</p><h2 id="fdx-intro-title">The right systems.<br>A clearer way to operate.</h2></div><p>From a customer’s first payment to a shipment’s final delivery, we help bring your money, records and operations into a coordinated workflow.</p></div>
+      <div class="fdx-pillar-grid">
+        <a class="fdx-pillar" href="#services" data-category-link="payments">{{ photo('payments') }}<div><span class="fdx-card-kicker">01 / PAYMENTS</span><h3>Every transaction, connected.</h3><p>Collections, settlements, merchant onboarding and bulk disbursements.</p><span class="fdx-text-link">Explore payment solutions {{ icon('arrow') }}</span></div></a>
+        <a class="fdx-pillar" href="#biometrics">{{ photo('security') }}<div><span class="fdx-card-kicker">02 / SECURITY</span><h3>Confidence in every identity.</h3><p>Face-to-ID records, biometric integrations and controlled access.</p><span class="fdx-text-link">Explore identity &amp; security {{ icon('arrow') }}</span></div></a>
+        <a class="fdx-pillar" href="#tracking">{{ photo('port') }}<div><span class="fdx-card-kicker">03 / OPERATIONS</span><h3>Keep the bigger picture moving.</h3><p>Shipments, petroleum fleets, county revenue and business administration.</p><span class="fdx-text-link">Explore operational solutions {{ icon('arrow') }}</span></div></a>
       </div>
-      <p class="fdw-sr" data-slide-announcement aria-live="polite" aria-atomic="true"></p>
     </div>
   </section>
 
-  <section class="fdw-ecosystem" id="partners" aria-labelledby="fdw-partners-title">
-    <div class="fdw-wrap">
-      <div class="fdw-ecosystem-heading"><h2 id="fdw-partners-title">Connected to the names you know.</h2><p>Payment providers, card networks &amp; our logistics partner</p></div>
-      <div class="fdw-brand-grid">
-        {% for brand in fdw_brands %}
-        <div class="fdw-brand" data-brand="{{ brand.key }}"><img src="{{ fdw_media[brand.key] }}" alt="{{ brand.name }}" width="140" height="45" loading="lazy" decoding="async"><span>{{ brand.caption if brand.key != 'dpo' else 'DPO / Network' }}</span></div>
-        {% endfor %}
-      </div>
-      <p class="fdw-ecosystem-note">Available payment methods and integrations depend on your account configuration and provider activation.</p>
-    </div>
-  </section>
-
-  <section class="fdw-section" id="services" aria-labelledby="fdw-services-title">
-    <div class="fdw-wrap">
-      <div class="fdw-section-heading"><div><p class="fdw-overline">Meet your connected workspace</p><h2 class="fdw-title" id="fdw-services-title">Many moving parts.<br><em>One clear view.</em></h2></div><p class="fdw-body">From your first collection to your next delivery, give every part of your operation a place to work together.</p></div>
-      {% set fdw_services = [
-        ('payouts','payments','Payments & bulk payouts','Put people at the centre of your collections, salaries and supplier disbursements. Try an interactive sample payment batch.','#payouts','Try bulk payouts'),
-        ('biometric','shield','Biometric security','See real fingerprint devices and iris imagery, then explore how a verification workflow comes together.','#biometrics','Explore biometric verification'),
-        ('merchant','package','DHL logistics & tracking','Behind every parcel is a person. Connect orders, shipping documents and delivery milestones with your business.','#tracking','Explore connected delivery'),
-        ('community','building','County revenue','Bring markets, permits, parking and rates into a clearer workflow for your team and your community.','#county','Explore county solutions'),
-        ('collaboration','document','Tender intelligence','Help your people collaborate on opportunities, quotations, evaluations and project milestones.','#tenders','Explore tender tracking'),
-        ('team','people','Company & merchant management','Bring your team, merchant onboarding, roles and everyday business operations into one connected workspace.','#contact','Connect your organisation')
+  <section class="fdx-section fdx-services" id="services" aria-labelledby="fdx-services-title">
+    <div class="fdx-wrap">
+      <div class="fdx-section-head"><div><p class="fdx-eyebrow">WHAT WE DO</p><h2 id="fdx-services-title">Built around the work<br>you need to get done.</h2></div><p>Start with one service or bring several together. We help scope the workflow, connect the systems and support the people who run them.</p></div>
+      <div class="fdx-filters" role="group" aria-label="Filter services"><button type="button" data-filter="all" aria-pressed="true">All services <span>11</span></button><button type="button" data-filter="payments" aria-pressed="false">Payments</button><button type="button" data-filter="security" aria-pressed="false">Security</button><button type="button" data-filter="operations" aria-pressed="false">Operations</button><button type="button" data-filter="enterprise" aria-pressed="false">Enterprise &amp; IT</button></div>
+      <p class="fdx-sr-only" id="fdx-filter-status" role="status" aria-live="polite">Showing all 11 services.</p>
+      {% set services = [
+        ('payments','payments','card','Payments & collections','Accept and reconcile customer payments across your activated mobile money, card and bank channels.','payments','Explore collections'),
+        ('payouts','payments','payout','Bulk payouts','Organise salaries, supplier payments and other disbursements with approval steps and payment records.','payments','Plan your payouts'),
+        ('identity-service','security','shield','Biometric security','Connect consent-based face-to-ID records, biometric devices and access workflows for your organisation.','biometrics','Discuss identity & security'),
+        ('tenders','enterprise','file','Tender tracking','Keep opportunities, deadlines, bid documents and submission progress visible to your tender team.','tenders','Organise your tender pipeline'),
+        ('shipment-service','operations','box','Import & export tracking','Bring shipment references, customs documents and available carrier updates into a shared view.','logistics','Connect your shipments'),
+        ('county','operations','building','County revenue collection','Coordinate parking, permits, market fees and rates with collection records, receipts and reporting.','county','Explore county collections'),
+        ('fleet-service','operations','truck','Petroleum & fleet operations','Manage transport security, vehicles, driver documents, vetting, employment and salary disbursement.','petroleum','Plan your fleet workflow'),
+        ('companies','enterprise','company','Company management','Bring company records, team roles, approvals and day-to-day business administration together.','enterprise','Connect your organisation'),
+        ('merchants','payments','store','Merchant onboarding','Guide merchants through business registration, document collection, review and payment activation.','payments','Build your onboarding flow'),
+        ('aggregator','payments','code','Aggregator APIs','Connect your application to payment collection, disbursement, callback and reporting workflows.','payments','Discuss an API integration'),
+        ('it-support','enterprise','server','IT support subcontracts','Extend your delivery team with scoped support for installations, integrations, maintenance and technical operations.','enterprise','Discuss a support contract')
       ] %}
-      <div class="fdw-service-grid">
-        {% for photo, icon, title, text, target, cta in fdw_services %}
-        <article class="fdw-service"><div class="fdw-service-image"><img src="{{ fdw_media[photo] }}" alt="{{ {'payouts':'A woman using a payment card and laptop','biometric':'A woman using a fingerprint access reader at an office entrance','merchant':'A small business owner standing beside packed shipping boxes','community':'A market trader at her stall','collaboration':'Colleagues reviewing their work together','team':'Smiling business owners working around a laptop'}[photo] }}" width="640" height="400" loading="lazy" decoding="async"><span class="fdw-service-no">0{{ loop.index }}</span></div><div class="fdw-service-content"><div class="fdw-service-heading"><h3>{{ title }}</h3>{{ fdw_icon(icon) }}</div><p>{{ text }}</p><a class="fdw-link" href="{{ target }}">{{ cta }} {{ fdw_icon('arrow') }}</a></div></article>
+      <div class="fdx-service-grid">
+        {% for slug,category,symbol,title,description,interest,link in services %}
+        <article class="fdx-service" id="{{ slug }}" data-service-category="{{ category }}"><div class="fdx-service-top"><span class="fdx-service-icon">{{ icon(symbol) }}</span><span class="fdx-service-number">{{ '%02d'|format(loop.index) }}</span></div><h3>{{ title }}</h3><p>{{ description }}</p><a href="#contact" class="fdx-text-link" data-contact-interest="{{ interest }}">{{ link }} {{ icon('arrow') }}</a></article>
         {% endfor %}
-      </div>
-      <div class="fdw-value-strip"><div>{{ fdw_icon('layers') }} One connected dashboard</div><div>{{ fdw_icon('shield') }} Role-based access</div><div>{{ fdw_icon('people') }} Team collaboration</div><div>{{ fdw_icon('globe') }} Connected integrations</div></div>
-    </div>
-  </section>
-
-  <section class="fdw-section fdw-alternate fdw-payout-section" id="payouts" aria-labelledby="fdw-payouts-title">
-    <div class="fdw-wrap">
-      <div class="fdw-section-heading"><div><p class="fdw-overline">People first. Payments connected.</p><h2 class="fdw-title" id="fdw-payouts-title">Big plans.<br><em>One simple payment flow.</em></h2></div><p class="fdw-body">Explore a sample payroll or supplier batch. Change the recipients, amount and payment method to see how a connected payout workflow feels.</p></div>
-      <div class="fdw-split fdw-payout-layout">
-        <div class="fdw-feature-visual fdw-payment-lifestyle">
-          <div class="fdw-payment-gallery" aria-label="People using digital payments">
-            {% for key,alt in [('mobile','A woman using a smartphone and payment card'),('payouts','A woman using a laptop and payment card for an online transaction'),('pos','A customer tapping a smartphone on a payment terminal')] %}
-            <figure class="fdw-payment-photo {{ 'is-active' if loop.first else '' }}" data-payment-photo="{{ loop.index0 }}" aria-hidden="{{ 'false' if loop.first else 'true' }}"><img src="{{ fdw_media[key] }}" alt="{{ alt }}" width="1000" height="1400" loading="lazy" decoding="async"></figure>
-            {% endfor %}
-            <span class="fdw-photo-label">Real life. Connected payments.</span>
-            <div class="fdw-lifestyle-caption"><p>For the people behind every payment.</p><span data-payment-caption>Mobile payments, wherever your day takes you.</span></div>
-          </div>
-          <div class="fdw-photo-choices" role="group" aria-label="Choose a payment photograph">
-            <button type="button" class="is-active" data-payment-photo-to="0" aria-pressed="true" data-demo-control disabled>Mobile money</button>
-            <button type="button" data-payment-photo-to="1" aria-pressed="false" data-demo-control disabled>Online banking</button>
-            <button type="button" data-payment-photo-to="2" aria-pressed="false" data-demo-control disabled>Everyday payments</button>
-          </div>
-          <div class="fdw-payment-provider-row">{% for key,name in [('mpesa','M-PESA'),('finserve','Finserve'),('dpo','DPO / Network'),('pesapal','Pesapal')] %}<div><img src="{{ fdw_media[key] }}" alt="{{ name }}" width="110" height="35" loading="lazy" decoding="async"></div>{% endfor %}</div>
-        </div>
-        <div class="fdw-demo fdw-payout-demo" id="fdw-payout-demo" aria-labelledby="fdw-batch-title">
-          <div class="fdw-demo-heading"><div><p class="fdw-demo-kicker">Bulk disbursements</p><h3 id="fdw-batch-title">Build your sample batch.</h3></div><span class="fdw-demo-badge">Interactive demo</span></div>
-          <div class="fdw-batch-presets" role="group" aria-label="Sample batch type"><button type="button" data-payout-preset="payroll" class="is-active" aria-pressed="true" data-demo-control disabled>Payroll</button><button type="button" data-payout-preset="suppliers" aria-pressed="false" data-demo-control disabled>Suppliers</button><span data-batch-code>DEMO · PAYROLL</span></div>
-          <p class="fdw-control-label" id="fdw-rail-label">Payment method</p>
-          <div class="fdw-rail-picker" role="group" aria-labelledby="fdw-rail-label"><button type="button" data-payout-rail="M-PESA" data-rail-photo="0" class="is-active" aria-pressed="true" data-demo-control disabled>M-PESA</button><button type="button" data-payout-rail="Bank transfer" data-rail-photo="1" aria-pressed="false" data-demo-control disabled>Bank transfer</button><button type="button" data-payout-rail="Wallet" data-rail-photo="2" aria-pressed="false" data-demo-control disabled>Wallet</button></div>
-          <div class="fdw-demo-fields"><div><label for="fdw-recipient-count">Number of recipients</label><input id="fdw-recipient-count" type="number" value="24" min="1" max="5000" step="1" inputmode="numeric" required aria-describedby="fdw-payout-input-error" data-demo-control disabled></div><div><label for="fdw-payout-amount">Amount each · KES</label><input id="fdw-payout-amount" type="number" value="2500" min="0.01" max="1000000" step="0.01" inputmode="decimal" required aria-describedby="fdw-payout-input-error" data-demo-control disabled></div></div>
-          <p class="fdw-demo-error" id="fdw-payout-input-error" aria-live="polite" hidden></p>
-          <div class="fdw-batch-total"><div><span>Sample batch total</span><strong data-payout-total>KES 60,000.00</strong></div><span data-payout-count>24 recipients</span></div>
-          <div class="fdw-recipient-table" aria-label="Sample recipient preview">
-            <div class="fdw-recipient-header"><span>Sample recipient</span><span>Amount</span><span>Status</span></div>
-            {% for index in range(1,4) %}<div class="fdw-recipient" data-demo-recipient><span><i aria-hidden="true">0{{ index }}</i> Recipient 00{{ index }}</span><span data-recipient-amount>2,500.00</span><span class="fdw-recipient-status" data-recipient-status>Draft</span></div>{% endfor %}
-          </div>
-          <p class="fdw-sample-count" data-sample-count>Showing 3 of 24 sample recipients · M-PESA</p>
-          <ol class="fdw-demo-stages" aria-label="Sample payout workflow"><li data-payout-stage>Validate</li><li data-payout-stage>Approve</li><li data-payout-stage>Track</li></ol>
-          <div class="fdw-demo-actions"><button type="button" class="fdw-btn fdw-btn-primary" data-payout-run data-demo-control disabled><span data-payout-run-label>Run payout demo</span> {{ fdw_icon('arrow') }}</button><button type="button" class="fdw-demo-reset" data-payout-reset data-demo-control disabled>Reset</button></div>
-          <p class="fdw-demo-feedback" data-payout-feedback role="status" aria-live="polite" aria-atomic="true">Adjust your sample batch, then explore the payout flow.</p>
-          <p class="fdw-demo-disclosure">Sample amounts and recipients only. No money is transferred.</p>
-          <noscript><p class="fdw-demo-disclosure">Enable JavaScript to use this interactive demonstration.</p></noscript>
-        </div>
-      </div>
-      <div class="fdw-feature-end"><p>Ready to connect your organisation's payment operations?</p><a class="fdw-link" href="{{ url_for('auth.signup') }}">Create your workspace {{ fdw_icon('arrow') }}</a></div>
-    </div>
-  </section>
-
-  <section class="fdw-section fdw-security" id="biometrics" aria-labelledby="fdw-security-title">
-    <div class="fdw-wrap fdw-split fdw-security-layout">
-      <div class="fdw-security-copy"><p class="fdw-overline">Real people. Stronger security.</p><h2 class="fdw-title" id="fdw-security-title">Your identity.<br><em>Your way in.</em></h2><p class="fdw-body">Give identity a place in your everyday workflow. Explore fingerprint and iris verification with real device photography and an interactive sample journey.</p>
-        <div class="fdw-bio-tabs" role="group" aria-label="Choose a biometric demonstration"><button type="button" data-bio-method="fingerprint" class="is-active" aria-pressed="true" data-demo-control disabled>{{ fdw_icon('fingerprint') }} Fingerprint</button><button type="button" data-bio-method="iris" aria-pressed="false" data-demo-control disabled>{{ fdw_icon('eye') }} Iris verification</button></div>
-        <div class="fdw-bio-description"><span class="fdw-demo-kicker">Explore the method</span><h3 data-bio-title>Fingerprint verification</h3><p data-bio-description>A fingerprint reader connects a person's enrolled identity to an access or approval request.</p></div>
-        <ul class="fdw-points"><li>{{ fdw_icon('check') }} Connect approved fingerprint readers and iris devices.</li><li>{{ fdw_icon('check') }} Add verification steps to sensitive approval workflows.</li><li>{{ fdw_icon('check') }} Keep access permissions and activity records together.</li></ul>
-        <a class="fdw-btn fdw-btn-primary" href="#contact" data-contact-interest="biometrics">Explore security for your team {{ fdw_icon('arrow') }}</a>
-      </div>
-      <div class="fdw-demo fdw-biometric-demo" id="fdw-biometric-demo" aria-label="Interactive biometric workflow demonstration">
-        <div class="fdw-bio-photo-frame">
-          <figure class="fdw-bio-photo is-active" data-bio-photo="fingerprint" aria-hidden="false"><img src="{{ fdw_media.scan }}" alt="A real fingerprint scanner with a finger pressed against its illuminated reader" width="1600" height="1068" loading="lazy" decoding="async"></figure>
-          <figure class="fdw-bio-photo" data-bio-photo="iris" aria-hidden="true"><img src="{{ fdw_media.iris }}" alt="Macro photograph showing the natural detail of a brown human iris" width="1050" height="1400" loading="lazy" decoding="async"></figure>
-          <div class="fdw-bio-photo-top"><span class="fdw-demo-badge">Interactive demo</span><span data-bio-photo-label>Fingerprint reader</span></div>
-          <span class="fdw-sample-scan" aria-hidden="true"></span>
-          <div class="fdw-bio-photo-caption"><span data-bio-photo-eyebrow>Touch. Verify. Continue.</span><strong data-bio-photo-title>Security at the point of access.</strong></div>
-        </div>
-        <div class="fdw-bio-console"><div class="fdw-bio-console-heading"><div><span class="fdw-demo-kicker">Sample verification workflow</span><h3 data-bio-status>Ready to explore</h3></div>{{ fdw_icon('shield') }}</div>
-          <div class="fdw-progress-track" data-bio-progress role="progressbar" aria-label="Demo verification progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div>
-          <ol class="fdw-demo-stages" aria-label="Sample verification stages"><li data-bio-stage>Prepare</li><li data-bio-stage>Verify</li><li data-bio-stage>Record</li></ol>
-          <div class="fdw-demo-actions"><button type="button" class="fdw-btn fdw-btn-primary" data-bio-run data-demo-control disabled><span data-bio-run-label>Run verification demo</span> {{ fdw_icon('fingerprint') }}</button><button type="button" class="fdw-demo-reset" data-bio-reset data-demo-control disabled>Reset</button></div>
-          <p class="fdw-demo-feedback" data-bio-feedback role="status" aria-live="polite" aria-atomic="true">Choose a method, then follow the sample verification steps.</p>
-          <p class="fdw-demo-disclosure">Illustrative workflow only. No camera access or biometric data is captured.</p>
-          <noscript><p class="fdw-demo-disclosure">Enable JavaScript to try the verification demonstration.</p></noscript>
-        </div>
+        <article class="fdx-service fdx-service-cta" data-service-category="all"><span class="fdx-card-kicker">LET’S BUILD YOUR SCOPE</span><h3>One requirement?<br>Several moving parts?</h3><p>Tell us what your organisation needs to achieve. We’ll help shape a practical delivery plan.</p><a class="fdx-text-link" href="#contact">Start a conversation {{ icon('arrow') }}</a></article>
       </div>
     </div>
   </section>
 
-  <section class="fdw-section fdw-logistics" id="tracking" aria-labelledby="fdw-logistics-title">
-    <div class="fdw-wrap"><div class="fdw-logistics-box">
-      <div class="fdw-logistics-photo"><img src="{{ fdw_media.parcels }}" alt="Small business owners packing products into parcels" width="900" height="900" loading="lazy" decoding="async"><div class="fdw-dhl-badge"><img src="{{ fdw_media.dhl }}" alt="DHL" width="120" height="30" loading="lazy" decoding="async"></div><div class="fdw-logistics-caption"><p>Our logistics partner</p><h3>Real people.<br>Real possibilities.</h3></div></div>
-      <div class="fdw-logistics-content"><p class="fdw-overline">DHL-connected logistics</p><h2 class="fdw-title" id="fdw-logistics-title">Every shipment.<br><em>Every step.</em></h2><p class="fdw-body">Keep your dispatch team and your business on the same page. Bring shipment records, waybills and delivery updates into your Fabs workspace.</p><ul class="fdw-points"><li>{{ fdw_icon('check') }} Shipment booking and waybill management.</li><li>{{ fdw_icon('check') }} Customs documents and dispatch coordination.</li><li>{{ fdw_icon('check') }} Tracking events linked to your shipment records.</li></ul><a class="fdw-link" href="#contact" data-contact-interest="logistics">Connect your logistics {{ fdw_icon('arrow') }}</a><div class="fdw-journey"><div class="fdw-journey-head"><span>A connected delivery journey</span>{{ fdw_icon('package') }}</div><ol class="fdw-journey-steps"><li>Booked</li><li>Collected</li><li>In transit</li><li>Delivered</li></ol></div></div>
-    </div></div>
-  </section>
-
-  <section class="fdw-section fdw-industries" aria-labelledby="fdw-industries-title">
-    <div class="fdw-wrap"><div class="fdw-section-heading"><div><p class="fdw-overline">Built around your world</p><h2 class="fdw-title" id="fdw-industries-title">Big responsibilities.<br><em>Connected solutions.</em></h2></div><p class="fdw-body">Purposeful tools for public services, enterprise teams and the networks that keep business moving.</p></div>
-      <div class="fdw-industry-grid">
-        <article class="fdw-industry" id="county"><img src="{{ fdw_media.community }}" alt="A market trader in her shop" width="600" height="800" loading="lazy" decoding="async"><div class="fdw-industry-content"><span>For public services</span><h3>County revenue.</h3><p>Bring parking, permits, market fees and rates into a clear collection and reporting workflow.</p><a class="fdw-link" href="#contact" data-contact-interest="county">Explore county solutions {{ fdw_icon('arrow') }}</a></div></article>
-        <article class="fdw-industry" id="tenders"><img src="{{ fdw_media.support }}" alt="A business team discussing a project around a table" width="600" height="800" loading="lazy" decoding="async"><div class="fdw-industry-content"><span>For enterprise teams</span><h3>Tender intelligence.</h3><p>Keep bids, quotations, evaluation stages and project milestones together from the very beginning.</p><a class="fdw-link" href="#contact" data-contact-interest="tenders">Explore tender tracking {{ fdw_icon('arrow') }}</a></div></article>
-        <article class="fdw-industry" id="petroleum"><img src="{{ fdw_media.operations }}" alt="A field engineer reviewing information on a tablet" width="600" height="800" loading="lazy" decoding="async"><div class="fdw-industry-content"><span>For transport networks</span><h3>Petroleum &amp; fleet.</h3><p>Coordinate dispatch, trip records, driver payments and transport documentation in one workspace.</p><a class="fdw-link" href="#contact" data-contact-interest="petroleum">Explore transport solutions {{ fdw_icon('arrow') }}</a></div></article>
-      </div>
+  <section class="fdx-section fdx-payments-section" aria-labelledby="fdx-payments-title">
+    <div class="fdx-wrap fdx-split">
+      <div class="fdx-feature-copy"><p class="fdx-eyebrow">PAYMENT AGGREGATION</p><h2 id="fdx-payments-title">A clearer path from<br>collection to payout.</h2><p class="fdx-body">Give your business a coordinated view of incoming payments, outgoing disbursements and the records behind them.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Collections and transaction references in one workflow.</li><li>{{ icon('check') }} Review and approval steps for bulk disbursements.</li><li>{{ icon('check') }} Reconciliation records and reporting for your team.</li><li>{{ icon('check') }} API integration for your website, app or business system.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="{{ url_for('payments.index') }}">Explore payment services {{ icon('arrow') }}</a></div></div>
+      <div class="fdx-payment-diagram" aria-label="Example payment workflow"><div class="fdx-diagram-head"><span>THE PAYMENT WORKFLOW</span>{{ icon('card') }}</div><div class="fdx-payment-sources"><span>Mobile money</span><span>Cards</span><span>Bank channels</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>FABS payment aggregation</strong><small>Connect · reconcile · report</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('store') }}<strong>Merchant collections</strong><span>Payment records</span></div><div>{{ icon('payout') }}<strong>Approved payouts</strong><span>Disbursement records</span></div></div><p class="fdx-diagram-note">Channels and capabilities depend on your provider activation and agreed integration.</p></div>
     </div>
   </section>
 
-  <section class="fdw-section fdw-alternate" id="how-it-works" aria-labelledby="fdw-start-title">
-    <div class="fdw-wrap"><div class="fdw-section-heading"><div><p class="fdw-overline">A simpler way forward</p><h2 class="fdw-title" id="fdw-start-title">Start connected.<br><em>Grow together.</em></h2></div><a class="fdw-link" href="{{ url_for('auth.signup') }}">Create your account {{ fdw_icon('arrow') }}</a></div><div class="fdw-steps">
-      {% for title,text in [('Create your workspace','Sign up and set up the organisation, company or team you want to manage.'),('Connect your services','Choose your modules and configure your approved payment and logistics providers.'),('Bring in your team','Assign roles, onboard merchants and set up the verification steps you need.'),('Move forward together','Collect payments, manage approvals and coordinate operations from one dashboard.')] %}<article class="fdw-step"><span class="fdw-step-number">0{{ loop.index }}</span><h3>{{ title }}</h3><p>{{ text }}</p></article>{% endfor %}
-    </div></div>
+  <section class="fdx-section fdx-identity-section" id="biometrics" aria-labelledby="fdx-identity-title">
+    <div class="fdx-wrap fdx-split">
+      <div class="fdx-feature-copy"><p class="fdx-eyebrow">IDENTITY &amp; BIOMETRIC SECURITY</p><h2 id="fdx-identity-title">The face. The ID.<br>A connected record.</h2><p class="fdx-body">Bring a person’s submitted photograph, identity document and enrolment details together. Build a consent-based review process for staff, drivers, merchants and authorised visitors.</p><ol class="fdx-number-list"><li><span>01</span><div><h3>Capture with permission</h3><p>Collect the required photograph and ID images through an agreed onboarding process.</p></div></li><li><span>02</span><div><h3>Link and review</h3><p>Keep the images with the right record. Add provider-backed identity checks and a human review stage.</p></div></li><li><span>03</span><div><h3>Control access</h3><p>Define who may view records, how long they are kept and how approved biometric devices connect.</p></div></li></ol><a class="fdx-text-link" href="#contact" data-contact-interest="biometrics">Design your verification workflow {{ icon('arrow') }}</a></div>
+      <div class="fdx-identity-demo" id="fdx-identity-demo"><div class="fdx-demo-head"><div><span class="fdx-card-kicker">INTERACTIVE RECORD PREVIEW</span><h3>Face-to-ID linking</h3></div><span class="fdx-preview-badge">Preview</span></div><p class="fdx-demo-intro">Try pairing two images in a single record.</p><div class="fdx-upload-grid">
+        <label class="fdx-upload" for="fdx-face-file"><span class="fdx-upload-art">{{ icon('face') }}<img id="fdx-face-preview" alt="Selected face photograph preview" hidden></span><strong>Face photograph</strong><span class="fdx-upload-filename" id="fdx-face-name">Choose an image</span><input id="fdx-face-file" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="fdx-upload-help"></label>
+        <label class="fdx-upload" for="fdx-id-file"><span class="fdx-upload-art">{{ icon('id') }}<img id="fdx-id-preview" alt="Selected identity document preview" hidden></span><strong>ID document</strong><span class="fdx-upload-filename" id="fdx-id-name">Choose an image</span><input id="fdx-id-file" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="fdx-upload-help"></label>
+      </div><p id="fdx-upload-help" class="fdx-small">JPG, PNG or WebP · Up to 5 MB per image.</p><label class="fdx-consent"><input id="fdx-preview-consent" type="checkbox"><span>I have permission to use these images for this preview.</span></label><div class="fdx-demo-actions"><button type="button" class="fdx-button fdx-button-dark" id="fdx-link-record" disabled>Link record preview {{ icon('link') }}</button><button type="button" class="fdx-reset" id="fdx-clear-record">Clear</button></div><p class="fdx-record-status" id="fdx-record-status" role="status" aria-live="polite">Choose both images and confirm permission to preview a linked record.</p><p class="fdx-demo-note">Preview only. Images are displayed locally; they are not submitted, saved to your account or verified.</p><noscript><p class="fdx-small">Enable JavaScript to use this optional preview.</p></noscript></div>
+    </div>
   </section>
 
-  <section class="fdw-section fdw-contact" id="contact" aria-labelledby="fdw-contact-title">
-    <div class="fdw-wrap"><div class="fdw-contact-box">
-      <div><p class="fdw-overline">Made for your next move</p><h2 class="fdw-title" id="fdw-contact-title">Let's bring it<br><em>all together.</em></h2><p class="fdw-body">Tell us how your organisation works. We'll help you explore a connected setup for your payments, security and operations.</p><div class="fdw-actions"><a class="fdw-btn fdw-btn-primary" href="{{ url_for('auth.signup') }}">Create your account {{ fdw_icon('arrow') }}</a></div><div class="fdw-contact-thumb"><img src="{{ fdw_media.support }}" alt="Colleagues sharing ideas around a meeting table" width="700" height="240" loading="lazy" decoding="async"><span>Real people.<br>Better connections.</span></div></div>
-      <form class="fdw-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <h3>Talk to our team</h3>
-        <div class="fdw-form-row"><div class="fdw-field"><label for="fdw-full-name">Full name <span aria-hidden="true">*</span></label><input id="fdw-full-name" name="full_name" type="text" required autocomplete="name" placeholder="Your full name" maxlength="150"></div><div class="fdw-field"><label for="fdw-company">Company / organisation</label><input id="fdw-company" name="company" type="text" autocomplete="organization" placeholder="Your organisation" maxlength="180"></div></div>
-        <div class="fdw-field"><label for="fdw-email">Work email <span aria-hidden="true">*</span></label><input id="fdw-email" name="email" type="email" required autocomplete="email" placeholder="you@company.com" maxlength="254"></div>
-        <div class="fdw-field"><label for="fdw-interest">What would you like to connect?</label><select id="fdw-interest" name="interest"><option value="payments">Payments &amp; bulk payouts</option><option value="biometrics">Biometric security</option><option value="county">County revenue collection</option><option value="tenders">Tender tracking</option><option value="logistics">DHL logistics &amp; tracking</option><option value="petroleum">Petroleum transport</option><option value="enterprise">Full enterprise platform</option></select></div>
-        <div class="fdw-field"><label for="fdw-message">Tell us a little more</label><textarea id="fdw-message" name="message" rows="3" placeholder="Your goals, your team, your next big idea…" maxlength="5000"></textarea></div>
-        <button class="fdw-btn fdw-btn-primary" type="submit">Send your enquiry {{ fdw_icon('arrow') }}</button>
-        <p class="fdw-form-note">Fields marked * are required. Our team will use these details to respond to your enquiry.</p>
-      </form>
-    </div><div class="fdw-endline"><strong>FABS Trading · Data Warehouse</strong><span>Payments. Security. Logistics. Connected.</span><a class="fdw-link" href="#fdw-hero">Back to top {{ fdw_icon('diagonal') }}</a></div></div>
+  <section class="fdx-section fdx-logistics-section" id="tracking" aria-labelledby="fdx-tracking-title">
+    <div class="fdx-wrap fdx-split fdx-split-reverse">
+      <div class="fdx-logistics-visual">{{ photo('port','fdx-logistics-photo') }}<div class="fdx-warehouse-inset">{{ photo('warehouse') }}<span>From dispatch to delivery.</span></div><span class="fdx-photo-label">IMPORT / EXPORT / SHIPMENT VISIBILITY</span></div>
+      <div class="fdx-feature-copy"><p class="fdx-eyebrow">IMPORT &amp; EXPORT SHIPMENT TRACKING</p><h2 id="fdx-tracking-title">Every shipment has a story.<br>Keep yours together.</h2><p class="fdx-body">Give your operations team a shared view of shipments, movement milestones and supporting documents—from the dispatch desk to the destination.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Import and export shipment references.</li><li>{{ icon('check') }} Waybills, customs paperwork and delivery documents.</li><li>{{ icon('check') }} Available updates from connected carriers.</li><li>{{ icon('check') }} Dispatch coordination and delivery follow-up.</li></ul><div class="fdx-milestones" aria-label="Illustrative shipment milestones"><span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span></div><a class="fdx-text-link" href="#contact" data-contact-interest="logistics">Connect your shipment workflow {{ icon('arrow') }}</a></div>
+    </div>
   </section>
+
+  <section class="fdx-fleet-section" id="petroleum" aria-labelledby="fdx-fleet-title"><div class="fdx-wrap fdx-fleet-grid"><div class="fdx-fleet-photo">{{ photo('petroleum') }}<div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div></div><div class="fdx-fleet-copy"><p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p><h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2><p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p><div class="fdx-fleet-features"><div>{{ icon('truck') }}<h3>Transport &amp; security</h3><p>Vehicle records, dispatch, trip oversight and incident follow-up.</p></div><div>{{ icon('file') }}<h3>Driver documents</h3><p>Licence and document uploads, expiry reviews and organised records.</p></div><div>{{ icon('shield') }}<h3>Vetting &amp; employment</h3><p>Driver applications, checks, human review and employment records.</p></div><div>{{ icon('payout') }}<h3>Salary disbursements</h3><p>Approved driver payroll batches and payment reconciliation.</p></div></div><a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">Plan your fleet solution {{ icon('arrow') }}</a></div></div></section>
+
+  <section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title"><div class="fdx-wrap"><div class="fdx-section-head"><div><p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p><h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2></div><p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p></div><div class="fdx-editorial-grid"><article class="fdx-editorial">{{ photo('county') }}<div><span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span><h3>Make collections easier to account for.</h3><p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p><a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions {{ icon('arrow') }}</a></div></article><article class="fdx-editorial">{{ photo('documents') }}<div><span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span><h3>Give records and deadlines a home.</h3><p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p><a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management {{ icon('arrow') }}</a></div></article><article class="fdx-editorial">{{ photo('infrastructure') }}<div><span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span><h3>Add technical capacity where it counts.</h3><p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p><a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope {{ icon('arrow') }}</a></div></article></div></div></section>
+
+  <section class="fdx-process-section" aria-labelledby="fdx-process-title"><div class="fdx-wrap"><div class="fdx-process-heading"><p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p><h2 id="fdx-process-title">A practical way to work together.</h2></div><ol class="fdx-process"><li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li><li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li><li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li><li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li></ol></div></section>
+
+  <section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title"><div class="fdx-wrap fdx-contact-grid"><div class="fdx-contact-copy"><p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p><h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2><p>Need payment aggregation, stronger onboarding, transport visibility or extra IT capacity? Tell us what you are building and where you need support.</p><div class="fdx-contact-note">{{ icon('file') }}<div><h3>Make the first conversation useful.</h3><p>Share your organisation, the service you need, your current systems and your intended timeline.</p></div></div><a class="fdx-text-link" href="{{ url_for('auth.signup') }}">Ready to explore? Create an account {{ icon('arrow') }}</a><div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div></div><form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><h3>Tell us what you need.</h3><p>Fields marked * are required.</p><div class="fdx-form-row"><div class="fdx-field"><label for="fdx-full-name">Full name *</label><input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name"></div><div class="fdx-field"><label for="fdx-company">Company / organisation</label><input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation"></div></div><div class="fdx-field"><label for="fdx-email">Work email *</label><input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com"></div><div class="fdx-field"><label for="fdx-interest">How can we help?</label><select id="fdx-interest" name="interest"><option value="payments">Payments, payouts, merchants &amp; APIs</option><option value="biometrics">Face-to-ID &amp; biometric security</option><option value="county">County revenue collection</option><option value="tenders">Tender tracking</option><option value="logistics">Import, export &amp; shipment tracking</option><option value="petroleum">Petroleum, fleets &amp; driver management</option><option value="enterprise">Company management &amp; IT support</option></select></div><div class="fdx-field"><label for="fdx-message">Project details *</label><textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea></div><button class="fdx-button fdx-button-red" type="submit">Send project enquiry {{ icon('arrow') }}</button><p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p></form></div></section>
 </div>
-{# Script stays in content so it works even if base.html omits a scripts block. #}
+{% endblock %}
+{% block scripts %}
 <script>
 (() => {
   'use strict';
   const root = document.getElementById('fdw-home');
-  if (!root || root.dataset.initialized) return;
-  root.dataset.initialized = 'true';
-  const hero = root.querySelector('#fdw-hero');
-  const slides = [...hero.querySelectorAll('[data-slide]')];
-  const tabs = [...hero.querySelectorAll('[data-slide-to]')];
-  const pauseButton = hero.querySelector('[data-slide-pause]');
-  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const slideMeta = {{ fdw_slides|tojson }};
-  const targets = ['#services', '#biometrics', '#payouts', '#tracking', '#county'];
-  let current = 0;
-  let timer = null;
-  let manuallyPaused = motion.matches;
-  let focused = false;
-  let visible = true;
-  const interval = 5000;
-  hero.querySelector('.fdw-carousel-controls').hidden = false;
-  tabs.forEach(tab => { tab.disabled = false; });
-
-  function mayPlay() {
-    return !manuallyPaused && !motion.matches && !focused && !document.hidden && visible;
-  }
-  function syncPlayback() {
-    if (timer !== null) window.clearInterval(timer);
-    timer = null;
-    const playing = mayPlay();
-    hero.classList.toggle('is-running', playing);
-    hero.classList.toggle('is-paused', !playing);
-    const paused = manuallyPaused || motion.matches;
-    pauseButton.setAttribute('aria-pressed', String(paused));
-    pauseButton.setAttribute('aria-label', paused ? 'Start automatic slideshow' : 'Pause automatic slideshow');
-    pauseButton.querySelector('[data-pause-icon]').hidden = paused;
-    pauseButton.querySelector('[data-play-icon]').hidden = !paused;
-    // The reduced-motion preference also disables continuous photo movement.
-    pauseButton.disabled = motion.matches;
-    if (motion.matches) pauseButton.setAttribute('aria-label', 'Automatic slideshow disabled by reduced motion preference');
-    if (playing) timer = window.setInterval(() => showSlide(current + 1, false), interval);
-  }
-  function showSlide(index, announce) {
-    current = (index + slides.length) % slides.length;
-    slides.forEach((slide, i) => {
-      const active = i === current;
-      slide.classList.toggle('is-active', active);
-      slide.setAttribute('aria-hidden', String(!active));
-      tabs[i].classList.toggle('is-active', active);
-      tabs[i].setAttribute('aria-pressed', String(active));
-    });
-    const meta = slideMeta[current];
-    hero.querySelector('[data-slide-current]').textContent = String(current + 1).padStart(2, '0');
-    hero.querySelector('[data-spotlight-name]').textContent = meta.name;
-    hero.querySelector('[data-spotlight-title]').textContent = meta.title;
-    hero.querySelector('[data-spotlight-text]').textContent = meta.text;
-    hero.querySelector('[data-spotlight-link]').href = targets[current];
-    if (announce) hero.querySelector('[data-slide-announcement]').textContent = `Image ${current + 1} of ${slides.length}: ${meta.name}.`;
-  }
-  function navigate(index) {
-    showSlide(index, true);
-    syncPlayback();
-  }
-  hero.querySelector('[data-slide-prev]').addEventListener('click', () => navigate(current - 1));
-  hero.querySelector('[data-slide-next]').addEventListener('click', () => navigate(current + 1));
-  tabs.forEach((tab, index) => tab.addEventListener('click', () => navigate(index)));
-  pauseButton.addEventListener('click', () => {
-    manuallyPaused = !manuallyPaused;
-    if (!manuallyPaused) focused = false;
-    syncPlayback();
-  });
-  // Photos keep changing under the pointer. Keyboard focus pauses autoplay.
-  hero.addEventListener('focusin', event => {
-    focused = event.target.matches(':focus-visible');
-    syncPlayback();
-  });
-  hero.addEventListener('focusout', event => {
-    if (!hero.contains(event.relatedTarget)) { focused = false; syncPlayback(); }
-  });
-  hero.querySelector('.fdw-slide-nav').addEventListener('keydown', event => {
-    if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-    event.preventDefault();
-    focused = true;
-    const index = event.key === 'Home' ? 0 : event.key === 'End' ? slides.length - 1 : current + (event.key === 'ArrowRight' ? 1 : -1);
-    navigate(index);
-    tabs[current].focus();
-  });
-  // Horizontal touch swipes; vertical page scrolling remains native.
-  let touchStart = null;
-  hero.addEventListener('touchstart', event => {
-    if (event.touches.length !== 1 || event.target.closest('button,a')) return;
-    touchStart = { x:event.touches[0].clientX, y:event.touches[0].clientY };
-  }, { passive:true });
-  hero.addEventListener('touchend', event => {
-    if (!touchStart || !event.changedTouches.length) return;
-    const dx = event.changedTouches[0].clientX - touchStart.x;
-    const dy = event.changedTouches[0].clientY - touchStart.y;
-    if (Math.abs(dx) > 55 && Math.abs(dx) > Math.abs(dy) * 1.5) navigate(current + (dx < 0 ? 1 : -1));
-    touchStart = null;
-  }, { passive:true });
-  hero.addEventListener('touchcancel', () => { touchStart = null; }, { passive:true });
-  document.addEventListener('visibilitychange', syncPlayback);
-  window.addEventListener('pagehide', () => { if (timer !== null) window.clearInterval(timer); });
-  window.addEventListener('pageshow', syncPlayback);
-  const onMotionChange = () => { manuallyPaused = motion.matches; syncPlayback(); };
-  if (motion.addEventListener) motion.addEventListener('change', onMotionChange);
-  else if (motion.addListener) motion.addListener(onMotionChange);
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(entries => {
-      visible = entries[0].isIntersecting;
-      syncPlayback();
-    }, { threshold:0.12 });
-    observer.observe(hero);
-  }
-  // Keep anchor navigation and contact-interest shortcuts local to this page.
-  root.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.addEventListener('click', event => {
-      const target = document.getElementById(link.getAttribute('href').slice(1));
-      if (!target) return;
-      const interest = link.dataset.contactInterest;
-      if (interest) root.querySelector('#fdw-interest').value = interest;
-      event.preventDefault();
-      // Do not pass the event to base.html smooth-scroll handlers a second time.
-      event.stopPropagation();
-      target.scrollIntoView({ behavior:motion.matches ? 'auto' : 'smooth', block:'start' });
-      if (interest) {
-        const select = root.querySelector('#fdw-interest');
-        select.focus({ preventScroll:true });
-      }
-    });
-  });
-  // Local demonstrations only: these controls make no network or device requests.
-  root.querySelectorAll('[data-demo-control]').forEach(control => { control.disabled = false; });
-  const paymentPhotos = [...root.querySelectorAll('[data-payment-photo]')];
-  const paymentPhotoButtons = [...root.querySelectorAll('[data-payment-photo-to]')];
-  const paymentCaptions = [
-    'Mobile payments, wherever your day takes you.',
-    'A clearer connection between your people and their payments.',
-    'Everyday commerce, made a little more connected.'
-  ];
-  function selectPaymentPhoto(index) {
-    paymentPhotos.forEach((photo, i) => {
-      photo.classList.toggle('is-active', i === index);
-      photo.setAttribute('aria-hidden', String(i !== index));
-      paymentPhotoButtons[i].classList.toggle('is-active', i === index);
-      paymentPhotoButtons[i].setAttribute('aria-pressed', String(i === index));
-    });
-    root.querySelector('[data-payment-caption]').textContent = paymentCaptions[index];
-  }
-  paymentPhotoButtons.forEach(button => button.addEventListener('click', () => {
-    selectPaymentPhoto(Number(button.dataset.paymentPhotoTo));
-  }));
-
-  function paintStages(elements, completed, active) {
-    elements.forEach((element, i) => {
-      element.classList.toggle('is-done', i < completed);
-      element.classList.toggle('is-active', i === active);
-      if (i === active) element.setAttribute('aria-current', 'step');
-      else element.removeAttribute('aria-current');
-    });
-  }
-
-  // Fingerprint / iris exploration, with cancellation-safe demo steps.
-  const bio = root.querySelector('#fdw-biometric-demo');
-  const bioRun = bio.querySelector('[data-bio-run]');
-  const bioReset = bio.querySelector('[data-bio-reset]');
-  const bioRunLabel = bio.querySelector('[data-bio-run-label]');
-  const bioProgress = bio.querySelector('[data-bio-progress]');
-  const bioStatus = bio.querySelector('[data-bio-status]');
-  const bioFeedback = bio.querySelector('[data-bio-feedback]');
-  const bioStages = [...bio.querySelectorAll('[data-bio-stage]')];
-  const bioMethods = [...root.querySelectorAll('[data-bio-method]')];
-  const bioOptions = {
-    fingerprint: {
-      title:'Fingerprint verification',
-      description:"A fingerprint reader connects a person's enrolled identity to an access or approval request.",
-      label:'Fingerprint reader',
-      eyebrow:'Touch. Verify. Continue.',
-      photoTitle:'Security at the point of access.'
-    },
-    iris: {
-      title:'Iris verification',
-      description:'An iris device uses the unique patterns in an enrolled eye to support an identity verification step.',
-      label:'Iris detail',
-      eyebrow:'Look. Verify. Continue.',
-      photoTitle:'A unique pattern. A connected identity.'
-    }
+  if (!root) return;
+  // Service filters use native buttons, with the result count announced to screen readers.
+  const filterButtons = [...root.querySelectorAll('[data-filter]')];
+  const cards = [...root.querySelectorAll('[data-service-category]')];
+  const filterServices = category => {
+    if (!filterButtons.some(button => button.dataset.filter === category)) category = 'all';
+    filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === category)));
+    cards.forEach(card => { card.hidden = category !== 'all' && card.dataset.serviceCategory !== category && card.dataset.serviceCategory !== 'all'; });
+    const count = cards.filter(card => !card.hidden && card.dataset.serviceCategory !== 'all').length;
+    root.querySelector('#fdx-filter-status').textContent = `Showing ${count} services.`;
   };
-  let bioMethod = 'fingerprint';
-  let bioTimers = [];
-  let bioEpoch = 0;
-  function clearBioTimers() {
-    bioEpoch += 1;
-    bioTimers.forEach(window.clearTimeout);
-    bioTimers = [];
+  filterButtons.forEach(button => button.addEventListener('click', () => filterServices(button.dataset.filter)));
+  root.querySelectorAll('[data-category-link]').forEach(link => link.addEventListener('click', () => filterServices(link.dataset.categoryLink)));
+  function revealAnchor(hash) {
+    let id; try { id = decodeURIComponent((hash || '').slice(1)); } catch (_) { return; }
+    const target = document.getElementById(id);
+    const card = target && target.closest('[data-service-category]');
+    if (card && card.hidden) filterServices('all');
   }
-  function setBioProgress(value) {
-    bioProgress.setAttribute('aria-valuenow', String(value));
-    bioProgress.querySelector('span').style.width = `${value}%`;
-  }
-  function resetBio(message) {
-    clearBioTimers();
-    bio.classList.remove('is-running', 'is-complete');
-    bioRun.disabled = false;
-    bioRunLabel.textContent = 'Run verification demo';
-    bioStatus.textContent = 'Ready to explore';
-    bioFeedback.textContent = message || 'Choose a method, then follow the sample verification steps.';
-    setBioProgress(0);
-    paintStages(bioStages, 0, -1);
-  }
-  function selectBioMethod(method) {
-    if (!bioOptions[method]) return;
-    bioMethod = method;
-    resetBio(`${bioOptions[method].title} selected. Run the demo to explore the workflow.`);
-    const option = bioOptions[method];
-    bioMethods.forEach(button => {
-      const selected = button.dataset.bioMethod === method;
-      button.classList.toggle('is-active', selected);
-      button.setAttribute('aria-pressed', String(selected));
-    });
-    bio.querySelectorAll('[data-bio-photo]').forEach(photo => {
-      const selected = photo.dataset.bioPhoto === method;
-      photo.classList.toggle('is-active', selected);
-      photo.setAttribute('aria-hidden', String(!selected));
-    });
-    root.querySelector('[data-bio-title]').textContent = option.title;
-    root.querySelector('[data-bio-description]').textContent = option.description;
-    bio.querySelector('[data-bio-photo-label]').textContent = option.label;
-    bio.querySelector('[data-bio-photo-eyebrow]').textContent = option.eyebrow;
-    bio.querySelector('[data-bio-photo-title]').textContent = option.photoTitle;
-  }
-  bioMethods.forEach(button => button.addEventListener('click', () => selectBioMethod(button.dataset.bioMethod)));
-  bioReset.addEventListener('click', () => resetBio('Demo reset. Choose a method and try again.'));
-  bioRun.addEventListener('click', () => {
-    clearBioTimers();
-    const epoch = bioEpoch;
-    const selected = bioMethod;
-    const later = (delay, callback) => bioTimers.push(window.setTimeout(() => {
-      if (epoch === bioEpoch) callback();
-    }, delay));
-    bio.classList.add('is-running');
-    bio.classList.remove('is-complete');
-    bioRun.disabled = true;
-    bioRunLabel.textContent = 'Running sample workflow…';
-    bioStatus.textContent = 'Preparing sample workflow';
-    bioFeedback.textContent = `Step 1 of 3: prepare the sample ${selected} verification request.`;
-    setBioProgress(20);
-    paintStages(bioStages, 0, 0);
-    later(750, () => {
-      bioStatus.textContent = 'Simulating verification';
-      bioFeedback.textContent = 'Step 2 of 3: illustrate an identity verification against an enrolled sample.';
-      setBioProgress(55);
-      paintStages(bioStages, 1, 1);
-    });
-    later(1500, () => {
-      bioStatus.textContent = 'Preparing sample result';
-      bioFeedback.textContent = 'Step 3 of 3: illustrate a verification record for the approval workflow.';
-      setBioProgress(85);
-      paintStages(bioStages, 2, 2);
-    });
-    later(2250, () => {
-      bio.classList.remove('is-running');
-      bio.classList.add('is-complete');
-      bioStatus.textContent = 'Demo verification complete';
-      bioFeedback.textContent = `${bioOptions[selected].title} demo complete. No identity check was performed and no biometric data was captured.`;
-      bioRun.disabled = false;
-      bioRunLabel.textContent = 'Run demo again';
-      setBioProgress(100);
-      paintStages(bioStages, 3, -1);
-    });
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    const url = new URL(link.href, location.href);
+    if (url.origin === location.origin && url.pathname === location.pathname) revealAnchor(url.hash);
+    if (link.dataset.contactInterest) root.querySelector('#fdx-interest').value = link.dataset.contactInterest;
   });
+  window.addEventListener('hashchange', () => revealAnchor(location.hash));
+  revealAnchor(location.hash);
 
-  // Sample bulk payout builder. Amount calculations use integer minor units.
-  const payout = root.querySelector('#fdw-payout-demo');
-  const recipientInput = payout.querySelector('#fdw-recipient-count');
-  const amountInput = payout.querySelector('#fdw-payout-amount');
-  const payoutRun = payout.querySelector('[data-payout-run]');
-  const payoutRunLabel = payout.querySelector('[data-payout-run-label]');
-  const payoutFeedback = payout.querySelector('[data-payout-feedback]');
-  const payoutError = payout.querySelector('#fdw-payout-input-error');
-  const payoutStages = [...payout.querySelectorAll('[data-payout-stage]')];
-  const recipientRows = [...payout.querySelectorAll('[data-demo-recipient]')];
-  const railButtons = [...payout.querySelectorAll('[data-payout-rail]')];
-  const presetButtons = [...payout.querySelectorAll('[data-payout-preset]')];
-  const moneyFormat = new Intl.NumberFormat('en-KE', { style:'currency', currency:'KES', currencyDisplay:'code', minimumFractionDigits:2, maximumFractionDigits:2 });
-  const amountFormat = new Intl.NumberFormat('en-KE', { minimumFractionDigits:2, maximumFractionDigits:2 });
-  let payoutRail = 'M-PESA';
-  let payoutTimers = [];
-  let payoutEpoch = 0;
-  function clearPayoutTimers() {
-    payoutEpoch += 1;
-    payoutTimers.forEach(window.clearTimeout);
-    payoutTimers = [];
+  // A local, consent-gated image-pairing preview. No upload or recognition API is called.
+  const slots = ['face', 'id'].map(name => ({name, input:root.querySelector(`#fdx-${name}-file`), preview:root.querySelector(`#fdx-${name}-preview`), label:root.querySelector(`#fdx-${name}-name`), url:null, ready:false, revision:0}));
+  const consent = root.querySelector('#fdx-preview-consent');
+  const linkRecord = root.querySelector('#fdx-link-record');
+  const status = root.querySelector('#fdx-record-status');
+  function updateReady() { linkRecord.disabled = !consent.checked || slots.some(slot => !slot.ready); }
+  function resetStatus() { status.classList.remove('is-linked'); status.textContent = 'Choose both images and confirm permission to preview a linked record.'; }
+  function clearSlot(slot) {
+    slot.revision++;
+    if (slot.url) URL.revokeObjectURL(slot.url);
+    slot.url = null; slot.ready = false; slot.input.value = ''; slot.preview.hidden = true;
+    slot.preview.removeAttribute('src'); slot.label.textContent = 'Choose an image';
   }
-  function readBatch() {
-    const count = recipientInput.valueAsNumber;
-    const amount = amountInput.valueAsNumber;
-    if (!recipientInput.checkValidity() || !amountInput.checkValidity() ||
-        !Number.isInteger(count) || !Number.isFinite(amount) || count < 1 || count > 5000 || amount < .01 || amount > 1000000) return null;
-    const amountMinor = Math.round(amount * 100);
-    return { count, amountMinor, totalMinor:amountMinor * count, rail:payoutRail };
-  }
-  function lockPayout(locked) {
-    [recipientInput, amountInput, ...railButtons, ...presetButtons].forEach(control => { control.disabled = locked; });
-    payoutRun.disabled = locked || !readBatch();
-  }
-  function resetPayoutResult() {
-    clearPayoutTimers();
-    payout.classList.remove('is-running','is-complete');
-    lockPayout(false);
-    payoutRunLabel.textContent = 'Run payout demo';
-    paintStages(payoutStages, 0, -1);
-    recipientRows.forEach(row => { row.querySelector('[data-recipient-status]').textContent = 'Draft'; });
-  }
-  function updateBatch(isCustom) {
-    resetPayoutResult();
-    const batch = readBatch();
-    payoutError.hidden = !!batch;
-    if (isCustom) {
-      presetButtons.forEach(button => { button.classList.remove('is-active'); button.setAttribute('aria-pressed','false'); });
-      payout.querySelector('[data-batch-code]').textContent = 'DEMO · CUSTOM';
+  slots.forEach(slot => slot.input.addEventListener('change', () => {
+    const file = slot.input.files[0];
+    clearSlot(slot); resetStatus(); updateReady();
+    if (!file) return;
+    if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
+      status.textContent = 'Please choose a JPG, PNG or WebP image no larger than 5 MB.'; return;
     }
-    if (!batch) {
-      payoutError.textContent = 'Use 1–5,000 recipients and KES 0.01–1,000,000 per recipient, with up to two decimal places.';
-      payout.querySelector('[data-payout-total]').textContent = '—';
-      payout.querySelector('[data-payout-count]').textContent = 'Check values';
-      payoutRun.disabled = true;
-      payoutFeedback.textContent = 'Correct the values to preview your sample batch.';
-      recipientRows.forEach(row => { row.hidden = true; });
-      payout.querySelector('[data-sample-count]').textContent = 'A valid sample batch will appear here.';
-      return;
-    }
-    payoutError.textContent = '';
-    payout.querySelector('[data-payout-total]').textContent = moneyFormat.format(batch.totalMinor / 100);
-    payout.querySelector('[data-payout-count]').textContent = `${batch.count.toLocaleString('en-KE')} ${batch.count === 1 ? 'recipient' : 'recipients'}`;
-    recipientRows.forEach((row, index) => {
-      row.hidden = index >= batch.count;
-      row.querySelector('[data-recipient-amount]').textContent = amountFormat.format(batch.amountMinor / 100);
-    });
-    payout.querySelector('[data-sample-count]').textContent = `Showing ${Math.min(batch.count, 3)} of ${batch.count.toLocaleString('en-KE')} sample recipients · ${batch.rail}`;
-    payoutFeedback.textContent = 'Your sample batch is ready to explore. No money will be transferred.';
-  }
-  function selectRail(rail, photo) {
-    payoutRail = rail;
-    railButtons.forEach(button => {
-      const selected = button.dataset.payoutRail === rail;
-      button.classList.toggle('is-active', selected);
-      button.setAttribute('aria-pressed', String(selected));
-    });
-    selectPaymentPhoto(photo);
-    updateBatch(false);
-  }
-  railButtons.forEach(button => button.addEventListener('click', () => selectRail(button.dataset.payoutRail, Number(button.dataset.railPhoto))));
-  presetButtons.forEach(button => button.addEventListener('click', () => {
-    const payroll = button.dataset.payoutPreset === 'payroll';
-    recipientInput.value = payroll ? '24' : '8';
-    amountInput.value = payroll ? '2500' : '12500';
-    presetButtons.forEach(item => {
-      const selected = item === button;
-      item.classList.toggle('is-active',selected);
-      item.setAttribute('aria-pressed',String(selected));
-    });
-    payout.querySelector('[data-batch-code]').textContent = payroll ? 'DEMO · PAYROLL' : 'DEMO · SUPPLIERS';
-    updateBatch(false);
+    const revision = slot.revision;
+    const objectURL = URL.createObjectURL(file); slot.url = objectURL;
+    const probe = new Image();
+    probe.onload = () => {
+      if (revision !== slot.revision) return;
+      slot.preview.src = objectURL; slot.preview.hidden = false; slot.ready = true;
+      slot.label.textContent = file.name; updateReady();
+      status.textContent = slots.every(item => item.ready) ? 'Both images are ready. Confirm permission, then link the record preview.' : 'Image ready. Choose the other image to continue.';
+    };
+    probe.onerror = () => { if (revision !== slot.revision) return; clearSlot(slot); updateReady(); status.textContent = 'This image could not be read. Please choose another image.'; };
+    probe.src = objectURL;
   }));
-  [recipientInput, amountInput].forEach(input => input.addEventListener('input', () => updateBatch(true)));
-  payout.querySelector('[data-payout-reset]').addEventListener('click', () => {
-    recipientInput.value = '24';
-    amountInput.value = '2500';
-    presetButtons.forEach(button => {
-      const selected = button.dataset.payoutPreset === 'payroll';
-      button.classList.toggle('is-active', selected);
-      button.setAttribute('aria-pressed',String(selected));
-    });
-    payout.querySelector('[data-batch-code]').textContent = 'DEMO · PAYROLL';
-    selectRail('M-PESA',0);
-    payoutFeedback.textContent = 'Demo reset to a sample payroll batch.';
+  consent.addEventListener('change', () => { updateReady(); resetStatus(); });
+  linkRecord.addEventListener('click', () => {
+    if (linkRecord.disabled) return;
+    status.classList.add('is-linked'); status.textContent = 'Images linked in this preview. Identity verification is still pending.';
   });
-  payoutRun.addEventListener('click', () => {
-    const batch = readBatch();
-    if (!batch) { updateBatch(false); return; }
-    clearPayoutTimers();
-    const epoch = payoutEpoch;
-    const later = (delay, callback) => payoutTimers.push(window.setTimeout(() => {
-      if (epoch === payoutEpoch) callback();
-    }, delay));
-    payout.classList.add('is-running');
-    payout.classList.remove('is-complete');
-    lockPayout(true);
-    payoutRunLabel.textContent = 'Running sample batch…';
-    paintStages(payoutStages,0,0);
-    recipientRows.forEach(row => { row.querySelector('[data-recipient-status]').textContent = 'Checking'; });
-    payoutFeedback.textContent = `Step 1 of 3: validate ${batch.count} sample recipients for ${batch.rail}.`;
-    later(750, () => {
-      paintStages(payoutStages,1,1);
-      recipientRows.forEach(row => { row.querySelector('[data-recipient-status]').textContent = 'Ready'; });
-      payoutFeedback.textContent = 'Step 2 of 3: simulate a batch approval for the sample recipients.';
-    });
-    later(1500, () => {
-      paintStages(payoutStages,2,2);
-      recipientRows.forEach(row => { row.querySelector('[data-recipient-status]').textContent = 'Demo review'; });
-      payoutFeedback.textContent = 'Step 3 of 3: preview how a batch result could be tracked.';
-    });
-    later(2250, () => {
-      payout.classList.remove('is-running');
-      payout.classList.add('is-complete');
-      paintStages(payoutStages,3,-1);
-      recipientRows.forEach(row => { row.querySelector('[data-recipient-status]').textContent = 'Demo done'; });
-      payoutFeedback.textContent = `Demo complete: ${batch.count} sample payouts totalling ${moneyFormat.format(batch.totalMinor / 100)}. No money was transferred.`;
-      lockPayout(false);
-      payoutRunLabel.textContent = 'Run demo again';
-    });
-  });
-  window.addEventListener('pagehide', () => {
-    resetBio();
-    resetPayoutResult();
-  });
-  updateBatch(false);
+  root.querySelector('#fdx-clear-record').addEventListener('click', () => { slots.forEach(clearSlot); consent.checked = false; updateReady(); resetStatus(); });
+  window.addEventListener('pagehide', () => { slots.forEach(clearSlot); consent.checked = false; updateReady(); resetStatus(); });
 
-  // Submit is handled by the existing Flask route with native validation + CSRF.
-  syncPlayback();
+  // Code-native globe: public-domain Natural Earth land points, orthographic projection.
+  // Route arcs are an illustration, not a live transaction or shipment feed.
+  const points = [[-70.0,-70.4],[-70.0,-63.0],[-70.0,17.4],[-70.0,32.0],[-70.0,39.3],[-70.0,46.6],[-70.0,53.9],[-70.0,61.2],[-70.0,75.8],[-70.0,83.1],[-70.0,90.5],[-70.0,97.8],[-70.0,105.1],[-70.0,112.4],[-70.0,119.7],[-70.0,127.0],[-70.0,134.3],[-70.0,141.6],[-70.0,148.9],[-70.0,156.2],[-67.5,48.6],[-67.5,55.2],[-67.5,87.8],[-67.5,94.4],[-67.5,100.9],[-67.5,107.4],[-67.5,114.0],[-67.5,120.5],[-67.5,127.0],[-67.5,133.6],[-67.5,140.1],[-55.0,-71.0],[-55.0,-66.7],[-52.5,-73.2],[-50.0,-75.0],[-50.0,-71.1],[-47.5,-72.7],[-47.5,-69.0],[-45.0,-73.9],[-45.0,-70.4],[-45.0,-66.9],[-45.0,170.0],[-42.5,-71.5],[-42.5,-68.1],[-42.5,-64.7],[-42.5,145.5],[-42.5,172.6],[-40.0,-72.3],[-40.0,-69.0],[-40.0,-65.8],[-40.0,-62.5],[-40.0,175.7],[-37.5,-72.9],[-37.5,-69.7],[-37.5,-66.6],[-37.5,-63.4],[-37.5,-60.3],[-37.5,141.4],[-37.5,144.6],[-37.5,147.7],[-35.0,-70.1],[-35.0,-67.1],[-35.0,-64.0],[-35.0,-61.0],[-35.0,-57.9],[-35.0,137.4],[-35.0,140.5],[-35.0,143.5],[-35.0,146.6],[-35.0,149.6],[-32.5,-70.3],[-32.5,-67.4],[-32.5,-64.4],[-32.5,-61.4],[-32.5,-58.5],[-32.5,-55.5],[-32.5,-52.5],[-32.5,18.6],[-32.5,21.6],[-32.5,24.5],[-32.5,27.5],[-32.5,116.4],[-32.5,119.4],[-32.5,122.4],[-32.5,125.3],[-32.5,134.2],[-32.5,137.2],[-32.5,140.1],[-32.5,143.1],[-32.5,146.1],[-32.5,149.0],[-32.5,152.0],[-30.0,-70.3],[-30.0,-67.4],[-30.0,-64.5],[-30.0,-61.6],[-30.0,-58.8],[-30.0,-55.9],[-30.0,-53.0],[-30.0,-50.1],[-30.0,19.2],[-30.0,22.1],[-30.0,25.0],[-30.0,27.8],[-30.0,30.7],[-30.0,117.3],[-30.0,120.2],[-30.0,123.1],[-30.0,126.0],[-30.0,128.9],[-30.0,131.8],[-30.0,134.7],[-30.0,137.5],[-30.0,140.4],[-30.0,143.3],[-30.0,146.2],[-30.0,149.1],[-30.0,152.0],[-27.5,-70.1],[-27.5,-67.3],[-27.5,-64.4],[-27.5,-61.6],[-27.5,-58.8],[-27.5,-56.0],[-27.5,-53.2],[-27.5,-50.4],[-27.5,17.3],[-27.5,20.1],[-27.5,22.9],[-27.5,25.7],[-27.5,28.6],[-27.5,31.4],[-27.5,115.9],[-27.5,118.8],[-27.5,121.6],[-27.5,124.4],[-27.5,127.2],[-27.5,130.0],[-27.5,132.8],[-27.5,135.7],[-27.5,138.5],[-27.5,141.3],[-27.5,144.1],[-27.5,146.9],[-27.5,149.8],[-27.5,152.6],[-25.0,-69.7],[-25.0,-66.9],[-25.0,-64.1],[-25.0,-61.4],[-25.0,-58.6],[-25.0,-55.9],[-25.0,-53.1],[-25.0,-50.4],[-25.0,15.8],[-25.0,18.6],[-25.0,21.4],[-25.0,24.1],[-25.0,26.9],[-25.0,29.6],[-25.0,32.4],[-25.0,46.2],[-25.0,115.2],[-25.0,117.9],[-25.0,120.7],[-25.0,123.4],[-25.0,126.2],[-25.0,128.9],[-25.0,131.7],[-25.0,134.5],[-25.0,137.2],[-25.0,140.0],[-25.0,142.7],[-25.0,145.5],[-25.0,148.3],[-25.0,151.0],[-22.5,-69.1],[-22.5,-66.3],[-22.5,-63.6],[-22.5,-60.9],[-22.5,-58.2],[-22.5,-55.5],[-22.5,-52.8],[-22.5,-50.1],[-22.5,-47.4],[-22.5,-44.7],[-22.5,-42.0],[-22.5,14.8],[-22.5,17.5],[-22.5,20.2],[-22.5,22.9],[-22.5,25.7],[-22.5,28.4],[-22.5,31.1],[-22.5,33.8],[-22.5,44.6],[-22.5,47.3],[-22.5,115.0],[-22.5,117.7],[-22.5,120.4],[-22.5,123.1],[-22.5,125.8],[-22.5,128.5],[-22.5,131.2],[-22.5,133.9],[-22.5,136.6],[-22.5,139.3],[-22.5,142.0],[-22.5,144.7],[-22.5,147.4],[-22.5,150.1],[-20.0,-68.3],[-20.0,-65.6],[-20.0,-62.9],[-20.0,-60.3],[-20.0,-57.6],[-20.0,-55.0],[-20.0,-52.3],[-20.0,-49.6],[-20.0,-47.0],[-20.0,-44.3],[-20.0,-41.7],[-20.0,14.2],[-20.0,16.9],[-20.0,19.5],[-20.0,22.2],[-20.0,24.9],[-20.0,27.5],[-20.0,30.2],[-20.0,32.8],[-20.0,46.1],[-20.0,120.6],[-20.0,123.3],[-20.0,126.0],[-20.0,128.6],[-20.0,131.3],[-20.0,133.9],[-20.0,136.6],[-20.0,139.3],[-20.0,141.9],[-20.0,144.6],[-20.0,147.2],[-17.5,-69.9],[-17.5,-67.3],[-17.5,-64.7],[-17.5,-62.0],[-17.5,-59.4],[-17.5,-56.8],[-17.5,-54.2],[-17.5,-51.6],[-17.5,-48.9],[-17.5,-46.3],[-17.5,-43.7],[-17.5,-41.1],[-17.5,14.0],[-17.5,16.6],[-17.5,19.2],[-17.5,21.8],[-17.5,24.5],[-17.5,27.1],[-17.5,29.7],[-17.5,32.3],[-17.5,34.9],[-17.5,37.6],[-17.5,45.4],[-17.5,48.1],[-17.5,124.1],[-17.5,126.7],[-17.5,129.3],[-17.5,131.9],[-17.5,134.6],[-17.5,137.2],[-17.5,142.4],[-17.5,145.0],[-15.0,-73.9],[-15.0,-71.3],[-15.0,-68.7],[-15.0,-66.1],[-15.0,-63.5],[-15.0,-60.9],[-15.0,-58.4],[-15.0,-55.8],[-15.0,-53.2],[-15.0,-50.6],[-15.0,-48.0],[-15.0,-45.4],[-15.0,-42.8],[-15.0,-40.2],[-15.0,14.1],[-15.0,16.7],[-15.0,19.3],[-15.0,21.9],[-15.0,24.5],[-15.0,27.1],[-15.0,29.6],[-15.0,32.2],[-15.0,34.8],[-15.0,37.4],[-15.0,40.0],[-15.0,47.8],[-15.0,50.3],[-15.0,125.4],[-15.0,128.0],[-15.0,130.6],[-15.0,133.2],[-15.0,143.5],[-15.0,166.8],[-12.5,-75.0],[-12.5,-72.5],[-12.5,-69.9],[-12.5,-67.3],[-12.5,-64.8],[-12.5,-62.2],[-12.5,-59.6],[-12.5,-57.1],[-12.5,-54.5],[-12.5,-52.0],[-12.5,-49.4],[-12.5,-46.8],[-12.5,-44.3],[-12.5,-41.7],[-12.5,-39.2],[-12.5,14.6],[-12.5,17.2],[-12.5,19.7],[-12.5,22.3],[-12.5,24.9],[-12.5,27.4],[-12.5,30.0],[-12.5,32.5],[-12.5,35.1],[-12.5,37.7],[-12.5,40.2],[-12.5,132.4],[-12.5,135.0],[-12.5,142.6],[-10.0,-75.9],[-10.0,-73.4],[-10.0,-70.8],[-10.0,-68.3],[-10.0,-65.8],[-10.0,-63.2],[-10.0,-60.7],[-10.0,-58.1],[-10.0,-55.6],[-10.0,-53.1],[-10.0,-50.5],[-10.0,-48.0],[-10.0,-45.5],[-10.0,-42.9],[-10.0,-40.4],[-10.0,-37.8],[-10.0,15.5],[-10.0,18.0],[-10.0,20.5],[-10.0,23.1],[-10.0,25.6],[-10.0,28.2],[-10.0,30.7],[-10.0,33.2],[-10.0,35.8],[-10.0,38.3],[-10.0,150.0],[-7.5,-79.1],[-7.5,-76.6],[-7.5,-74.1],[-7.5,-71.6],[-7.5,-69.1],[-7.5,-66.5],[-7.5,-64.0],[-7.5,-61.5],[-7.5,-59.0],[-7.5,-56.4],[-7.5,-53.9],[-7.5,-51.4],[-7.5,-48.9],[-7.5,-46.4],[-7.5,-43.8],[-7.5,-41.3],[-7.5,-38.8],[-7.5,-36.3],[-7.5,14.2],[-7.5,16.7],[-7.5,19.2],[-7.5,21.7],[-7.5,24.2],[-7.5,26.8],[-7.5,29.3],[-7.5,31.8],[-7.5,34.3],[-7.5,36.9],[-7.5,107.5],[-7.5,110.0],[-7.5,112.5],[-7.5,140.2],[-7.5,142.8],[-7.5,145.3],[-5.0,-79.6],[-5.0,-77.1],[-5.0,-74.6],[-5.0,-72.1],[-5.0,-69.6],[-5.0,-67.1],[-5.0,-64.6],[-5.0,-62.1],[-5.0,-59.5],[-5.0,-57.0],[-5.0,-54.5],[-5.0,-52.0],[-5.0,-49.5],[-5.0,-47.0],[-5.0,-44.5],[-5.0,-42.0],[-5.0,-39.5],[-5.0,-37.0],[-5.0,13.2],[-5.0,15.7],[-5.0,18.3],[-5.0,20.8],[-5.0,23.3],[-5.0,25.8],[-5.0,28.3],[-5.0,30.8],[-5.0,33.3],[-5.0,35.8],[-5.0,38.3],[-5.0,138.7],[-5.0,141.2],[-5.0,143.7],[-2.5,-77.4],[-2.5,-74.9],[-2.5,-72.4],[-2.5,-69.9],[-2.5,-67.4],[-2.5,-64.9],[-2.5,-62.4],[-2.5,-59.9],[-2.5,-57.4],[-2.5,-54.9],[-2.5,-52.4],[-2.5,-49.9],[-2.5,-47.4],[-2.5,-44.9],[-2.5,10.2],[-2.5,12.7],[-2.5,15.2],[-2.5,17.7],[-2.5,20.2],[-2.5,22.7],[-2.5,25.2],[-2.5,27.7],[-2.5,30.2],[-2.5,32.7],[-2.5,35.2],[-2.5,37.7],[-2.5,40.2],[-2.5,102.8],[-2.5,105.3],[-2.5,110.3],[-2.5,112.8],[-2.5,115.3],[-2.5,120.3],[-2.5,137.8],[-2.5,140.3],[0.0,-80.0],[0.0,-77.5],[0.0,-75.0],[0.0,-72.5],[0.0,-70.0],[0.0,-67.5],[0.0,-65.0],[0.0,-62.5],[0.0,-60.0],[0.0,-57.5],[0.0,-55.0],[0.0,-52.5],[0.0,10.0],[0.0,12.5],[0.0,15.0],[0.0,17.5],[0.0,20.0],[0.0,22.5],[0.0,25.0],[0.0,27.5],[0.0,30.0],[0.0,32.5],[0.0,35.0],[0.0,37.5],[0.0,40.0],[0.0,42.5],[0.0,100.0],[0.0,102.5],[0.0,110.0],[0.0,112.5],[0.0,115.0],[0.0,120.0],[2.5,-77.4],[2.5,-74.9],[2.5,-72.4],[2.5,-69.9],[2.5,-67.4],[2.5,-64.9],[2.5,-62.4],[2.5,-59.9],[2.5,-57.4],[2.5,-54.9],[2.5,-52.4],[2.5,10.2],[2.5,12.7],[2.5,15.2],[2.5,17.7],[2.5,20.2],[2.5,22.7],[2.5,25.2],[2.5,27.7],[2.5,30.2],[2.5,32.7],[2.5,35.2],[2.5,37.7],[2.5,40.2],[2.5,42.7],[2.5,45.2],[2.5,97.8],[2.5,100.3],[2.5,102.8],[2.5,112.8],[2.5,115.3],[2.5,117.8],[5.0,-77.1],[5.0,-74.6],[5.0,-72.1],[5.0,-69.6],[5.0,-67.1],[5.0,-64.6],[5.0,-62.1],[5.0,-59.5],[5.0,-57.0],[5.0,-54.5],[5.0,-6.8],[5.0,-1.8],[5.0,5.7],[5.0,8.2],[5.0,10.7],[5.0,13.2],[5.0,15.7],[5.0,18.3],[5.0,20.8],[5.0,23.3],[5.0,25.8],[5.0,28.3],[5.0,30.8],[5.0,33.3],[5.0,35.8],[5.0,38.3],[5.0,40.8],[5.0,43.3],[5.0,45.9],[5.0,96.1],[5.0,101.1],[5.0,116.1],[5.0,118.6],[7.5,-76.6],[7.5,-74.1],[7.5,-71.6],[7.5,-69.1],[7.5,-66.5],[7.5,-64.0],[7.5,-61.5],[7.5,-59.0],[7.5,-11.1],[7.5,-8.5],[7.5,-6.0],[7.5,-3.5],[7.5,-1.0],[7.5,1.6],[7.5,4.1],[7.5,6.6],[7.5,9.1],[7.5,11.6],[7.5,14.2],[7.5,16.7],[7.5,19.2],[7.5,21.7],[7.5,24.2],[7.5,26.8],[7.5,29.3],[7.5,31.8],[7.5,34.3],[7.5,36.9],[7.5,39.4],[7.5,41.9],[7.5,44.4],[7.5,46.9],[7.5,49.5],[7.5,99.9],[7.5,122.6],[7.5,125.1],[10.0,-83.5],[10.0,-73.4],[10.0,-70.8],[10.0,-68.3],[10.0,-65.8],[10.0,-63.2],[10.0,-12.5],[10.0,-9.9],[10.0,-7.4],[10.0,-4.8],[10.0,-2.3],[10.0,0.2],[10.0,2.8],[10.0,5.3],[10.0,7.9],[10.0,10.4],[10.0,12.9],[10.0,15.5],[10.0,18.0],[10.0,20.5],[10.0,23.1],[10.0,25.6],[10.0,28.2],[10.0,30.7],[10.0,33.2],[10.0,35.8],[10.0,38.3],[10.0,40.9],[10.0,43.4],[10.0,45.9],[10.0,48.5],[10.0,76.4],[10.0,78.9],[10.0,106.9],[12.5,-85.3],[12.5,-16.1],[12.5,-13.6],[12.5,-11.0],[12.5,-8.4],[12.5,-5.9],[12.5,-3.3],[12.5,-0.8],[12.5,1.8],[12.5,4.4],[12.5,6.9],[12.5,9.5],[12.5,12.1],[12.5,14.6],[12.5,17.2],[12.5,19.7],[12.5,22.3],[12.5,24.9],[12.5,27.4],[12.5,30.0],[12.5,32.5],[12.5,35.1],[12.5,37.7],[12.5,40.2],[12.5,42.8],[12.5,76.1],[12.5,78.6],[12.5,99.1],[12.5,104.2],[12.5,106.8],[12.5,124.7],[15.0,-92.0],[15.0,-89.4],[15.0,-86.8],[15.0,-84.2],[15.0,-16.9],[15.0,-14.4],[15.0,-11.8],[15.0,-9.2],[15.0,-6.6],[15.0,-4.0],[15.0,-1.4],[15.0,1.2],[15.0,3.8],[15.0,6.3],[15.0,8.9],[15.0,11.5],[15.0,14.1],[15.0,16.7],[15.0,19.3],[15.0,21.9],[15.0,24.5],[15.0,27.1],[15.0,29.6],[15.0,32.2],[15.0,34.8],[15.0,37.4],[15.0,40.0],[15.0,45.2],[15.0,47.8],[15.0,50.3],[15.0,76.2],[15.0,78.8],[15.0,99.5],[15.0,102.1],[15.0,104.7],[15.0,107.3],[15.0,120.2],[17.5,-101.4],[17.5,-98.7],[17.5,-96.1],[17.5,-93.5],[17.5,-90.9],[17.5,-88.3],[17.5,-14.9],[17.5,-12.2],[17.5,-9.6],[17.5,-7.0],[17.5,-4.4],[17.5,-1.8],[17.5,0.9],[17.5,3.5],[17.5,6.1],[17.5,8.7],[17.5,11.4],[17.5,14.0],[17.5,16.6],[17.5,19.2],[17.5,21.8],[17.5,24.5],[17.5,27.1],[17.5,29.7],[17.5,32.3],[17.5,34.9],[17.5,37.6],[17.5,42.8],[17.5,45.4],[17.5,48.1],[17.5,50.7],[17.5,53.3],[17.5,74.3],[17.5,76.9],[17.5,79.5],[17.5,82.1],[17.5,95.2],[17.5,97.9],[17.5,100.5],[17.5,103.1],[17.5,105.7],[17.5,121.5],[20.0,-105.5],[20.0,-102.8],[20.0,-100.2],[20.0,-97.5],[20.0,-89.5],[20.0,-76.2],[20.0,-15.1],[20.0,-12.4],[20.0,-9.7],[20.0,-7.1],[20.0,-4.4],[20.0,-1.8],[20.0,0.9],[20.0,3.6],[20.0,6.2],[20.0,8.9],[20.0,11.6],[20.0,14.2],[20.0,16.9],[20.0,19.5],[20.0,22.2],[20.0,24.9],[20.0,27.5],[20.0,30.2],[20.0,32.8],[20.0,35.5],[20.0,40.8],[20.0,43.5],[20.0,46.1],[20.0,48.8],[20.0,51.5],[20.0,54.1],[20.0,56.8],[20.0,75.4],[20.0,78.1],[20.0,80.7],[20.0,83.4],[20.0,86.0],[20.0,94.0],[20.0,96.7],[20.0,99.3],[20.0,102.0],[20.0,104.7],[20.0,110.0],[22.5,-104.2],[22.5,-101.5],[22.5,-98.8],[22.5,-79.9],[22.5,-14.9],[22.5,-12.2],[22.5,-9.5],[22.5,-6.8],[22.5,-4.1],[22.5,-1.4],[22.5,1.3],[22.5,4.0],[22.5,6.7],[22.5,9.4],[22.5,12.1],[22.5,14.8],[22.5,17.5],[22.5,20.2],[22.5,22.9],[22.5,25.7],[22.5,28.4],[22.5,31.1],[22.5,33.8],[22.5,39.2],[22.5,41.9],[22.5,44.6],[22.5,47.3],[22.5,50.0],[22.5,52.7],[22.5,55.4],[22.5,58.1],[22.5,71.7],[22.5,74.4],[22.5,77.1],[22.5,79.8],[22.5,82.5],[22.5,85.2],[22.5,87.9],[22.5,93.3],[22.5,96.0],[22.5,98.7],[22.5,101.4],[22.5,104.1],[22.5,106.8],[22.5,109.5],[22.5,112.2],[25.0,-111.0],[25.0,-105.5],[25.0,-102.8],[25.0,-100.0],[25.0,-77.9],[25.0,-14.5],[25.0,-11.7],[25.0,-9.0],[25.0,-6.2],[25.0,-3.5],[25.0,-0.7],[25.0,2.1],[25.0,4.8],[25.0,7.6],[25.0,10.3],[25.0,13.1],[25.0,15.8],[25.0,18.6],[25.0,21.4],[25.0,24.1],[25.0,26.9],[25.0,29.6],[25.0,32.4],[25.0,37.9],[25.0,40.7],[25.0,43.4],[25.0,46.2],[25.0,49.0],[25.0,68.3],[25.0,71.0],[25.0,73.8],[25.0,76.5],[25.0,79.3],[25.0,82.1],[25.0,84.8],[25.0,87.6],[25.0,90.3],[25.0,93.1],[25.0,95.8],[25.0,98.6],[25.0,101.4],[25.0,104.1],[25.0,106.9],[25.0,109.6],[25.0,112.4],[25.0,115.2],[25.0,117.9],[27.5,-109.5],[27.5,-106.7],[27.5,-103.9],[27.5,-101.1],[27.5,-98.3],[27.5,-81.4],[27.5,-10.9],[27.5,-8.1],[27.5,-5.3],[27.5,-2.4],[27.5,0.4],[27.5,3.2],[27.5,6.0],[27.5,8.8],[27.5,11.7],[27.5,14.5],[27.5,17.3],[27.5,20.1],[27.5,22.9],[27.5,25.7],[27.5,28.6],[27.5,31.4],[27.5,37.0],[27.5,39.8],[27.5,42.7],[27.5,45.5],[27.5,48.3],[27.5,53.9],[27.5,56.8],[27.5,59.6],[27.5,62.4],[27.5,65.2],[27.5,68.0],[27.5,70.8],[27.5,73.7],[27.5,76.5],[27.5,79.3],[27.5,82.1],[27.5,84.9],[27.5,87.8],[27.5,90.6],[27.5,93.4],[27.5,96.2],[27.5,99.0],[27.5,101.8],[27.5,104.7],[27.5,107.5],[27.5,110.3],[27.5,113.1],[27.5,115.9],[27.5,118.8],[30.0,-110.7],[30.0,-107.8],[30.0,-104.9],[30.0,-102.1],[30.0,-99.2],[30.0,-96.3],[30.0,-93.4],[30.0,-90.5],[30.0,-84.7],[30.0,-81.9],[30.0,-6.8],[30.0,-3.9],[30.0,-1.0],[30.0,1.9],[30.0,4.8],[30.0,7.6],[30.0,10.5],[30.0,13.4],[30.0,16.3],[30.0,19.2],[30.0,22.1],[30.0,25.0],[30.0,27.8],[30.0,30.7],[30.0,33.6],[30.0,36.5],[30.0,39.4],[30.0,42.3],[30.0,45.2],[30.0,48.1],[30.0,50.9],[30.0,53.8],[30.0,56.7],[30.0,59.6],[30.0,62.5],[30.0,65.4],[30.0,68.3],[30.0,71.1],[30.0,74.0],[30.0,76.9],[30.0,79.8],[30.0,82.7],[30.0,85.6],[30.0,88.5],[30.0,91.4],[30.0,94.2],[30.0,97.1],[30.0,100.0],[30.0,102.9],[30.0,105.8],[30.0,108.7],[30.0,111.6],[30.0,114.4],[30.0,117.3],[30.0,120.2],[32.5,-114.8],[32.5,-111.8],[32.5,-108.9],[32.5,-105.9],[32.5,-102.9],[32.5,-100.0],[32.5,-97.0],[32.5,-94.0],[32.5,-91.1],[32.5,-88.1],[32.5,-85.1],[32.5,-82.2],[32.5,-8.1],[32.5,-5.1],[32.5,-2.1],[32.5,0.8],[32.5,3.8],[32.5,6.7],[32.5,9.7],[32.5,12.7],[32.5,21.6],[32.5,36.4],[32.5,39.4],[32.5,42.3],[32.5,45.3],[32.5,48.2],[32.5,51.2],[32.5,54.2],[32.5,57.1],[32.5,60.1],[32.5,63.1],[32.5,66.0],[32.5,69.0],[32.5,72.0],[32.5,74.9],[32.5,77.9],[32.5,80.9],[32.5,83.8],[32.5,86.8],[32.5,89.7],[32.5,92.7],[32.5,95.7],[32.5,98.6],[32.5,101.6],[32.5,104.6],[32.5,107.5],[32.5,110.5],[32.5,113.5],[32.5,116.4],[32.5,119.4],[32.5,131.2],[35.0,-119.0],[35.0,-115.9],[35.0,-112.9],[35.0,-109.8],[35.0,-106.8],[35.0,-103.7],[35.0,-100.6],[35.0,-97.6],[35.0,-94.5],[35.0,-91.5],[35.0,-88.4],[35.0,-85.4],[35.0,-82.3],[35.0,-79.3],[35.0,-76.2],[35.0,-6.0],[35.0,-3.0],[35.0,0.1],[35.0,3.1],[35.0,6.2],[35.0,9.2],[35.0,33.6],[35.0,36.7],[35.0,39.7],[35.0,42.8],[35.0,45.8],[35.0,48.9],[35.0,51.9],[35.0,55.0],[35.0,58.1],[35.0,61.1],[35.0,64.2],[35.0,67.2],[35.0,70.3],[35.0,73.3],[35.0,76.4],[35.0,79.4],[35.0,82.5],[35.0,85.5],[35.0,88.6],[35.0,91.6],[35.0,94.7],[35.0,97.7],[35.0,100.8],[35.0,103.8],[35.0,106.9],[35.0,109.9],[35.0,113.0],[35.0,116.0],[35.0,119.1],[35.0,128.2],[35.0,134.3],[35.0,137.4],[37.5,-120.1],[37.5,-117.0],[37.5,-113.8],[37.5,-110.7],[37.5,-107.5],[37.5,-104.4],[37.5,-101.2],[37.5,-98.1],[37.5,-94.9],[37.5,-91.8],[37.5,-88.6],[37.5,-85.5],[37.5,-82.3],[37.5,-79.2],[37.5,-6.7],[37.5,-3.5],[37.5,21.7],[37.5,28.0],[37.5,31.1],[37.5,34.3],[37.5,37.4],[37.5,40.6],[37.5,43.7],[37.5,46.9],[37.5,56.3],[37.5,59.5],[37.5,62.6],[37.5,65.8],[37.5,68.9],[37.5,72.1],[37.5,75.2],[37.5,78.4],[37.5,81.5],[37.5,84.7],[37.5,87.9],[37.5,91.0],[37.5,94.2],[37.5,97.3],[37.5,100.5],[37.5,103.6],[37.5,106.8],[37.5,109.9],[37.5,113.1],[37.5,116.2],[37.5,128.8],[40.0,-121.3],[40.0,-118.0],[40.0,-114.7],[40.0,-111.5],[40.0,-108.2],[40.0,-104.9],[40.0,-101.7],[40.0,-98.4],[40.0,-95.1],[40.0,-91.9],[40.0,-88.6],[40.0,-85.4],[40.0,-82.1],[40.0,-78.8],[40.0,-75.6],[40.0,-7.0],[40.0,-3.8],[40.0,-0.5],[40.0,9.3],[40.0,15.8],[40.0,22.3],[40.0,28.9],[40.0,32.1],[40.0,35.4],[40.0,38.7],[40.0,41.9],[40.0,45.2],[40.0,48.4],[40.0,55.0],[40.0,58.2],[40.0,61.5],[40.0,64.8],[40.0,68.0],[40.0,71.3],[40.0,74.6],[40.0,77.8],[40.0,81.1],[40.0,84.3],[40.0,87.6],[40.0,90.9],[40.0,94.1],[40.0,97.4],[40.0,100.7],[40.0,103.9],[40.0,107.2],[40.0,110.5],[40.0,113.7],[40.0,117.0],[40.0,123.5],[40.0,126.8],[42.5,-122.4],[42.5,-119.0],[42.5,-115.6],[42.5,-112.2],[42.5,-108.8],[42.5,-105.4],[42.5,-102.0],[42.5,-98.6],[42.5,-95.2],[42.5,-91.8],[42.5,-88.4],[42.5,-85.1],[42.5,-81.7],[42.5,-78.3],[42.5,-74.9],[42.5,-71.5],[42.5,-7.1],[42.5,-3.7],[42.5,-0.3],[42.5,13.3],[42.5,20.1],[42.5,23.5],[42.5,26.8],[42.5,43.8],[42.5,47.2],[42.5,54.0],[42.5,57.4],[42.5,60.8],[42.5,64.1],[42.5,67.5],[42.5,70.9],[42.5,74.3],[42.5,77.7],[42.5,81.1],[42.5,84.5],[42.5,87.9],[42.5,91.3],[42.5,94.7],[42.5,98.1],[42.5,101.4],[42.5,104.8],[42.5,108.2],[42.5,111.6],[42.5,115.0],[42.5,118.4],[42.5,121.8],[42.5,125.2],[42.5,128.6],[42.5,142.1],[45.0,-123.4],[45.0,-119.9],[45.0,-116.4],[45.0,-112.8],[45.0,-109.3],[45.0,-105.8],[45.0,-102.2],[45.0,-98.7],[45.0,-95.1],[45.0,-91.6],[45.0,-88.1],[45.0,-84.5],[45.0,-81.0],[45.0,-77.5],[45.0,-73.9],[45.0,-70.4],[45.0,-63.3],[45.0,0.3],[45.0,3.8],[45.0,7.4],[45.0,10.9],[45.0,18.0],[45.0,21.5],[45.0,25.1],[45.0,28.6],[45.0,39.2],[45.0,42.7],[45.0,46.3],[45.0,53.3],[45.0,56.9],[45.0,60.4],[45.0,64.0],[45.0,67.5],[45.0,71.0],[45.0,74.6],[45.0,78.1],[45.0,81.6],[45.0,85.2],[45.0,88.7],[45.0,92.2],[45.0,95.8],[45.0,99.3],[45.0,102.8],[45.0,106.4],[45.0,109.9],[45.0,113.4],[45.0,117.0],[45.0,120.5],[45.0,124.1],[45.0,127.6],[45.0,131.1],[45.0,134.7],[47.5,-120.8],[47.5,-117.1],[47.5,-113.4],[47.5,-109.7],[47.5,-106.0],[47.5,-102.3],[47.5,-98.6],[47.5,-94.9],[47.5,-91.2],[47.5,-87.5],[47.5,-83.8],[47.5,-80.1],[47.5,-76.4],[47.5,-72.7],[47.5,-69.0],[47.5,-65.3],[47.5,-2.4],[47.5,1.3],[47.5,5.0],[47.5,8.7],[47.5,12.4],[47.5,16.1],[47.5,19.8],[47.5,23.5],[47.5,27.2],[47.5,30.9],[47.5,34.6],[47.5,38.3],[47.5,42.0],[47.5,45.7],[47.5,49.4],[47.5,53.1],[47.5,56.8],[47.5,60.5],[47.5,64.2],[47.5,67.9],[47.5,71.6],[47.5,75.3],[47.5,79.0],[47.5,82.7],[47.5,86.4],[47.5,90.1],[47.5,93.8],[47.5,97.5],[47.5,101.2],[47.5,104.9],[47.5,108.6],[47.5,112.3],[47.5,116.0],[47.5,119.7],[47.5,123.4],[47.5,127.1],[47.5,130.8],[47.5,134.5],[47.5,138.2],[50.0,-125.5],[50.0,-121.7],[50.0,-117.8],[50.0,-113.9],[50.0,-110.0],[50.0,-106.1],[50.0,-102.2],[50.0,-98.3],[50.0,-94.4],[50.0,-90.5],[50.0,-86.7],[50.0,-82.8],[50.0,-78.9],[50.0,-75.0],[50.0,-71.1],[50.0,-67.2],[50.0,2.8],[50.0,6.7],[50.0,10.6],[50.0,14.5],[50.0,18.4],[50.0,22.2],[50.0,26.1],[50.0,30.0],[50.0,33.9],[50.0,37.8],[50.0,41.7],[50.0,45.6],[50.0,49.5],[50.0,53.4],[50.0,57.2],[50.0,61.1],[50.0,65.0],[50.0,68.9],[50.0,72.8],[50.0,76.7],[50.0,80.6],[50.0,84.5],[50.0,88.4],[50.0,92.3],[50.0,96.1],[50.0,100.0],[50.0,103.9],[50.0,107.8],[50.0,111.7],[50.0,115.6],[50.0,119.5],[50.0,123.4],[50.0,127.3],[50.0,131.1],[50.0,135.0],[50.0,138.9],[50.0,142.8],[52.5,-126.6],[52.5,-122.5],[52.5,-118.4],[52.5,-114.3],[52.5,-110.2],[52.5,-106.1],[52.5,-102.0],[52.5,-97.9],[52.5,-93.8],[52.5,-89.7],[52.5,-85.5],[52.5,-77.3],[52.5,-73.2],[52.5,-69.1],[52.5,-65.0],[52.5,-60.9],[52.5,-56.8],[52.5,-7.5],[52.5,-3.4],[52.5,0.7],[52.5,4.8],[52.5,8.9],[52.5,13.0],[52.5,17.1],[52.5,21.2],[52.5,25.3],[52.5,29.4],[52.5,33.5],[52.5,37.7],[52.5,41.8],[52.5,45.9],[52.5,50.0],[52.5,54.1],[52.5,58.2],[52.5,62.3],[52.5,66.4],[52.5,70.5],[52.5,74.6],[52.5,78.7],[52.5,82.8],[52.5,86.9],[52.5,91.0],[52.5,95.1],[52.5,99.3],[52.5,103.4],[52.5,107.5],[52.5,111.6],[52.5,115.7],[52.5,119.8],[52.5,123.9],[52.5,128.0],[52.5,132.1],[52.5,136.2],[52.5,140.3],[52.5,156.7],[55.0,-162.6],[55.0,-127.7],[55.0,-123.3],[55.0,-119.0],[55.0,-114.6],[55.0,-110.3],[55.0,-105.9],[55.0,-101.5],[55.0,-97.2],[55.0,-92.8],[55.0,-88.5],[55.0,-84.1],[55.0,-75.4],[55.0,-71.0],[55.0,-66.7],[55.0,-62.3],[55.0,11.8],[55.0,20.5],[55.0,24.9],[55.0,29.2],[55.0,33.6],[55.0,37.9],[55.0,42.3],[55.0,46.6],[55.0,51.0],[55.0,55.4],[55.0,59.7],[55.0,64.1],[55.0,68.4],[55.0,72.8],[55.0,77.2],[55.0,81.5],[55.0,85.9],[55.0,90.2],[55.0,94.6],[55.0,99.0],[55.0,103.3],[55.0,107.7],[55.0,112.0],[55.0,116.4],[55.0,120.7],[55.0,125.1],[55.0,129.5],[55.0,133.8],[55.0,155.6],[55.0,160.0],[57.5,-156.7],[57.5,-133.5],[57.5,-128.8],[57.5,-124.2],[57.5,-119.5],[57.5,-114.9],[57.5,-110.2],[57.5,-105.6],[57.5,-100.9],[57.5,-96.2],[57.5,-73.0],[57.5,-68.3],[57.5,-63.7],[57.5,-3.2],[57.5,15.4],[57.5,24.7],[57.5,29.4],[57.5,34.0],[57.5,38.7],[57.5,43.3],[57.5,48.0],[57.5,52.6],[57.5,57.3],[57.5,62.0],[57.5,66.6],[57.5,71.3],[57.5,75.9],[57.5,80.6],[57.5,85.2],[57.5,89.9],[57.5,94.5],[57.5,99.2],[57.5,103.8],[57.5,108.5],[57.5,113.1],[57.5,117.8],[57.5,122.4],[57.5,127.1],[57.5,131.7],[57.5,136.4],[57.5,159.7],[60.0,-160.0],[60.0,-155.0],[60.0,-150.0],[60.0,-140.0],[60.0,-135.0],[60.0,-130.0],[60.0,-125.0],[60.0,-120.0],[60.0,-115.0],[60.0,-110.0],[60.0,-105.0],[60.0,-100.0],[60.0,-95.0],[60.0,-75.0],[60.0,-70.0],[60.0,-65.0],[60.0,10.0],[60.0,15.0],[60.0,30.0],[60.0,35.0],[60.0,40.0],[60.0,45.0],[60.0,50.0],[60.0,55.0],[60.0,60.0],[60.0,65.0],[60.0,70.0],[60.0,75.0],[60.0,80.0],[60.0,85.0],[60.0,90.0],[60.0,95.0],[60.0,100.0],[60.0,105.0],[60.0,110.0],[60.0,115.0],[60.0,120.0],[60.0,125.0],[60.0,130.0],[60.0,135.0],[60.0,140.0],[60.0,145.0],[60.0,150.0],[60.0,165.0],[62.5,-163.8],[62.5,-158.3],[62.5,-152.9],[62.5,-147.5],[62.5,-142.1],[62.5,-136.7],[62.5,-131.3],[62.5,-125.9],[62.5,-120.4],[62.5,-115.0],[62.5,-109.6],[62.5,-104.2],[62.5,-98.8],[62.5,-93.4],[62.5,-82.5],[62.5,-77.1],[62.5,-50.1],[62.5,-44.6],[62.5,9.5],[62.5,14.9],[62.5,25.7],[62.5,31.2],[62.5,36.6],[62.5,42.0],[62.5,47.4],[62.5,52.8],[62.5,58.2],[62.5,63.6],[62.5,69.1],[62.5,74.5],[62.5,79.9],[62.5,85.3],[62.5,90.7],[62.5,96.1],[62.5,101.5],[62.5,107.0],[62.5,112.4],[62.5,117.8],[62.5,123.2],[62.5,128.6],[62.5,134.0],[62.5,139.4],[62.5,144.9],[62.5,150.3],[62.5,155.7],[62.5,161.1],[62.5,166.5],[62.5,171.9],[65.0,-180],[65.0,-174.1],[65.0,-162.3],[65.0,-156.3],[65.0,-150.4],[65.0,-144.5],[65.0,-138.6],[65.0,-132.7],[65.0,-126.8],[65.0,-120.8],[65.0,-114.9],[65.0,-109.0],[65.0,-103.1],[65.0,-97.2],[65.0,-91.3],[65.0,-85.4],[65.0,-73.5],[65.0,-67.6],[65.0,-49.9],[65.0,-43.9],[65.0,-20.3],[65.0,-14.4],[65.0,15.2],[65.0,21.1],[65.0,27.0],[65.0,33.0],[65.0,44.8],[65.0,50.7],[65.0,56.6],[65.0,62.5],[65.0,68.5],[65.0,74.4],[65.0,80.3],[65.0,86.2],[65.0,92.1],[65.0,98.0],[65.0,103.9],[65.0,109.9],[65.0,115.8],[65.0,121.7],[65.0,127.6],[65.0,133.5],[65.0,139.4],[65.0,145.4],[65.0,151.3],[65.0,157.2],[65.0,163.1],[65.0,169.0],[65.0,174.9],[67.5,-180],[67.5,-160.4],[67.5,-153.9],[67.5,-147.3],[67.5,-140.8],[67.5,-134.3],[67.5,-127.7],[67.5,-121.2],[67.5,-114.7],[67.5,-108.1],[67.5,-101.6],[67.5,-95.1],[67.5,-88.5],[67.5,-82.0],[67.5,-75.5],[67.5,-68.9],[67.5,-49.3],[67.5,-42.8],[67.5,-36.3],[67.5,16.0],[67.5,22.5],[67.5,29.1],[67.5,35.6],[67.5,48.6],[67.5,55.2],[67.5,61.7],[67.5,68.2],[67.5,74.8],[67.5,81.3],[67.5,87.8],[67.5,94.4],[67.5,100.9],[67.5,107.4],[67.5,114.0],[67.5,120.5],[67.5,127.0],[67.5,133.6],[67.5,140.1],[67.5,146.6],[67.5,153.2],[67.5,159.7],[67.5,166.2],[67.5,172.8],[67.5,179.3],[70.0,-158.1],[70.0,-150.8],[70.0,-143.5],[70.0,-114.2],[70.0,-106.9],[70.0,-92.3],[70.0,-85.0],[70.0,-77.7],[70.0,-70.4],[70.0,-48.4],[70.0,-41.1],[70.0,-33.8],[70.0,-26.5],[70.0,24.7],[70.0,68.5],[70.0,75.8],[70.0,83.1],[70.0,90.5],[70.0,97.8],[70.0,105.1],[70.0,112.4],[70.0,119.7],[70.0,127.0],[70.0,134.3],[70.0,141.6],[70.0,148.9],[70.0,156.2],[70.0,170.9],[72.5,-121.8],[72.5,-113.5],[72.5,-96.9],[72.5,-88.5],[72.5,-47.0],[72.5,-38.7],[72.5,-30.4],[72.5,52.8],[72.5,69.4],[72.5,86.0],[72.5,94.4],[72.5,102.7],[72.5,111.0],[72.5,119.3],[72.5,127.6],[72.5,144.2],[75.0,-108.6],[75.0,-99.6],[75.0,-90.7],[75.0,-81.8],[75.0,-55.0],[75.0,-46.1],[75.0,-37.1],[75.0,-28.2],[75.0,87.9],[75.0,96.8],[75.0,105.7],[75.0,141.4],[75.0,150.4],[77.5,-117.5],[77.5,-81.8],[77.5,-63.9],[77.5,-55.0],[77.5,-46.1],[77.5,-37.1],[77.5,-28.2],[77.5,16.4],[80.0,-90.7],[80.0,-81.8],[80.0,-72.9],[80.0,-63.9],[80.0,-55.0],[80.0,-46.1],[80.0,-37.1],[80.0,-28.2],[80.0,-19.3],[80.0,16.4],[80.0,25.4],[80.0,96.8],[82.5,-81.8],[82.5,-72.9],[82.5,-63.9],[82.5,-46.1],[82.5,-37.1],[82.5,-28.2]];
+  const canvas = root.querySelector('#fdx-globe');
+  const context = canvas.getContext && canvas.getContext('2d');
+  const motionButton = root.querySelector('#fdx-motion');
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let paused = reduced.matches, inView = true, frame = 0, last = 0, rotation = 25, sceneTime = 0, sceneIndex = 0;
+  const scenes = [...root.querySelectorAll('[data-scene]')];
+  const sceneButtons = [...root.querySelectorAll('[data-scene-select]')];
+  function setScene(index) {
+    sceneIndex = index; sceneTime = 0;
+    scenes.forEach((scene, i) => { scene.hidden = i !== index; });
+    sceneButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+  }
+  sceneButtons.forEach(button => button.addEventListener('click', () => setScene(Number(button.dataset.sceneSelect))));
+  const radians = Math.PI / 180, tilt = 12 * radians, radius = 230, center = 280;
+  function project(lat, lon, lift = 1) {
+    const a = lat * radians, b = (lon - rotation) * radians;
+    const x = Math.cos(a)*Math.sin(b), y = Math.sin(a)*Math.cos(tilt)-Math.cos(a)*Math.cos(b)*Math.sin(tilt), z = Math.sin(a)*Math.sin(tilt)+Math.cos(a)*Math.cos(b)*Math.cos(tilt);
+    return [center+x*radius*lift, center-y*radius*lift, z];
+  }
+  const routes = [[[-1.29,36.82],[51.5,-.1]],[[-1.29,36.82],[25.2,55.3]],[[-1.29,36.82],[-26.2,28]],[[-1.29,36.82],[1.35,103.8]]];
+  const sphereVector = ([lat,lon]) => [Math.cos(lat*radians)*Math.cos(lon*radians),Math.sin(lat*radians),Math.cos(lat*radians)*Math.sin(lon*radians)];
+  const arcs = routes.map(([start,end]) => {
+    const a = sphereVector(start), b = sphereVector(end);
+    return Array.from({length:61}, (_,i) => { const t=i/60,v=a.map((n,k)=>n*(1-t)+b[k]*t),len=Math.hypot(...v); return [Math.asin(v[1]/len)/radians,Math.atan2(v[2],v[0])/radians,1+.075*Math.sin(Math.PI*t)]; });
+  });
+  function pathThrough(coords, color, width=1) {
+    context.beginPath(); let open=false;
+    coords.forEach(([lat,lon,lift]) => { const [x,y,z]=project(lat,lon,lift); if(z>0){if(open)context.lineTo(x,y);else context.moveTo(x,y);open=true;}else open=false; });
+    context.strokeStyle=color; context.lineWidth=width; context.stroke();
+  }
+  function draw() {
+    if (!context) return;
+    context.clearRect(0,0,560,560);
+    const glow=context.createRadialGradient(255,230,155,280,280,276);glow.addColorStop(0,'rgba(180,192,205,0)');glow.addColorStop(.78,'rgba(180,192,205,.04)');glow.addColorStop(1,'rgba(180,192,205,0)');
+    context.fillStyle=glow;context.fillRect(0,0,560,560);
+    const sphere=context.createRadialGradient(195,160,15,300,280,270);sphere.addColorStop(0,'#303944');sphere.addColorStop(.6,'#192027');sphere.addColorStop(1,'#10151a');
+    context.beginPath();context.arc(center,center,radius,0,Math.PI*2);context.fillStyle=sphere;context.fill();context.strokeStyle='#424a53';context.lineWidth=.8;context.stroke();
+    for(let lat=-60;lat<=60;lat+=30)pathThrough(Array.from({length:121},(_,i)=>[lat,-180+i*3]),'rgba(168,183,199,.12)',.7);
+    for(let lon=-180;lon<180;lon+=30)pathThrough(Array.from({length:61},(_,i)=>[-90+i*3,lon]),'rgba(168,183,199,.12)',.7);
+    points.forEach(([lat,lon])=>{const[x,y,z]=project(lat,lon);if(z<=0)return;context.beginPath();context.arc(x,y,1.1+z*.4,0,Math.PI*2);context.fillStyle=`rgba(214,223,231,${.25+z*.65})`;context.fill();});
+    arcs.forEach(arc=>pathThrough(arc,'rgba(255,104,113,.72)',1.3));
+    routes.flat().forEach(([lat,lon])=>{const[x,y,z]=project(lat,lon,1.005);if(z<=0)return;context.beginPath();context.arc(x,y,4,0,Math.PI*2);context.fillStyle='#ff8b93';context.fill();context.beginPath();context.arc(x,y,8,0,Math.PI*2);context.strokeStyle='rgba(255,123,131,.3)';context.stroke();});
+    canvas.dataset.drawn = 'true';
+  }
+  function resize() {
+    if(!context)return;
+    const scale = Math.min(window.devicePixelRatio || 1,2);
+    canvas.width = 560*scale; canvas.height = 560*scale; context.setTransform(scale,0,0,scale,0,0);
+    draw(); root.querySelector('.fdx-globe-static').style.visibility='hidden';
+  }
+  function tick(timestamp) {
+    frame=0;
+    if(paused || !inView || document.hidden)return;
+    const delta=last?Math.min(timestamp-last,60):0;last=timestamp;
+    rotation=(rotation+delta*.0025)%360;sceneTime+=delta;draw();
+    if(sceneTime>6500)setScene((sceneIndex+1)%scenes.length);
+    frame=requestAnimationFrame(tick);
+  }
+  function syncMotion() {
+    cancelAnimationFrame(frame); frame=0;last=0;
+    motionButton.setAttribute('aria-pressed', String(paused));
+    motionButton.innerHTML=paused?'Play animation <span aria-hidden="true">▷</span>':'Pause animation <span aria-hidden="true">Ⅱ</span>';
+    if(!paused && inView && !document.hidden)frame=requestAnimationFrame(tick);
+  }
+  motionButton.addEventListener('click',()=>{paused=!paused;syncMotion();});
+  if(reduced.addEventListener)reduced.addEventListener('change',event=>{paused=event.matches;syncMotion();});
+  document.addEventListener('visibilitychange',syncMotion);
+  if('IntersectionObserver' in window)new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;syncMotion();},{threshold:0}).observe(root.querySelector('.fdx-hero'));
+  window.addEventListener('resize',resize,{passive:true});
+  resize();syncMotion();
 })();
 </script>
-{#
-  MEDIA SOURCES (local, optimised copies):
-  Real photography from Pexels (photographer details at each source):
-    team: https://www.pexels.com/photo/5301699/
-    scan: https://www.pexels.com/photo/17155842/
-    biometric: https://www.pexels.com/photo/13657523/
-    iris: https://www.pexels.com/photo/16786435/
-    payouts: https://www.pexels.com/photo/6969942/
-    mobile: https://www.pexels.com/photo/8788832/
-    collaboration: https://www.pexels.com/photo/3931871/
-    pos: https://www.pexels.com/photo/6812441/
-    parcels: https://www.pexels.com/photo/7674983/
-    merchant: https://www.pexels.com/photo/7362929/
-    community: https://www.pexels.com/photo/20068076/
-    operations: https://www.pexels.com/photo/8961008/
-    support: https://www.pexels.com/photo/3862094/
-  Brand artwork remains the property of its respective owner:
-    Safaricom: https://upload.wikimedia.org/wikipedia/en/e/eb/Safaricom_logo.svg
-    M-PESA: https://upload.wikimedia.org/wikipedia/commons/0/0b/M-PESA.png
-    DHL: https://www.dhl.com/content/dam/dhl/global/core/images/logos/dhl-logo.svg
-    DPO / Network: https://dpogroup.com/wp-content/uploads/2024/07/Network_Logo-1.webp
-    Finserve: https://finserve.africa/assets/finserve-logo-5xR7EcmM.png
-    Pesapal: https://www.pesapal.com/media/118158/pesapal-logo.png?v=3
-    Visa: https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg
-    Mastercard: https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg
-  Integration notes:
-    Install the accompanying base.html and style.css. Existing Flask handlers are unchanged.
-    Images use your own static paths. Keep img-src 'self' in a strict CSP.
-    Inline styles/scripts require the same permissions as the original inline template.
-    Security and bulk-payout widgets are local, explicitly labelled demonstrations.
-    They capture no biometrics and make no payment/API requests.
-    Provider configuration, device enrollment, payments and shipment processing remain server-side.
-#}
 {% endblock %}

@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ED3138">
   <meta name="color-scheme" content="light">
   <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
-  <title>{% block title %}Fabs Data Warehouse{% endblock %}</title>
+  <title>{% block title %}Fabs Data Warehouse | FABS Trading Global E-Commerce{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}Fabs Data Warehouse by FABS Trading Global E-Commerce — connected payments, bulk payouts, biometric security, county revenue, tender tracking and DHL logistics.{% endblock %}">
   <meta name="author" content="FABS Trading Global E-Commerce">
   <meta name="robots" content="index, follow">
@@ -17,16 +17,15 @@
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
   <meta property="og:site_name" content="FABS Trading · Data Warehouse">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Fabs Data Warehouse">
+  <meta property="og:title" content="Fabs Data Warehouse | FABS Trading Global E-Commerce">
   <meta property="og:description" content="One connected workspace for payments, security and logistics.">
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
   <meta property="og:locale" content="en_KE">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Fabs Data Warehouse">
+  <meta name="twitter:title" content="Fabs Data Warehouse | FABS Trading">
   <meta name="twitter:description" content="One connected workspace for payments, security and logistics.">
   <meta name="twitter:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     // Legacy colour names remain aliases so existing child templates still compile.
@@ -57,7 +56,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='fabs-red-20260929') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='fabs-home-redesign-20260930') }}">
   {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-brand-bg text-brand-text font-sans antialiased">
@@ -76,7 +75,6 @@
     <span class="fabs-provider-name">{{ {'mifos':'Mifos / Fineract','fleetbase':'Fleetbase'}.get(name, name) }}</span>
   {% endif %}
 {%- endmacro %}
-
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header id="navbar" class="fabs-header">
   <div class="fabs-shell fabs-nav-row">
@@ -118,7 +116,6 @@
     </div>
   </nav>
 </header>
-
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div id="flashZone" class="fabs-flashes" role="status" aria-live="polite">
@@ -132,7 +129,6 @@
   {% endif %}
 {% endwith %}
 <main id="main-content" class="fabs-main">{% block content %}{% endblock %}</main>
-
 <footer class="fabs-footer">
   <div class="fabs-shell">
     <section class="fabs-footer-partners" aria-label="Payment and logistics ecosystem">
@@ -151,7 +147,7 @@
         <span class="fabs-location">Nairobi, Kenya</span>
       </div>
       <div><h2>Platform</h2><ul>
-        {% for label,target in [('Payments & collections','#services'),('Bulk payouts','#payouts'),('Biometric security','#biometrics'),('Tender tracking','#tenders'),('DHL shipment tracking','#tracking')] %}<li><a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a></li>{% endfor %}
+        {% for label,target in [('Payments & collections','#services'),('Bulk payouts','#payouts'),('Biometric security','#biometrics'),('Tender tracking','#tenders'),('Import & export tracking','#tracking')] %}<li><a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a></li>{% endfor %}
       </ul></div>
       <div><h2>Solutions</h2><ul>
         <li><a href="{{ url_for('county.index') }}">County revenue</a></li>
@@ -159,6 +155,7 @@
         <li><a href="{{ url_for('companies.index') }}">Company management</a></li>
         <li><a href="{{ url_for('merchants.index') }}">Merchant onboarding</a></li>
         <li><a href="{{ url_for('payments.index') }}">Aggregator APIs</a></li>
+        <li><a href="{{ url_for('main.index') }}#it-support">IT support subcontracts</a></li>
       </ul></div>
       <div><h2>Company</h2><ul>
         <li><a href="{{ url_for('main.about') }}">About us</a></li><li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
@@ -172,7 +169,6 @@
     </div>
   </div>
 </footer>
-
 <script>
 (() => {
   'use strict';
@@ -192,11 +188,10 @@
   const desktop = window.matchMedia('(min-width:1280px)');
   if (desktop.addEventListener) desktop.addEventListener('change', event => { if (event.matches) setMenu(false); });
   document.querySelectorAll('[data-year]').forEach(node => { node.textContent = new Date().getFullYear(); });
-
   // One shared handler covers company, provider and photographic fallback assets.
   const fallback = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
   const recoverImage = image => {
-    if (!(image instanceof HTMLImageElement) || image.dataset.fallbackApplied) return;
+    if (!(image instanceof HTMLImageElement) || image.hasAttribute('data-home-image') || image.dataset.fallbackApplied) return;
     image.dataset.fallbackApplied = 'true';
     if (image.hasAttribute('data-fabs-brand')) {
       image.hidden = true;

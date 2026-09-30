@@ -1,0 +1,74 @@
+[
+  {
+    "key": "port",
+    "id": 24244232,
+    "description": "Aerial container terminal and cranes",
+    "url": "https://images.pexels.com/photos/24244232/pexels-photo-24244232.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/port.jpg",
+    "source": "https://www.pexels.com/photo/24244232/",
+    "bytes": 411950
+  },
+  {
+    "key": "payments",
+    "id": 12935098,
+    "description": "Point-of-sale payment terminal",
+    "url": "https://images.pexels.com/photos/12935098/pexels-photo-12935098.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/payments.jpg",
+    "source": "https://www.pexels.com/photo/12935098/",
+    "bytes": 140770
+  },
+  {
+    "key": "petroleum",
+    "id": 30115404,
+    "description": "Fuel tanker at a service station",
+    "url": "https://images.pexels.com/photos/30115404/pexels-photo-30115404.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/petroleum.jpg",
+    "source": "https://www.pexels.com/photo/30115404/",
+    "bytes": 516008
+  },
+  {
+    "key": "infrastructure",
+    "id": 5092815,
+    "description": "Computer equipment in an IT workspace",
+    "url": "https://images.pexels.com/photos/5092815/pexels-photo-5092815.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/infrastructure.jpg",
+    "source": "https://www.pexels.com/photo/5092815/",
+    "bytes": 118780
+  },
+  {
+    "key": "security",
+    "id": 430208,
+    "description": "Exterior security cameras",
+    "url": "https://images.pexels.com/photos/430208/pexels-photo-430208.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/security.jpg",
+    "source": "https://www.pexels.com/photo/430208/",
+    "bytes": 350044
+  },
+  {
+    "key": "documents",
+    "id": 8296948,
+    "description": "Calculator and business documents",
+    "url": "https://images.pexels.com/photos/8296948/pexels-photo-8296948.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/documents.jpg",
+    "source": "https://www.pexels.com/photo/8296948/",
+    "bytes": 334948
+  },
+  {
+    "key": "county",
+    "id": 29380377,
+    "description": "Aerial municipal parking area",
+    "url": "https://images.pexels.com/photos/29380377/pexels-photo-29380377.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/county.jpg",
+    "source": "https://www.pexels.com/photo/29380377/",
+    "bytes": 520303
+  },
+  {
+    "key": "warehouse",
+    "id": 5156696,
+    "description": "Warehouse storage shelves",
+    "url": "https://images.pexels.com/photos/5156696/pexels-photo-5156696.jpeg?auto=compress&cs=tinysrgb&w=1600&q=85",
+    "file": "images/operations/warehouse.jpg",
+    "source": "https://www.pexels.com/photo/5156696/",
+    "bytes": 780843
+  }
+]

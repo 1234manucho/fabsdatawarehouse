@@ -68,25 +68,25 @@
     <div class="fdx-wrap fdx-hero-grid">
       <div class="fdx-hero-copy">
         <p class="fdx-eyebrow"><span class="fdx-mark"></span> FABS DATA WAREHOUSE</p>
-        <h1 id="fdx-hero-title">Payments.<br>Security.<br><span>Forward motion.</span></h1>
-        <p class="fdx-hero-lead">Collect payments. Protect identities. Keep business moving.</p>
-        <p class="fdx-hero-description">We connect payment aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
+        <h1 id="fdx-hero-title">Aggregation.<br>Security.<br><span>Forward motion.</span></h1>
+        <p class="fdx-hero-lead">Connect  aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
+        <p class="fdx-hero-description">We connect  aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
         <div class="fdx-actions"><a class="fdx-button fdx-button-red" href="#contact">Discuss your project {{ icon('arrow') }}</a><a class="fdx-button fdx-button-outline" href="#services">Explore our services</a></div>
-        <div class="fdx-hero-tags"><span>Payment aggregation</span><span>Identity &amp; security</span><span>Business operations</span></div>
+        <div class="fdx-hero-tags"><span>Pattern Aggregation</span><span>Identity &amp; security</span><span>Business operations</span></div>
       </div>
       <div class="fdx-hero-visual">
         <div class="fdx-orbit-label fdx-orbit-label-top"><span></span> CONNECTED BY DESIGN</div>
-        <div class="fdx-globe" id="fdx-globe-wrap">
+        <div class="fdx-scenes" aria-label="Operational photography" style="position:absolute; z-index:1">
+          <div class="fdx-scene" data-scene="0">{{ photo('port','',true) }}<span>Import &amp; export logistics</span></div>
+          <div class="fdx-scene" data-scene="1" hidden>{{ photo('petroleum') }}<span>Petroleum &amp; fleet operations</span></div>
+          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payment solutions &amp; integration &amp; Stock Management</span></div>
+          <div class="fdx-scene-controls" aria-label="Choose a photograph" hidden><button type="button" data-scene-select="0" aria-label="Show import and export logistics" aria-pressed="true"></button><button type="button" data-scene-select="1" aria-label="Show petroleum and fleet operations" aria-pressed="false"></button><button type="button" data-scene-select="2" aria-label="Show merchant payment solutions" aria-pressed="false"></button></div>
+        </div>
+        <div class="fdx-globe" id="fdx-globe-wrap" style="position:relative; z-index:2">
           <img class="fdx-globe-static" src="{{ url_for('static', filename='images/operations/globe.svg') }}" width="560" height="560" alt="Globe illustration centred on Africa">
           <canvas id="fdx-globe" width="560" height="560" aria-hidden="true"></canvas>
         </div>
         <span class="fdx-globe-tag fdx-globe-tag-one">{{ icon('card') }} Payments</span><span class="fdx-globe-tag fdx-globe-tag-two">{{ icon('shield') }} Identity</span><span class="fdx-globe-tag fdx-globe-tag-three">{{ icon('box') }} Movement</span>
-        <div class="fdx-scenes" aria-label="Operational photography">
-          <div class="fdx-scene" data-scene="0">{{ photo('port','',true) }}<span>Import &amp; export logistics</span></div>
-          <div class="fdx-scene" data-scene="1" hidden>{{ photo('petroleum') }}<span>Petroleum &amp; fleet operations</span></div>
-          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payment solutions &amp; integration &amp; Stock Management</span></div>
-          <div class="fdx-scene-controls" aria-label="Choose a photograph"><button type="button" data-scene-select="0" aria-label="Show import and export logistics" aria-pressed="true"></button><button type="button" data-scene-select="1" aria-label="Show petroleum and fleet operations" aria-pressed="false"></button><button type="button" data-scene-select="2" aria-label="Show merchant payment solutions" aria-pressed="false"></button></div>
-        </div>
         <button class="fdx-motion-button" id="fdx-motion" type="button" aria-pressed="false">Pause animation <span aria-hidden="true">Ⅱ</span></button>
       </div>
     </div>
@@ -124,10 +124,11 @@
       ] %}
       <div class="fdx-service-grid">
         {% for slug,category,symbol,title,description,interest,link in services %}
-        <article class="fdx-service" id="{{ slug }}" data-service-category="{{ category }}"><div class="fdx-service-top"><span class="fdx-service-icon">{{ icon(symbol) }}</span><span class="fdx-service-number">{{ '%02d'|format(loop.index) }}</span></div><h3>{{ title }}</h3><p>{{ description }}</p><a href="#contact" class="fdx-text-link" data-contact-interest="{{ interest }}">{{ link }} {{ icon('arrow') }}</a></article>
+        <article class="fdx-service" id="{{ slug }}" data-service-category="{{ category }}"><div class="fdx-service-top"><span class="fdx-service-icon">{{ icon(symbol) }}</span><span class="fdx-service-number">{{ '%02d'|format(loop.index) }}</span></div><h3>{{ title }}</h3><p>{{ description }}</p><button type="button" class="fdx-text-link" data-service-details data-title="{{ title }}" data-description="{{ description }}" data-interest="{{ interest }}">Learn more {{ icon('arrow') }}</button><a href="#contact" class="fdx-text-link" data-contact-interest="{{ interest }}">{{ link }} {{ icon('arrow') }}</a></article>
         {% endfor %}
         <article class="fdx-service fdx-service-cta" data-service-category="all"><span class="fdx-card-kicker">LET’S BUILD YOUR SCOPE</span><h3>One requirement?<br>Several moving parts?</h3><p>Tell us what your organisation needs to achieve. We’ll help shape a practical delivery plan.</p><a class="fdx-text-link" href="#contact">Start a conversation {{ icon('arrow') }}</a></article>
       </div>
+      <dialog id="fdx-service-dialog" aria-labelledby="fdx-service-dialog-title"><button type="button" data-dialog-close aria-label="Close service details">×</button><p class="fdx-eyebrow">SERVICE DETAILS</p><h2 id="fdx-service-dialog-title"></h2><p id="fdx-service-dialog-description"></p><p>We can help define the workflow, required integrations, user roles and reporting for your organisation. The exact scope is agreed around your systems, providers and operational requirements.</p><a class="fdx-button fdx-button-red" id="fdx-service-dialog-contact" href="#contact">Discuss this service</a></dialog>
     </div>
   </section>
 
@@ -181,6 +182,17 @@
     root.querySelector('#fdx-filter-status').textContent = `Showing ${count} services.`;
   };
   filterButtons.forEach(button => button.addEventListener('click', () => filterServices(button.dataset.filter)));
+  const serviceDialog = root.querySelector('#fdx-service-dialog');
+  root.querySelectorAll('[data-service-details]').forEach(button => button.addEventListener('click', () => {
+    root.querySelector('#fdx-service-dialog-title').textContent = button.dataset.title;
+    root.querySelector('#fdx-service-dialog-description').textContent = button.dataset.description;
+    const contact = root.querySelector('#fdx-service-dialog-contact');
+    contact.dataset.contactInterest = button.dataset.interest;
+    if (typeof serviceDialog.showModal === 'function') serviceDialog.showModal();
+    else serviceDialog.setAttribute('open', '');
+  }));
+  serviceDialog.querySelector('[data-dialog-close]').addEventListener('click', () => serviceDialog.close());
+  serviceDialog.querySelector('#fdx-service-dialog-contact').addEventListener('click', () => serviceDialog.close());
   root.querySelectorAll('[data-category-link]').forEach(link => link.addEventListener('click', () => filterServices(link.dataset.categoryLink)));
   function revealAnchor(hash) {
     let id; try { id = decodeURIComponent((hash || '').slice(1)); } catch (_) { return; }

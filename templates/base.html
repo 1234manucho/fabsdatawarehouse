@@ -1,4 +1,4 @@
-{# FABS Trading Global E-Commerce · Data Warehouse shared shell.
+{# FABS Trading · Data Warehouse shared shell.
    Brand tokens live in static/css/style.css. Flask endpoint names are preserved. #}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -8,9 +8,9 @@
   <meta name="theme-color" content="#ED3138">
   <meta name="color-scheme" content="light">
   <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
-  <title>{% block title %}Fabs Data Warehouse | FABS Trading {% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}Fabs Data Warehouse by FABS Trading Global E-Commerce — connected payments, bulk payouts, biometric security, county revenue, tender tracking and DHL logistics.{% endblock %}">
-  <meta name="author" content="FABS Trading ">
+  <title>{% block title %}Fabs Data Warehouse | FABS Trading{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Fabs Data Warehouse by FABS Trading — connected payments, bulk payouts, biometric security, county revenue, tender tracking and DHL logistics.{% endblock %}">
+  <meta name="author" content="FABS Trading">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ request.url }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
@@ -62,8 +62,8 @@
 <body class="bg-brand-bg text-brand-text font-sans antialiased">
 {% macro fabs_logo(size=42) -%}
   <span class="fabs-company-logo" style="--logo-height:{{ size * 1.4 }}px">
-    <img src="{{ url_for('static', filename='images/fabs-brand-v2.png') }}" alt="FABS Trading Global E-Commerce" width="2035" height="773" data-fabs-brand decoding="async">
-    <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small>GLOBAL E-COMMERCE</small></span>
+    <img src="{{ url_for('static', filename='images/fabs-brand-v2.png') }}" alt="FABS Trading" width="2035" height="773" data-fabs-brand decoding="async">
+    <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small>DATA WAREHOUSE</small></span>
   </span>
 {%- endmacro %}
 {% macro partner_logo(name) -%}
@@ -164,7 +164,7 @@
       </ul></div>
     </div>
     <div class="fabs-footer-bottom">
-      <p>© <span data-year>{{ current_year|default(2026, true) }}</span> FABS Trading Global E-Commerce · Data Warehouse</p>
+      <p>© <span data-year>{{ current_year|default(2026, true) }}</span> FABS Trading · Data Warehouse</p>
       <nav aria-label="Legal"><a href="/api/health">System status</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.terms') }}">Terms</a></nav>
     </div>
   </div>

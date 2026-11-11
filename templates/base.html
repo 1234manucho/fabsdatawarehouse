@@ -1,4 +1,4 @@
-{# FABS Trading · Data Warehouse shared shell.
+{# FABS Trading · main company website shell.
    Brand tokens live in static/css/style.css. Flask endpoint names are preserved. #}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
@@ -8,23 +8,23 @@
   <meta name="theme-color" content="#ED3138">
   <meta name="color-scheme" content="light">
   <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
-  <title>{% block title %}FABS Trading Data Warehouse{% endblock %}</title>
-  <meta name="description" content="{% block meta_description %}Fabs Data Warehouse by FABS Trading — connected payments, bulk payouts, biometric security, county revenue, tender tracking and DHL logistics.{% endblock %}">
+  <title>{% block title %}FABS Trading | Payment Aggregation, Cloud Hosting & Business Operations{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}FABS Trading is a payment aggregator and cloud platform partner — connecting collections, payouts, biometric security, cloud hosting, stock management and enterprise logistics across East Africa.{% endblock %}">
   <meta name="author" content="FABS Trading">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="{{ request.url }}">
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
-  <meta property="og:site_name" content="FABS Trading · Data Warehouse">
+  <meta property="og:site_name" content="FABS Trading">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Fabs Data Warehouse">
-  <meta property="og:description" content="One connected workspace for payments, security and logistics.">
+  <meta property="og:title" content="FABS Trading — Payment Aggregation, Cloud Hosting & Operations">
+  <meta property="og:description" content="Payments, payouts, biometrics, cloud hosting, stock management and logistics — connected in one platform.">
   <meta property="og:url" content="{{ request.url }}">
   <meta property="og:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
   <meta property="og:locale" content="en_KE">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FABS Trading Data Warehouse">
-  <meta name="twitter:description" content="One connected workspace for payments, security and logistics.">
+  <meta name="twitter:title" content="FABS Trading — Payment Aggregation, Cloud Hosting & Operations">
+  <meta name="twitter:description" content="Payments, payouts, biometrics, cloud hosting, stock management and logistics — connected in one platform.">
   <meta name="twitter:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -56,7 +56,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='fabs-home-redesign-20260930') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='fabs-main-company-20261201') }}">
   {% block head_extra %}{% endblock %}
 </head>
 <body class="bg-brand-bg text-brand-text font-sans antialiased">
@@ -78,15 +78,15 @@
 <a href="#main-content" class="skip-link">Skip to content</a>
 <header id="navbar" class="fabs-header">
   <div class="fabs-shell fabs-nav-row">
-    <a class="fabs-brand-lockup" href="{{ url_for('main.index') }}" aria-label="Fabs Data Warehouse home — FABS Trading">
+    <a class="fabs-brand-lockup" href="{{ url_for('main.index') }}" aria-label="FABS Trading home">
       {{ fabs_logo(40) }}
-      <span class="fabs-product-label">DATA<br><strong>WAREHOUSE</strong></span>
+      <span class="fabs-product-label">FABS<br><strong>TRADING</strong></span>
     </a>
     <nav class="fabs-desktop-nav" aria-label="Primary">
-      {% for label,target in [('Services','#services'),('Biometrics','#biometrics'),('Payouts','#payouts'),('Tenders','#tenders'),('Tracking','#tracking')] %}
+      {% for label,target in [('Services','#services'),('Payments','#payments'),('Platform','#hosting'),('Logistics','#tracking'),('Stock','#stock-management')] %}
         <a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>
       {% endfor %}
-      <a href="{{ url_for('main.faqs') }}">FAQs</a>
+      <a href="{{ url_for('main.about') }}">About</a>
       <a href="{{ url_for('main.contact') }}">Contact</a>
     </nav>
     <div class="fabs-desktop-auth">
@@ -96,7 +96,7 @@
         <a class="btn-primary fabs-nav-button" href="{{ url_for('auth.logout') }}">Sign out</a>
       {% else %}
         <a class="fabs-nav-auth" href="{{ url_for('auth.login') }}">Sign in</a>
-        <a class="btn-primary fabs-nav-button" href="{{ url_for('auth.signup') }}">Get started <span aria-hidden="true">↗</span></a>
+        <a class="btn-primary fabs-nav-button" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open platform <span aria-hidden="true">↗</span></a>
       {% endif %}
     </div>
     <button id="fabs-menu-toggle" class="fabs-menu-toggle" type="button" aria-expanded="false" aria-controls="fabs-mobile-menu" aria-label="Open menu">
@@ -104,14 +104,18 @@
     </button>
   </div>
   <nav id="fabs-mobile-menu" class="fabs-mobile-menu fabs-shell" aria-label="Mobile" hidden>
-    {% for label,target in [('Services','#services'),('Biometrics','#biometrics'),('Bulk payouts','#payouts'),('Tenders','#tenders'),('Tracking','#tracking')] %}<a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>{% endfor %}
-    <a href="{{ url_for('main.faqs') }}">FAQs</a><a href="{{ url_for('main.about') }}">About</a><a href="{{ url_for('main.pricing') }}">Pricing</a><a href="{{ url_for('main.contact') }}">Contact</a>
+    {% for label,target in [('Services','#services'),('Payments','#payments'),('Platform','#hosting'),('Logistics','#tracking'),('Stock','#stock-management')] %}<a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>{% endfor %}
+    <a href="{{ url_for('main.about') }}">About</a>
+    <a href="{{ url_for('main.pricing') }}">Pricing</a>
+    <a href="{{ url_for('main.faqs') }}">FAQs</a>
+    <a href="{{ url_for('main.contact') }}">Contact</a>
+    <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform <span aria-hidden="true">↗</span></a>
     <div class="fabs-mobile-auth">
       {% if current_user.is_authenticated %}
         {% if current_user.is_admin %}<a href="{{ url_for('admin.index') }}">Admin panel</a>{% endif %}
         <a href="{{ url_for('dashboard.index') }}">Dashboard</a><a class="btn-primary" href="{{ url_for('auth.logout') }}">Sign out</a>
       {% else %}
-        <a href="{{ url_for('auth.login') }}">Sign in</a><a class="btn-primary" href="{{ url_for('auth.signup') }}">Create account</a>
+        <a href="{{ url_for('auth.login') }}">Sign in</a><a class="btn-primary" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open platform ↗</a>
       {% endif %}
     </div>
   </nav>
@@ -132,7 +136,7 @@
 <footer class="fabs-footer">
   <div class="fabs-shell">
     <section class="fabs-footer-partners" aria-label="Payment and logistics ecosystem">
-      <p class="fabs-footer-eyebrow">Payment &amp; logistics ecosystem</p>
+      <p class="fabs-footer-eyebrow">Payment, hosting &amp; logistics ecosystem</p>
       <div class="fabs-partner-strip">
         {% for name in ['safaricom','mpesa','dhl','dpo','pesapal','finserve','mifos','fleetbase'] %}<div class="partner-tile">{{ partner_logo(name) }}</div>{% endfor %}
       </div>
@@ -141,13 +145,18 @@
     <div class="fabs-footer-grid">
       <div class="fabs-footer-about">
         <a class="fabs-brand-lockup" href="{{ url_for('main.index') }}">{{ fabs_logo(48) }}</a>
-        <p class="fabs-footer-product">Data Warehouse</p>
-        <p>One connected workspace for payments, biometric security, county revenue, tenders and enterprise logistics.</p>
-        <a class="fabs-parent-link" href="https://www.fabstrading.com/" target="_blank" rel="noopener noreferrer">Visit FABS Trading <span aria-hidden="true">↗</span></a>
+        <p class="fabs-footer-product">FABS Trading</p>
+        <p>Payment aggregation, cloud hosting, stock management, biometric security and enterprise logistics — connected in one workspace.</p>
+        <a class="fabs-parent-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform <span aria-hidden="true">↗</span></a>
         <span class="fabs-location">Nairobi, Kenya</span>
       </div>
       <div><h2>Platform</h2><ul>
-        {% for label,target in [('Payments & collections','#services'),('Bulk payouts','#payouts'),('Biometric security','#biometrics'),('Tender tracking','#tenders'),('Import & export tracking','#tracking')] %}<li><a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a></li>{% endfor %}
+        <li><a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform ↗</a></li>
+        <li><a href="{{ url_for('main.index') }}#payments">Payment aggregation</a></li>
+        <li><a href="{{ url_for('main.index') }}#payouts">Bulk payouts</a></li>
+        <li><a href="{{ url_for('main.index') }}#stock-management">Stock management</a></li>
+        <li><a href="{{ url_for('main.index') }}#hosting">Cloud hosting</a></li>
+        <li><a href="{{ url_for('main.index') }}#tracking">Shipment tracking</a></li>
       </ul></div>
       <div><h2>Solutions</h2><ul>
         <li><a href="{{ url_for('county.index') }}">County revenue</a></li>
@@ -164,7 +173,7 @@
       </ul></div>
     </div>
     <div class="fabs-footer-bottom">
-      <p>© <span data-year>{{ current_year|default(2026, true) }}</span> FABS Trading · Data Warehouse</p>
+      <p>© <span data-year>{{ current_year|default(2026, true) }}</span> FABS Trading</p>
       <nav aria-label="Legal"><a href="/api/health">System status</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.terms') }}">Terms</a></nav>
     </div>
   </div>

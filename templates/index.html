@@ -1,6 +1,6 @@
 {% extends "base.html" %}
-{% block title %}FABS Data Warehouse | Payments, Security & Business Operations{% endblock %}
-{% block meta_description %}Payment aggregation, collections, bulk payouts, identity verification, county revenue, fleet operations and shipment tracking. Build your next business solution with FABS Data Warehouse.{% endblock %}
+{% block title %}FABS Trading | Payment Aggregation, Cloud Hosting & Business Operations{% endblock %}
+{% block meta_description %}Payment aggregation, collections, payouts, biometrics, cloud hosting, stock management, county revenue, fleet operations and shipment tracking — connected in one platform.{% endblock %}
 {% block head_extra %}
 <link rel="preconnect" href="https://images.pexels.com" crossorigin>
 <script>
@@ -61,25 +61,32 @@
 {% elif name=='id' %}<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M5 16c0-4 6-4 6 0M14 10h5M14 14h4"/>
 {% elif name=='check' %}<path d="m5 12 4 4L19 6"/>
 {% elif name=='link' %}<path d="m9 15 6-6M7 14l-2 2a3 3 0 0 0 4 4l4-4m-2-8 4-4a3 3 0 0 1 4 4l-2 2"/>
+{% elif name=='stock' %}<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
+{% elif name=='chart' %}<path d="M3 3v18h18"/><path d="m7 15 3-3 3 3 5-6"/>
+{% elif name=='cloud' %}<path d="M7 18a4 4 0 0 1 0-8 6 6 0 0 1 11.3 2A4 4 0 0 1 17 18z"/>
 {% endif %}</svg>
 {%- endmacro %}
 <div id="fdw-home" class="fdx-home">
+
   <section class="fdx-hero" aria-labelledby="fdx-hero-title">
     <div class="fdx-wrap fdx-hero-grid">
       <div class="fdx-hero-copy">
-        <p class="fdx-eyebrow"><span class="fdx-mark"></span> FABS DATA WAREHOUSE</p>
-        <h1 id="fdx-hero-title">Aggregation.<br>Security.<br><span>Forward motion.</span></h1>
-        <p class="fdx-hero-lead">Connect  aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
-        <p class="fdx-hero-description">We connect  aggregation, security and operational systems for companies, merchants, counties and transport businesses.</p>
-        <div class="fdx-actions"><a class="fdx-button fdx-button-red" href="#contact">Discuss your project {{ icon('arrow') }}</a><a class="fdx-button fdx-button-outline" href="#services">Explore our services</a></div>
-        <div class="fdx-hero-tags"><span>Pattern Aggregation</span><span>Identity &amp; security</span><span>Business operations</span></div>
+        <p class="fdx-eyebrow"><span class="fdx-mark"></span> FABS TRADING · PAYMENT AGGREGATOR</p>
+        <h1 id="fdx-hero-title">Payments.<br>Hosting.<br><span>Operations.</span></h1>
+        <p class="fdx-hero-lead">FABS Trading is a payment aggregator and cloud-platform partner — connecting collections, payouts, biometrics, cloud hosting, stock management and business operations in one place.</p>
+        <p class="fdx-hero-description">From mobile money and card collections to cloud deployments and inventory, we help companies, merchants, counties and transport businesses operate on connected systems.</p>
+        <div class="fdx-actions">
+          <a class="fdx-button fdx-button-red" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform {{ icon('arrow') }}</a>
+          <a class="fdx-button fdx-button-outline" href="#services">Explore our services</a>
+        </div>
+        <div class="fdx-hero-tags"><span>Payment aggregation</span><span>Cloud hosting</span><span>Stock &amp; operations</span></div>
       </div>
       <div class="fdx-hero-visual">
         <div class="fdx-orbit-label fdx-orbit-label-top"><span></span> CONNECTED BY DESIGN</div>
         <div class="fdx-scenes" aria-label="Operational photography" style="position:absolute; z-index:1">
           <div class="fdx-scene" data-scene="0">{{ photo('port','',true) }}<span>Import &amp; export logistics</span></div>
           <div class="fdx-scene" data-scene="1" hidden>{{ photo('petroleum') }}<span>Petroleum &amp; fleet operations</span></div>
-          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payment solutions &amp; integration &amp; Stock Management</span></div>
+          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payments, integration &amp; stock</span></div>
           <div class="fdx-scene-controls" aria-label="Choose a photograph" hidden><button type="button" data-scene-select="0" aria-label="Show import and export logistics" aria-pressed="true"></button><button type="button" data-scene-select="1" aria-label="Show petroleum and fleet operations" aria-pressed="false"></button><button type="button" data-scene-select="2" aria-label="Show merchant payment solutions" aria-pressed="false"></button></div>
         </div>
         <div class="fdx-globe" id="fdx-globe-wrap" style="position:relative; z-index:2">
@@ -97,55 +104,59 @@
     <div class="fdx-wrap">
       <div class="fdx-section-head"><div><p class="fdx-eyebrow">YOUR BUSINESS, BETTER CONNECTED</p><h2 id="fdx-intro-title">The right systems.<br>A clearer way to operate.</h2></div></div>
       <div class="fdx-pillar-grid">
-  <a class="fdx-pillar" href="#services" data-category-link="payments">
-    <span class="fdx-photo"><img src="/static/images/operations/payments.jpg" alt="Point-of-sale payment terminal on a merchant counter" width="1600" height="1067" loading="lazy" decoding="async"></span>
-    <div>
-      <span class="fdx-card-kicker">01 / PAYMENTS</span>
-      <h3>Every transaction, connected.</h3>
-      <p>Collections, settlements, merchant onboarding and bulk disbursements.</p>
-      <span class="fdx-text-link">Explore payment solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-    </div>
-  </a>
+        <a class="fdx-pillar" href="#services" data-category-link="payments">
+          <span class="fdx-photo"><img src="/static/images/operations/payments.jpg" alt="Point-of-sale payment terminal on a merchant counter" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">01 / PAYMENTS</span>
+            <h3>Every transaction, connected.</h3>
+            <p>Collections, settlements, merchant onboarding and bulk disbursements.</p>
+            <span class="fdx-text-link">Explore payment solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+          </div>
+        </a>
 
-  <a class="fdx-pillar" href="#biometrics">
-    <span class="fdx-photo"><img src="/static/images/operations/security.jpg" alt="Building security cameras and their connections" width="1600" height="1067" loading="lazy" decoding="async"></span>
-    <div>
-      <span class="fdx-card-kicker">02 / SECURITY</span>
-      <h3>Confidence in every identity.</h3>
-      <p>Face-to-ID records, biometric integrations and controlled access.</p>
-      <span class="fdx-text-link">Explore identity &amp; security <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-    </div>
-  </a>
+        <a class="fdx-pillar" href="#biometrics">
+          <span class="fdx-photo"><img src="/static/images/operations/security.jpg" alt="Building security cameras and their connections" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">02 / SECURITY</span>
+            <h3>Confidence in every identity.</h3>
+            <p>Face-to-ID records, biometric integrations and controlled access.</p>
+            <span class="fdx-text-link">Explore identity &amp; security <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+          </div>
+        </a>
 
-  <a class="fdx-pillar" href="#tracking">
-    <span class="fdx-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
-    <div>
-      <span class="fdx-card-kicker">03 / OPERATIONAL SYSTEMS</span>
-      <h3>Keep the bigger picture moving.</h3>
-      <p>Shipments, petroleum fleets, county revenue and business administration.</p>
-      <span class="fdx-text-link">Explore operational solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-    </div>
-  </a>
-</div>
+        <a class="fdx-pillar" href="#tracking">
+          <span class="fdx-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">03 / OPERATIONAL SYSTEMS</span>
+            <h3>Keep the bigger picture moving.</h3>
+            <p>Shipments, petroleum fleets, county revenue, stock and business administration.</p>
+            <span class="fdx-text-link">Explore operational solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
   <section class="fdx-section fdx-services" id="services" aria-labelledby="fdx-services-title">
     <div class="fdx-wrap">
       <div class="fdx-section-head"><div><p class="fdx-eyebrow">WHAT WE DO</p><h2 id="fdx-services-title">Built around the work<br>you need to get done.</h2></div><p>Start with one service or bring several together. We help scope the workflow, connect the systems and support the people who run them.</p></div>
-      <div class="fdx-filters" role="group" aria-label="Filter services"><button type="button" data-filter="all" aria-pressed="true">All services <span>11</span></button><button type="button" data-filter="payments" aria-pressed="false">Payments</button><button type="button" data-filter="security" aria-pressed="false">Security</button><button type="button" data-filter="operations" aria-pressed="false">Operations</button><button type="button" data-filter="enterprise" aria-pressed="false">Enterprise &amp; IT</button></div>
-      <p class="fdx-sr-only" id="fdx-filter-status" role="status" aria-live="polite">Showing all 11 services.</p>
+      <div class="fdx-filters" role="group" aria-label="Filter services"><button type="button" data-filter="all" aria-pressed="true">All services <span>15</span></button><button type="button" data-filter="payments" aria-pressed="false">Payments</button><button type="button" data-filter="security" aria-pressed="false">Security</button><button type="button" data-filter="operations" aria-pressed="false">Operations</button><button type="button" data-filter="enterprise" aria-pressed="false">Enterprise &amp; IT</button></div>
+      <p class="fdx-sr-only" id="fdx-filter-status" role="status" aria-live="polite">Showing all 15 services.</p>
       {% set services = [
         ('payments','payments','card','Payments & collections','Accept and reconcile customer payments across your activated mobile money, card and bank channels.','payments','Explore collections'),
         ('payouts','payments','payout','Bulk payouts','Organise salaries, supplier payments and other disbursements with approval steps and payment records.','payments','Plan your payouts'),
+        ('pos','payments','store','Point of sale & retail','Bring sales, receipts, stock and payment collection into one workflow for your shop, branch or outlet.','payments','Plan your POS'),
+        ('merchants','payments','store','Merchant onboarding','Guide merchants through business registration, document collection, review and payment activation.','payments','Build your onboarding flow'),
+        ('aggregator','payments','code','Aggregator APIs','Connect your application to payment collection, disbursement, callback and reporting workflows.','payments','Discuss an API integration'),
         ('identity-service','security','shield','Biometric security','Connect consent-based face-to-ID records, biometric devices and access workflows for your organisation.','biometrics','Discuss identity & security'),
-        ('tenders','enterprise','file','Tender tracking','Keep opportunities, deadlines, bid documents and submission progress visible to your tender team.','tenders','Organise your tender pipeline'),
+        ('stock','operations','stock','Stock & inventory management','Track products, stock levels, movements and reorder points across your warehouse, store or branch network.','stock','Explore stock management'),
         ('shipment-service','operations','box','Import & export tracking','Bring shipment references, customs documents and available carrier updates into a shared view.','logistics','Connect your shipments'),
         ('county','operations','building','County revenue collection','Coordinate parking, permits, market fees and rates with collection records, receipts and reporting.','county','Explore county collections'),
         ('fleet-service','operations','truck','Petroleum & fleet operations','Manage transport security, vehicles, driver documents, vetting, employment and salary disbursement.','petroleum','Plan your fleet workflow'),
+        ('tenders','enterprise','file','Tender tracking','Keep opportunities, deadlines, bid documents and submission progress visible to your tender team.','tenders','Organise your tender pipeline'),
         ('companies','enterprise','company','Company management','Bring company records, team roles, approvals and day-to-day business administration together.','enterprise','Connect your organisation'),
-        ('merchants','payments','store','Merchant onboarding','Guide merchants through business registration, document collection, review and payment activation.','payments','Build your onboarding flow'),
-        ('aggregator','payments','code','Aggregator APIs','Connect your application to payment collection, disbursement, callback and reporting workflows.','payments','Discuss an API integration'),
+        ('hosting','enterprise','cloud','Cloud hosting & deployment','Deploy and run your applications on managed cloud infrastructure with secure environments, monitoring and backups.','hosting','Discuss hosting'),
+        ('analytics','enterprise','chart','Analytics & reporting','Bring operational, payment and stock data into dashboards and reports your team can act on.','enterprise','Discuss reporting'),
         ('it-support','enterprise','server','IT support subcontracts','Extend your delivery team with scoped support for installations, integrations, maintenance and technical operations.','enterprise','Discuss a support contract')
       ] %}
       <div class="fdx-service-grid">
@@ -158,10 +169,17 @@
     </div>
   </section>
 
-  <section class="fdx-section fdx-payments-section" aria-labelledby="fdx-payments-title">
+  <section class="fdx-section fdx-payments-section" id="payments" aria-labelledby="fdx-payments-title">
     <div class="fdx-wrap fdx-split">
-      <div class="fdx-feature-copy"><p class="fdx-eyebrow">PAYMENT AGGREGATION</p><h2 id="fdx-payments-title">A clearer path from<br>collection to payout.</h2><p class="fdx-body">Give your business a coordinated view of incoming payments, outgoing disbursements and the records behind them.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Collections and transaction references in one workflow.</li><li>{{ icon('check') }} Review and approval steps for bulk disbursements.</li><li>{{ icon('check') }} Reconciliation records and reporting for your team.</li><li>{{ icon('check') }} API integration for your website, app or business system.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="{{ url_for('payments.index') }}">Explore payment services {{ icon('arrow') }}</a></div></div>
-      <div class="fdx-payment-diagram" aria-label="Example payment workflow"><div class="fdx-diagram-head"><span>THE PAYMENT WORKFLOW</span>{{ icon('card') }}</div><div class="fdx-payment-sources"><span>Mobile money</span><span>Cards</span><span>Bank channels</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>FABS payment aggregation</strong><small>Connect · reconcile · report</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('store') }}<strong>Merchant collections</strong><span>Payment records</span></div><div>{{ icon('payout') }}<strong>Approved payouts</strong><span>Disbursement records</span></div></div><p class="fdx-diagram-note">Channels and capabilities depend on your provider activation and agreed integration.</p></div>
+      <div class="fdx-feature-copy"><p class="fdx-eyebrow">PAYMENT AGGREGATION</p><h2 id="fdx-payments-title">One aggregator.<br>Every payment channel.</h2><p class="fdx-body">As a payment aggregator, FABS Trading connects your business to mobile money, card and bank channels — bringing collections, disbursements, merchant onboarding and reconciliation into one coordinated workflow.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Collections and transaction references in one workflow.</li><li>{{ icon('check') }} Review and approval steps for bulk disbursements.</li><li>{{ icon('check') }} Reconciliation records and reporting for your team.</li><li>{{ icon('check') }} API integration for your website, app or business system.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="{{ url_for('payments.index') }}">Explore payment services {{ icon('arrow') }}</a></div></div>
+      <div class="fdx-payment-diagram" aria-label="Example payment workflow"><div class="fdx-diagram-head"><span>THE PAYMENT WORKFLOW</span>{{ icon('card') }}</div><div class="fdx-payment-sources"><span>Mobile money</span><span>Cards</span><span>Bank channels</span><span>Wallets</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>FABS payment aggregation</strong><small>Connect · reconcile · report</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('store') }}<strong>Merchant collections</strong><span>Payment records</span></div><div>{{ icon('payout') }}<strong>Approved payouts</strong><span>Disbursement records</span></div></div><p class="fdx-diagram-note">Channels and capabilities depend on your provider activation and agreed integration.</p></div>
+    </div>
+  </section>
+
+  <section class="fdx-section fdx-payments-section" id="hosting" aria-labelledby="fdx-hosting-title">
+    <div class="fdx-wrap fdx-split fdx-split-reverse">
+      <div class="fdx-feature-copy"><p class="fdx-eyebrow">CLOUD HOSTING &amp; PLATFORM</p><h2 id="fdx-hosting-title">Your applications,<br>hosted on reliable infrastructure.</h2><p class="fdx-body">The FABS Data Warehouse platform — deployed on managed cloud infrastructure at <strong>platform.fabsdatawarehouse.com</strong> — runs every service on this site: payments, payouts, biometrics, stock, logistics and reporting, all in one secure workspace.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Managed cloud deployment with monitoring and backups.</li><li>{{ icon('check') }} Isolated environments for every organisation.</li><li>{{ icon('check') }} Role-based access for your team.</li><li>{{ icon('check') }} Ready-made integrations for payments, stock and logistics workflows.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform {{ icon('arrow') }}</a><a class="fdx-button fdx-button-outline" href="#contact">Request a walkthrough</a></div></div>
+      <div class="fdx-payment-diagram" aria-label="Platform overview"><div class="fdx-diagram-head"><span>THE FABS PLATFORM</span>{{ icon('cloud') }}</div><div class="fdx-payment-sources"><span>Payments</span><span>Payouts</span><span>Biometrics</span><span>Stock</span><span>Logistics</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>platform.fabsdatawarehouse.com</strong><small>One connected workspace</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('server') }}<strong>Managed hosting</strong><span>Deployed on cloud</span></div><div>{{ icon('shield') }}<strong>Secure access</strong><span>Roles &amp; permissions</span></div></div><p class="fdx-diagram-note">Access requires an account. Contact us to be onboarded.</p></div>
     </div>
   </section>
 
@@ -176,225 +194,229 @@
   </section>
 
   <section class="fdx-section fdx-logistics-section" id="tracking" aria-labelledby="fdx-tracking-title">
-  <div class="fdx-wrap fdx-split fdx-split-reverse">
-    <div class="fdx-logistics-visual">
-      <span class="fdx-photo fdx-logistics-photo">
-        <img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async">
-      </span>
-      <div class="fdx-warehouse-inset">
-        <span class="fdx-photo">
-          <img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async">
+    <div class="fdx-wrap fdx-split fdx-split-reverse">
+      <div class="fdx-logistics-visual">
+        <span class="fdx-photo fdx-logistics-photo">
+          <img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async">
         </span>
-        <span>From dispatch to delivery.</span>
-      </div>
-      <span class="fdx-photo-label">IMPORT / EXPORT / SHIPMENT VISIBILITY</span>
-    </div>
-
-    <div class="fdx-feature-copy">
-      <p class="fdx-eyebrow">IMPORT &amp; EXPORT SHIPMENT TRACKING</p>
-      <h2 id="fdx-tracking-title">Every shipment has a story.<br>Keep yours together.</h2>
-      <p class="fdx-body">Give your operations team a shared view of shipments, movement milestones and supporting documents—from the dispatch desk to the destination.</p>
-
-      <ul class="fdx-check-list">
-        <li>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-          Import and export shipment references.
-        </li>
-        <li>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-          Waybills, customs paperwork and delivery documents.
-        </li>
-        <li>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-          Available updates from connected carriers.
-        </li>
-        <li>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>
-          Dispatch coordination and delivery follow-up.
-        </li>
-      </ul>
-
-      <div class="fdx-milestones" aria-label="Illustrative shipment milestones">
-        <span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span>
+        <div class="fdx-warehouse-inset">
+          <span class="fdx-photo">
+            <img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async">
+          </span>
+          <span>From dispatch to delivery.</span>
+        </div>
+        <span class="fdx-photo-label">IMPORT / EXPORT / SHIPMENT VISIBILITY</span>
       </div>
 
-      <a class="fdx-text-link" href="#contact" data-contact-interest="logistics">
-        Connect your shipment workflow
-        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </a>
+      <div class="fdx-feature-copy">
+        <p class="fdx-eyebrow">IMPORT &amp; EXPORT SHIPMENT TRACKING</p>
+        <h2 id="fdx-tracking-title">Every shipment has a story.<br>Keep yours together.</h2>
+        <p class="fdx-body">Give your operations team a shared view of shipments, movement milestones and supporting documents—from the dispatch desk to the destination.</p>
+
+        <ul class="fdx-check-list">
+          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Import and export shipment references.</li>
+          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Waybills, customs paperwork and delivery documents.</li>
+          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Available updates from connected carriers.</li>
+          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Dispatch coordination and delivery follow-up.</li>
+        </ul>
+
+        <div class="fdx-milestones" aria-label="Illustrative shipment milestones">
+          <span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span>
+        </div>
+
+        <a class="fdx-text-link" href="#contact" data-contact-interest="logistics">
+          Connect your shipment workflow
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <section class="fdx-fleet-section" id="petroleum" aria-labelledby="fdx-fleet-title">
-  <div class="fdx-wrap fdx-fleet-grid">
-    <div class="fdx-fleet-photo">
-      <span class="fdx-photo"><img src="/static/images/operations/petroleum.jpg" alt="Petroleum tanker parked at a service station" width="1600" height="1067" loading="lazy" decoding="async"></span>
-      <div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div>
-    </div>
-    <div class="fdx-fleet-copy">
-      <p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p>
-      <h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2>
-      <p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p>
-      <div class="fdx-fleet-features">
-        <div>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-          <h3>Transport &amp; security</h3>
-          <p>Vehicle records, dispatch, trip oversight and incident follow-up.</p>
+    <div class="fdx-wrap fdx-fleet-grid">
+      <div class="fdx-fleet-photo">
+        <span class="fdx-photo"><img src="/static/images/operations/petroleum.jpg" alt="Petroleum tanker parked at a service station" width="1600" height="1067" loading="lazy" decoding="async"></span>
+        <div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div>
+      </div>
+      <div class="fdx-fleet-copy">
+        <p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p>
+        <h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2>
+        <p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p>
+        <div class="fdx-fleet-features">
+          <div>
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
+            <h3>Transport &amp; security</h3>
+            <p>Vehicle records, dispatch, trip oversight and incident follow-up.</p>
+          </div>
+          <div>
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
+            <h3>Driver documents</h3>
+            <p>Licence and document uploads, expiry reviews and organised records.</p>
+          </div>
+          <div>
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>
+            <h3>Vetting &amp; employment</h3>
+            <p>Driver applications, checks, human review and employment records.</p>
+          </div>
+          <div>
+            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
+            <h3>Salary disbursements</h3>
+            <p>Approved driver payroll batches and payment reconciliation.</p>
+          </div>
         </div>
+        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">
+          Plan your fleet solution
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="fdx-section fdx-logistics-section" id="stock-management" aria-labelledby="fdx-stock-title">
+    <div class="fdx-wrap fdx-split">
+      <div class="fdx-feature-copy">
+        <p class="fdx-eyebrow">STOCK &amp; INVENTORY MANAGEMENT</p>
+        <h2 id="fdx-stock-title">Every product.<br>Every movement. In view.</h2>
+        <p class="fdx-body">Track products, stock levels and movements across your warehouse, store or branch network. Set reorder points, record receipts and issues, and keep your team working from the same inventory data.</p>
+        <ul class="fdx-check-list">
+          <li>{{ icon('check') }} Product records, categories and variants.</li>
+          <li>{{ icon('check') }} Stock receipts, issues, transfers and adjustments.</li>
+          <li>{{ icon('check') }} Reorder points, low-stock alerts and stock counts.</li>
+          <li>{{ icon('check') }} Movement history and stock reports for your team.</li>
+        </ul>
+        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="stock">Discuss stock management {{ icon('arrow') }}</a>
+      </div>
+      <div class="fdx-logistics-visual">
+        <span class="fdx-photo fdx-logistics-photo">
+          <img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async">
+        </span>
+        <span class="fdx-photo-label">INVENTORY · WAREHOUSE · STORES</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title">
+    <div class="fdx-wrap">
+      <div class="fdx-section-head">
         <div>
+          <p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p>
+          <h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2>
+        </div>
+        <p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p>
+      </div>
+      <div class="fdx-editorial-grid">
+        <article class="fdx-editorial">
+          <span class="fdx-photo"><img src="/static/images/operations/county.jpg" alt="Aerial view of an urban car park" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span>
+            <h3>Make collections easier to account for.</h3>
+            <p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p>
+            <a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="fdx-editorial">
+          <span class="fdx-photo"><img src="/static/images/operations/documents.jpg" alt="Business files, payment terminal and calculator on a desk" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span>
+            <h3>Give records and deadlines a home.</h3>
+            <p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p>
+            <a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          </div>
+        </article>
+
+        <article class="fdx-editorial">
+          <span class="fdx-photo"><img src="/static/images/operations/infrastructure.jpg" alt="Computer equipment in an IT workspace" width="1600" height="1067" loading="lazy" decoding="async"></span>
+          <div>
+            <span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span>
+            <h3>Add technical capacity where it counts.</h3>
+            <p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p>
+            <a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="fdx-process-section" aria-labelledby="fdx-process-title">
+    <div class="fdx-wrap">
+      <div class="fdx-process-heading">
+        <p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p>
+        <h2 id="fdx-process-title">A practical way to work together.</h2>
+      </div>
+      <ol class="fdx-process">
+        <li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li>
+        <li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li>
+        <li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li>
+        <li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title">
+    <div class="fdx-wrap fdx-contact-grid">
+      <div class="fdx-contact-copy">
+        <p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p>
+        <h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2>
+        <p>Need payment aggregation, stronger onboarding, transport visibility, stock control or extra IT capacity? Tell us what you are building and where you need support.</p>
+        <div class="fdx-contact-note">
           <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
-          <h3>Driver documents</h3>
-          <p>Licence and document uploads, expiry reviews and organised records.</p>
+          <div>
+            <h3>Make the first conversation useful.</h3>
+            <p>Share your organisation, the service you need, your current systems and your intended timeline.</p>
+          </div>
         </div>
-        <div>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>
-          <h3>Vetting &amp; employment</h3>
-          <p>Driver applications, checks, human review and employment records.</p>
-        </div>
-        <div>
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
-          <h3>Salary disbursements</h3>
-          <p>Approved driver payroll batches and payment reconciliation.</p>
-        </div>
+        <a class="fdx-text-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">
+          Already onboarded? Open the platform
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+        <div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div>
       </div>
-      <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">
-        Plan your fleet solution
-        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </a>
-    </div>
-  </div>
-</section>
 
-<section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title">
-  <div class="fdx-wrap">
-    <div class="fdx-section-head">
-      <div>
-        <p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p>
-        <h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2>
-      </div>
-      <p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p>
-    </div>
-    <div class="fdx-editorial-grid">
-      <article class="fdx-editorial">
-        <span class="fdx-photo"><img src="/static/images/operations/county.jpg" alt="Aerial view of an urban car park" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <div>
-          <span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span>
-          <h3>Make collections easier to account for.</h3>
-          <p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p>
-          <a class="fdx-text-link" href="{{ url_for('county.index') }}">
-            County revenue solutions
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-        </div>
-      </article>
-
-      <article class="fdx-editorial">
-        <span class="fdx-photo"><img src="/static/images/operations/documents.jpg" alt="Business files, payment terminal and calculator on a desk" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <div>
-          <span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span>
-          <h3>Give records and deadlines a home.</h3>
-          <p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p>
-          <a class="fdx-text-link" href="{{ url_for('companies.index') }}">
-            Company management
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-        </div>
-      </article>
-
-      <article class="fdx-editorial">
-        <span class="fdx-photo"><img src="/static/images/operations/infrastructure.jpg" alt="Computer equipment in an IT workspace" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <div>
-          <span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span>
-          <h3>Add technical capacity where it counts.</h3>
-          <p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p>
-          <a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">
-            Discuss your support scope
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="fdx-process-section" aria-labelledby="fdx-process-title">
-  <div class="fdx-wrap">
-    <div class="fdx-process-heading">
-      <p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p>
-      <h2 id="fdx-process-title">A practical way to work together.</h2>
-    </div>
-    <ol class="fdx-process">
-      <li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li>
-      <li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li>
-      <li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li>
-      <li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li>
-    </ol>
-  </div>
-</section>
-
-<section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title">
-  <div class="fdx-wrap fdx-contact-grid">
-    <div class="fdx-contact-copy">
-      <p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p>
-      <h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2>
-      <p>Need payment aggregation, stronger onboarding, transport visibility or extra IT capacity? Tell us what you are building and where you need support.</p>
-      <div class="fdx-contact-note">
-        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
-        <div>
-          <h3>Make the first conversation useful.</h3>
-          <p>Share your organisation, the service you need, your current systems and your intended timeline.</p>
-        </div>
-      </div>
-      <a class="fdx-text-link" href="{{ url_for('auth.signup') }}">
-        Ready to explore? Create an account
-        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </a>
-      <div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div>
-    </div>
-
-    <form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <h3>Tell us what you need.</h3>
-      <p>Fields marked * are required.</p>
-      <div class="fdx-form-row">
-        <div class="fdx-field">
-          <label for="fdx-full-name">Full name *</label>
-          <input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name">
+      <form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <h3>Tell us what you need.</h3>
+        <p>Fields marked * are required.</p>
+        <div class="fdx-form-row">
+          <div class="fdx-field">
+            <label for="fdx-full-name">Full name *</label>
+            <input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name">
+          </div>
+          <div class="fdx-field">
+            <label for="fdx-company">Company / organisation</label>
+            <input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation">
+          </div>
         </div>
         <div class="fdx-field">
-          <label for="fdx-company">Company / organisation</label>
-          <input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation">
+          <label for="fdx-email">Work email *</label>
+          <input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com">
         </div>
-      </div>
-      <div class="fdx-field">
-        <label for="fdx-email">Work email *</label>
-        <input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com">
-      </div>
-      <div class="fdx-field">
-        <label for="fdx-interest">How can we help?</label>
-        <select id="fdx-interest" name="interest">
-          <option value="payments">Payments, payouts, merchants &amp; APIs</option>
-          <option value="biometrics">Face-to-ID &amp; biometric security</option>
-          <option value="county">County revenue collection</option>
-          <option value="tenders">Tender tracking</option>
-          <option value="logistics">Import, export &amp; shipment tracking</option>
-          <option value="petroleum">Petroleum, fleets &amp; driver management</option>
-          <option value="enterprise">Company management &amp; IT support</option>
-        </select>
-      </div>
-      <div class="fdx-field">
-        <label for="fdx-message">Project details *</label>
-        <textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea>
-      </div>
-      <button class="fdx-button fdx-button-red" type="submit">
-        Send project enquiry
-        <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-      </button>
-      <p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p>
-    </form>
-  </div>
-</section>
+        <div class="fdx-field">
+          <label for="fdx-interest">How can we help?</label>
+          <select id="fdx-interest" name="interest">
+            <option value="payments">Payments, payouts, POS, merchants &amp; APIs</option>
+            <option value="biometrics">Face-to-ID &amp; biometric security</option>
+            <option value="stock">Stock &amp; inventory management</option>
+            <option value="hosting">Cloud hosting &amp; platform</option>
+            <option value="county">County revenue collection</option>
+            <option value="tenders">Tender tracking</option>
+            <option value="logistics">Import, export &amp; shipment tracking</option>
+            <option value="petroleum">Petroleum, fleets &amp; driver management</option>
+            <option value="enterprise">Company management &amp; IT support</option>
+          </select>
+        </div>
+        <div class="fdx-field">
+          <label for="fdx-message">Project details *</label>
+          <textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea>
+        </div>
+        <button class="fdx-button fdx-button-red" type="submit">
+          Send project enquiry
+          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </button>
+        <p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p>
+      </form>
+    </div>
+  </section>
 </div>
 {% endblock %}
 {% block scripts %}
@@ -484,77 +506,4 @@
 
   // Code-native globe: public-domain Natural Earth land points, orthographic projection.
   // Route arcs are an illustration, not a live transaction or shipment feed.
-  const points = [[-70.0,-70.4],[-70.0,-63.0],[-70.0,17.4],[-70.0,32.0],[-70.0,39.3],[-70.0,46.6],[-70.0,53.9],[-70.0,61.2],[-70.0,75.8],[-70.0,83.1],[-70.0,90.5],[-70.0,97.8],[-70.0,105.1],[-70.0,112.4],[-70.0,119.7],[-70.0,127.0],[-70.0,134.3],[-70.0,141.6],[-70.0,148.9],[-70.0,156.2],[-67.5,48.6],[-67.5,55.2],[-67.5,87.8],[-67.5,94.4],[-67.5,100.9],[-67.5,107.4],[-67.5,114.0],[-67.5,120.5],[-67.5,127.0],[-67.5,133.6],[-67.5,140.1],[-55.0,-71.0],[-55.0,-66.7],[-52.5,-73.2],[-50.0,-75.0],[-50.0,-71.1],[-47.5,-72.7],[-47.5,-69.0],[-45.0,-73.9],[-45.0,-70.4],[-45.0,-66.9],[-45.0,170.0],[-42.5,-71.5],[-42.5,-68.1],[-42.5,-64.7],[-42.5,145.5],[-42.5,172.6],[-40.0,-72.3],[-40.0,-69.0],[-40.0,-65.8],[-40.0,-62.5],[-40.0,175.7],[-37.5,-72.9],[-37.5,-69.7],[-37.5,-66.6],[-37.5,-63.4],[-37.5,-60.3],[-37.5,141.4],[-37.5,144.6],[-37.5,147.7],[-35.0,-70.1],[-35.0,-67.1],[-35.0,-64.0],[-35.0,-61.0],[-35.0,-57.9],[-35.0,137.4],[-35.0,140.5],[-35.0,143.5],[-35.0,146.6],[-35.0,149.6],[-32.5,-70.3],[-32.5,-67.4],[-32.5,-64.4],[-32.5,-61.4],[-32.5,-58.5],[-32.5,-55.5],[-32.5,-52.5],[-32.5,18.6],[-32.5,21.6],[-32.5,24.5],[-32.5,27.5],[-32.5,116.4],[-32.5,119.4],[-32.5,122.4],[-32.5,125.3],[-32.5,134.2],[-32.5,137.2],[-32.5,140.1],[-32.5,143.1],[-32.5,146.1],[-32.5,149.0],[-32.5,152.0],[-30.0,-70.3],[-30.0,-67.4],[-30.0,-64.5],[-30.0,-61.6],[-30.0,-58.8],[-30.0,-55.9],[-30.0,-53.0],[-30.0,-50.1],[-30.0,19.2],[-30.0,22.1],[-30.0,25.0],[-30.0,27.8],[-30.0,30.7],[-30.0,117.3],[-30.0,120.2],[-30.0,123.1],[-30.0,126.0],[-30.0,128.9],[-30.0,131.8],[-30.0,134.7],[-30.0,137.5],[-30.0,140.4],[-30.0,143.3],[-30.0,146.2],[-30.0,149.1],[-30.0,152.0],[-27.5,-70.1],[-27.5,-67.3],[-27.5,-64.4],[-27.5,-61.6],[-27.5,-58.8],[-27.5,-56.0],[-27.5,-53.2],[-27.5,-50.4],[-27.5,17.3],[-27.5,20.1],[-27.5,22.9],[-27.5,25.7],[-27.5,28.6],[-27.5,31.4],[-27.5,115.9],[-27.5,118.8],[-27.5,121.6],[-27.5,124.4],[-27.5,127.2],[-27.5,130.0],[-27.5,132.8],[-27.5,135.7],[-27.5,138.5],[-27.5,141.3],[-27.5,144.1],[-27.5,146.9],[-27.5,149.8],[-27.5,152.6],[-25.0,-69.7],[-25.0,-66.9],[-25.0,-64.1],[-25.0,-61.4],[-25.0,-58.6],[-25.0,-55.9],[-25.0,-53.1],[-25.0,-50.4],[-25.0,15.8],[-25.0,18.6],[-25.0,21.4],[-25.0,24.1],[-25.0,26.9],[-25.0,29.6],[-25.0,32.4],[-25.0,46.2],[-25.0,115.2],[-25.0,117.9],[-25.0,120.7],[-25.0,123.4],[-25.0,126.2],[-25.0,128.9],[-25.0,131.7],[-25.0,134.5],[-25.0,137.2],[-25.0,140.0],[-25.0,142.7],[-25.0,145.5],[-25.0,148.3],[-25.0,151.0],[-22.5,-69.1],[-22.5,-66.3],[-22.5,-63.6],[-22.5,-60.9],[-22.5,-58.2],[-22.5,-55.5],[-22.5,-52.8],[-22.5,-50.1],[-22.5,-47.4],[-22.5,-44.7],[-22.5,-42.0],[-22.5,14.8],[-22.5,17.5],[-22.5,20.2],[-22.5,22.9],[-22.5,25.7],[-22.5,28.4],[-22.5,31.1],[-22.5,33.8],[-22.5,44.6],[-22.5,47.3],[-22.5,115.0],[-22.5,117.7],[-22.5,120.4],[-22.5,123.1],[-22.5,125.8],[-22.5,128.5],[-22.5,131.2],[-22.5,133.9],[-22.5,136.6],[-22.5,139.3],[-22.5,142.0],[-22.5,144.7],[-22.5,147.4],[-22.5,150.1],[-20.0,-68.3],[-20.0,-65.6],[-20.0,-62.9],[-20.0,-60.3],[-20.0,-57.6],[-20.0,-55.0],[-20.0,-52.3],[-20.0,-49.6],[-20.0,-47.0],[-20.0,-44.3],[-20.0,-41.7],[-20.0,14.2],[-20.0,16.9],[-20.0,19.5],[-20.0,22.2],[-20.0,24.9],[-20.0,27.5],[-20.0,30.2],[-20.0,32.8],[-20.0,46.1],[-20.0,120.6],[-20.0,123.3],[-20.0,126.0],[-20.0,128.6],[-20.0,131.3],[-20.0,133.9],[-20.0,136.6],[-20.0,139.3],[-20.0,141.9],[-20.0,144.6],[-20.0,147.2],[-17.5,-69.9],[-17.5,-67.3],[-17.5,-64.7],[-17.5,-62.0],[-17.5,-59.4],[-17.5,-56.8],[-17.5,-54.2],[-17.5,-51.6],[-17.5,-48.9],[-17.5,-46.3],[-17.5,-43.7],[-17.5,-41.1],[-17.5,14.0],[-17.5,16.6],[-17.5,19.2],[-17.5,21.8],[-17.5,24.5],[-17.5,27.1],[-17.5,29.7],[-17.5,32.3],[-17.5,34.9],[-17.5,37.6],[-17.5,45.4],[-17.5,48.1],[-17.5,124.1],[-17.5,126.7],[-17.5,129.3],[-17.5,131.9],[-17.5,134.6],[-17.5,137.2],[-17.5,142.4],[-17.5,145.0],[-15.0,-73.9],[-15.0,-71.3],[-15.0,-68.7],[-15.0,-66.1],[-15.0,-63.5],[-15.0,-60.9],[-15.0,-58.4],[-15.0,-55.8],[-15.0,-53.2],[-15.0,-50.6],[-15.0,-48.0],[-15.0,-45.4],[-15.0,-42.8],[-15.0,-40.2],[-15.0,14.1],[-15.0,16.7],[-15.0,19.3],[-15.0,21.9],[-15.0,24.5],[-15.0,27.1],[-15.0,29.6],[-15.0,32.2],[-15.0,34.8],[-15.0,37.4],[-15.0,40.0],[-15.0,47.8],[-15.0,50.3],[-15.0,125.4],[-15.0,128.0],[-15.0,130.6],[-15.0,133.2],[-15.0,143.5],[-15.0,166.8],[-12.5,-75.0],[-12.5,-72.5],[-12.5,-69.9],[-12.5,-67.3],[-12.5,-64.8],[-12.5,-62.2],[-12.5,-59.6],[-12.5,-57.1],[-12.5,-54.5],[-12.5,-52.0],[-12.5,-49.4],[-12.5,-46.8],[-12.5,-44.3],[-12.5,-41.7],[-12.5,-39.2],[-12.5,14.6],[-12.5,17.2],[-12.5,19.7],[-12.5,22.3],[-12.5,24.9],[-12.5,27.4],[-12.5,30.0],[-12.5,32.5],[-12.5,35.1],[-12.5,37.7],[-12.5,40.2],[-12.5,132.4],[-12.5,135.0],[-12.5,142.6],[-10.0,-75.9],[-10.0,-73.4],[-10.0,-70.8],[-10.0,-68.3],[-10.0,-65.8],[-10.0,-63.2],[-10.0,-60.7],[-10.0,-58.1],[-10.0,-55.6],[-10.0,-53.1],[-10.0,-50.5],[-10.0,-48.0],[-10.0,-45.5],[-10.0,-42.9],[-10.0,-40.4],[-10.0,-37.8],[-10.0,15.5],[-10.0,18.0],[-10.0,20.5],[-10.0,23.1],[-10.0,25.6],[-10.0,28.2],[-10.0,30.7],[-10.0,33.2],[-10.0,35.8],[-10.0,38.3],[-10.0,150.0],[-7.5,-79.1],[-7.5,-76.6],[-7.5,-74.1],[-7.5,-71.6],[-7.5,-69.1],[-7.5,-66.5],[-7.5,-64.0],[-7.5,-61.5],[-7.5,-59.0],[-7.5,-56.4],[-7.5,-53.9],[-7.5,-51.4],[-7.5,-48.9],[-7.5,-46.4],[-7.5,-43.8],[-7.5,-41.3],[-7.5,-38.8],[-7.5,-36.3],[-7.5,14.2],[-7.5,16.7],[-7.5,19.2],[-7.5,21.7],[-7.5,24.2],[-7.5,26.8],[-7.5,29.3],[-7.5,31.8],[-7.5,34.3],[-7.5,36.9],[-7.5,107.5],[-7.5,110.0],[-7.5,112.5],[-7.5,140.2],[-7.5,142.8],[-7.5,145.3],[-5.0,-79.6],[-5.0,-77.1],[-5.0,-74.6],[-5.0,-72.1],[-5.0,-69.6],[-5.0,-67.1],[-5.0,-64.6],[-5.0,-62.1],[-5.0,-59.5],[-5.0,-57.0],[-5.0,-54.5],[-5.0,-52.0],[-5.0,-49.5],[-5.0,-47.0],[-5.0,-44.5],[-5.0,-42.0],[-5.0,-39.5],[-5.0,-37.0],[-5.0,13.2],[-5.0,15.7],[-5.0,18.3],[-5.0,20.8],[-5.0,23.3],[-5.0,25.8],[-5.0,28.3],[-5.0,30.8],[-5.0,33.3],[-5.0,35.8],[-5.0,38.3],[-5.0,138.7],[-5.0,141.2],[-5.0,143.7],[-2.5,-77.4],[-2.5,-74.9],[-2.5,-72.4],[-2.5,-69.9],[-2.5,-67.4],[-2.5,-64.9],[-2.5,-62.4],[-2.5,-59.9],[-2.5,-57.4],[-2.5,-54.9],[-2.5,-52.4],[-2.5,-49.9],[-2.5,-47.4],[-2.5,-44.9],[-2.5,10.2],[-2.5,12.7],[-2.5,15.2],[-2.5,17.7],[-2.5,20.2],[-2.5,22.7],[-2.5,25.2],[-2.5,27.7],[-2.5,30.2],[-2.5,32.7],[-2.5,35.2],[-2.5,37.7],[-2.5,40.2],[-2.5,102.8],[-2.5,105.3],[-2.5,110.3],[-2.5,112.8],[-2.5,115.3],[-2.5,120.3],[-2.5,137.8],[-2.5,140.3],[0.0,-80.0],[0.0,-77.5],[0.0,-75.0],[0.0,-72.5],[0.0,-70.0],[0.0,-67.5],[0.0,-65.0],[0.0,-62.5],[0.0,-60.0],[0.0,-57.5],[0.0,-55.0],[0.0,-52.5],[0.0,10.0],[0.0,12.5],[0.0,15.0],[0.0,17.5],[0.0,20.0],[0.0,22.5],[0.0,25.0],[0.0,27.5],[0.0,30.0],[0.0,32.5],[0.0,35.0],[0.0,37.5],[0.0,40.0],[0.0,42.5],[0.0,100.0],[0.0,102.5],[0.0,110.0],[0.0,112.5],[0.0,115.0],[0.0,120.0],[2.5,-77.4],[2.5,-74.9],[2.5,-72.4],[2.5,-69.9],[2.5,-67.4],[2.5,-64.9],[2.5,-62.4],[2.5,-59.9],[2.5,-57.4],[2.5,-54.9],[2.5,-52.4],[2.5,10.2],[2.5,12.7],[2.5,15.2],[2.5,17.7],[2.5,20.2],[2.5,22.7],[2.5,25.2],[2.5,27.7],[2.5,30.2],[2.5,32.7],[2.5,35.2],[2.5,37.7],[2.5,40.2],[2.5,42.7],[2.5,45.2],[2.5,97.8],[2.5,100.3],[2.5,102.8],[2.5,112.8],[2.5,115.3],[2.5,117.8],[5.0,-77.1],[5.0,-74.6],[5.0,-72.1],[5.0,-69.6],[5.0,-67.1],[5.0,-64.6],[5.0,-62.1],[5.0,-59.5],[5.0,-57.0],[5.0,-54.5],[5.0,-6.8],[5.0,-1.8],[5.0,5.7],[5.0,8.2],[5.0,10.7],[5.0,13.2],[5.0,15.7],[5.0,18.3],[5.0,20.8],[5.0,23.3],[5.0,25.8],[5.0,28.3],[5.0,30.8],[5.0,33.3],[5.0,35.8],[5.0,38.3],[5.0,40.8],[5.0,43.3],[5.0,45.9],[5.0,96.1],[5.0,101.1],[5.0,116.1],[5.0,118.6],[7.5,-76.6],[7.5,-74.1],[7.5,-71.6],[7.5,-69.1],[7.5,-66.5],[7.5,-64.0],[7.5,-61.5],[7.5,-59.0],[7.5,-11.1],[7.5,-8.5],[7.5,-6.0],[7.5,-3.5],[7.5,-1.0],[7.5,1.6],[7.5,4.1],[7.5,6.6],[7.5,9.1],[7.5,11.6],[7.5,14.2],[7.5,16.7],[7.5,19.2],[7.5,21.7],[7.5,24.2],[7.5,26.8],[7.5,29.3],[7.5,31.8],[7.5,34.3],[7.5,36.9],[7.5,39.4],[7.5,41.9],[7.5,44.4],[7.5,46.9],[7.5,49.5],[7.5,99.9],[7.5,122.6],[7.5,125.1],[10.0,-83.5],[10.0,-73.4],[10.0,-70.8],[10.0,-68.3],[10.0,-65.8],[10.0,-63.2],[10.0,-12.5],[10.0,-9.9],[10.0,-7.4],[10.0,-4.8],[10.0,-2.3],[10.0,0.2],[10.0,2.8],[10.0,5.3],[10.0,7.9],[10.0,10.4],[10.0,12.9],[10.0,15.5],[10.0,18.0],[10.0,20.5],[10.0,23.1],[10.0,25.6],[10.0,28.2],[10.0,30.7],[10.0,33.2],[10.0,35.8],[10.0,38.3],[10.0,40.9],[10.0,43.4],[10.0,45.9],[10.0,48.5],[10.0,76.4],[10.0,78.9],[10.0,106.9],[12.5,-85.3],[12.5,-16.1],[12.5,-13.6],[12.5,-11.0],[12.5,-8.4],[12.5,-5.9],[12.5,-3.3],[12.5,-0.8],[12.5,1.8],[12.5,4.4],[12.5,6.9],[12.5,9.5],[12.5,12.1],[12.5,14.6],[12.5,17.2],[12.5,19.7],[12.5,22.3],[12.5,24.9],[12.5,27.4],[12.5,30.0],[12.5,32.5],[12.5,35.1],[12.5,37.7],[12.5,40.2],[12.5,42.8],[12.5,76.1],[12.5,78.6],[12.5,99.1],[12.5,104.2],[12.5,106.8],[12.5,124.7],[15.0,-92.0],[15.0,-89.4],[15.0,-86.8],[15.0,-84.2],[15.0,-16.9],[15.0,-14.4],[15.0,-11.8],[15.0,-9.2],[15.0,-6.6],[15.0,-4.0],[15.0,-1.4],[15.0,1.2],[15.0,3.8],[15.0,6.3],[15.0,8.9],[15.0,11.5],[15.0,14.1],[15.0,16.7],[15.0,19.3],[15.0,21.9],[15.0,24.5],[15.0,27.1],[15.0,29.6],[15.0,32.2],[15.0,34.8],[15.0,37.4],[15.0,40.0],[15.0,45.2],[15.0,47.8],[15.0,50.3],[15.0,76.2],[15.0,78.8],[15.0,99.5],[15.0,102.1],[15.0,104.7],[15.0,107.3],[15.0,120.2],[17.5,-101.4],[17.5,-98.7],[17.5,-96.1],[17.5,-93.5],[17.5,-90.9],[17.5,-88.3],[17.5,-14.9],[17.5,-12.2],[17.5,-9.6],[17.5,-7.0],[17.5,-4.4],[17.5,-1.8],[17.5,0.9],[17.5,3.5],[17.5,6.1],[17.5,8.7],[17.5,11.4],[17.5,14.0],[17.5,16.6],[17.5,19.2],[17.5,21.8],[17.5,24.5],[17.5,27.1],[17.5,29.7],[17.5,32.3],[17.5,34.9],[17.5,37.6],[17.5,42.8],[17.5,45.4],[17.5,48.1],[17.5,50.7],[17.5,53.3],[17.5,74.3],[17.5,76.9],[17.5,79.5],[17.5,82.1],[17.5,95.2],[17.5,97.9],[17.5,100.5],[17.5,103.1],[17.5,105.7],[17.5,121.5],[20.0,-105.5],[20.0,-102.8],[20.0,-100.2],[20.0,-97.5],[20.0,-89.5],[20.0,-76.2],[20.0,-15.1],[20.0,-12.4],[20.0,-9.7],[20.0,-7.1],[20.0,-4.4],[20.0,-1.8],[20.0,0.9],[20.0,3.6],[20.0,6.2],[20.0,8.9],[20.0,11.6],[20.0,14.2],[20.0,16.9],[20.0,19.5],[20.0,22.2],[20.0,24.9],[20.0,27.5],[20.0,30.2],[20.0,32.8],[20.0,35.5],[20.0,40.8],[20.0,43.5],[20.0,46.1],[20.0,48.8],[20.0,51.5],[20.0,54.1],[20.0,56.8],[20.0,75.4],[20.0,78.1],[20.0,80.7],[20.0,83.4],[20.0,86.0],[20.0,94.0],[20.0,96.7],[20.0,99.3],[20.0,102.0],[20.0,104.7],[20.0,110.0],[22.5,-104.2],[22.5,-101.5],[22.5,-98.8],[22.5,-79.9],[22.5,-14.9],[22.5,-12.2],[22.5,-9.5],[22.5,-6.8],[22.5,-4.1],[22.5,-1.4],[22.5,1.3],[22.5,4.0],[22.5,6.7],[22.5,9.4],[22.5,12.1],[22.5,14.8],[22.5,17.5],[22.5,20.2],[22.5,22.9],[22.5,25.7],[22.5,28.4],[22.5,31.1],[22.5,33.8],[22.5,39.2],[22.5,41.9],[22.5,44.6],[22.5,47.3],[22.5,50.0],[22.5,52.7],[22.5,55.4],[22.5,58.1],[22.5,71.7],[22.5,74.4],[22.5,77.1],[22.5,79.8],[22.5,82.5],[22.5,85.2],[22.5,87.9],[22.5,93.3],[22.5,96.0],[22.5,98.7],[22.5,101.4],[22.5,104.1],[22.5,106.8],[22.5,109.5],[22.5,112.2],[25.0,-111.0],[25.0,-105.5],[25.0,-102.8],[25.0,-100.0],[25.0,-77.9],[25.0,-14.5],[25.0,-11.7],[25.0,-9.0],[25.0,-6.2],[25.0,-3.5],[25.0,-0.7],[25.0,2.1],[25.0,4.8],[25.0,7.6],[25.0,10.3],[25.0,13.1],[25.0,15.8],[25.0,18.6],[25.0,21.4],[25.0,24.1],[25.0,26.9],[25.0,29.6],[25.0,32.4],[25.0,37.9],[25.0,40.7],[25.0,43.4],[25.0,46.2],[25.0,49.0],[25.0,68.3],[25.0,71.0],[25.0,73.8],[25.0,76.5],[25.0,79.3],[25.0,82.1],[25.0,84.8],[25.0,87.6],[25.0,90.3],[25.0,93.1],[25.0,95.8],[25.0,98.6],[25.0,101.4],[25.0,104.1],[25.0,106.9],[25.0,109.6],[25.0,112.4],[25.0,115.2],[25.0,117.9],[27.5,-109.5],[27.5,-106.7],[27.5,-103.9],[27.5,-101.1],[27.5,-98.3],[27.5,-81.4],[27.5,-10.9],[27.5,-8.1],[27.5,-5.3],[27.5,-2.4],[27.5,0.4],[27.5,3.2],[27.5,6.0],[27.5,8.8],[27.5,11.7],[27.5,14.5],[27.5,17.3],[27.5,20.1],[27.5,22.9],[27.5,25.7],[27.5,28.6],[27.5,31.4],[27.5,37.0],[27.5,39.8],[27.5,42.7],[27.5,45.5],[27.5,48.3],[27.5,53.9],[27.5,56.8],[27.5,59.6],[27.5,62.4],[27.5,65.2],[27.5,68.0],[27.5,70.8],[27.5,73.7],[27.5,76.5],[27.5,79.3],[27.5,82.1],[27.5,84.9],[27.5,87.8],[27.5,90.6],[27.5,93.4],[27.5,96.2],[27.5,99.0],[27.5,101.8],[27.5,104.7],[27.5,107.5],[27.5,110.3],[27.5,113.1],[27.5,115.9],[27.5,118.8],[30.0,-110.7],[30.0,-107.8],[30.0,-104.9],[30.0,-102.1],[30.0,-99.2],[30.0,-96.3],[30.0,-93.4],[30.0,-90.5],[30.0,-84.7],[30.0,-81.9],[30.0,-6.8],[30.0,-3.9],[30.0,-1.0],[30.0,1.9],[30.0,4.8],[30.0,7.6],[30.0,10.5],[30.0,13.4],[30.0,16.3],[30.0,19.2],[30.0,22.1],[30.0,25.0],[30.0,27.8],[30.0,30.7],[30.0,33.6],[30.0,36.5],[30.0,39.4],[30.0,42.3],[30.0,45.2],[30.0,48.1],[30.0,50.9],[30.0,53.8],[30.0,56.7],[30.0,59.6],[30.0,62.5],[30.0,65.4],[30.0,68.3],[30.0,71.1],[30.0,74.0],[30.0,76.9],[30.0,79.8],[30.0,82.7],[30.0,85.6],[30.0,88.5],[30.0,91.4],[30.0,94.2],[30.0,97.1],[30.0,100.0],[30.0,102.9],[30.0,105.8],[30.0,108.7],[30.0,111.6],[30.0,114.4],[30.0,117.3],[30.0,120.2],[32.5,-114.8],[32.5,-111.8],[32.5,-108.9],[32.5,-105.9],[32.5,-102.9],[32.5,-100.0],[32.5,-97.0],[32.5,-94.0],[32.5,-91.1],[32.5,-88.1],[32.5,-85.1],[32.5,-82.2],[32.5,-8.1],[32.5,-5.1],[32.5,-2.1],[32.5,0.8],[32.5,3.8],[32.5,6.7],[32.5,9.7],[32.5,12.7],[32.5,21.6],[32.5,36.4],[32.5,39.4],[32.5,42.3],[32.5,45.3],[32.5,48.2],[32.5,51.2],[32.5,54.2],[32.5,57.1],[32.5,60.1],[32.5,63.1],[32.5,66.0],[32.5,69.0],[32.5,72.0],[32.5,74.9],[32.5,77.9],[32.5,80.9],[32.5,83.8],[32.5,86.8],[32.5,89.7],[32.5,92.7],[32.5,95.7],[32.5,98.6],[32.5,101.6],[32.5,104.6],[32.5,107.5],[32.5,110.5],[32.5,113.5],[32.5,116.4],[32.5,119.4],[32.5,131.2],[35.0,-119.0],[35.0,-115.9],[35.0,-112.9],[35.0,-109.8],[35.0,-106.8],[35.0,-103.7],[35.0,-100.6],[35.0,-97.6],[35.0,-94.5],[35.0,-91.5],[35.0,-88.4],[35.0,-85.4],[35.0,-82.3],[35.0,-79.3],[35.0,-76.2],[35.0,-6.0],[35.0,-3.0],[35.0,0.1],[35.0,3.1],[35.0,6.2],[35.0,9.2],[35.0,33.6],[35.0,36.7],[35.0,39.7],[35.0,42.8],[35.0,45.8],[35.0,48.9],[35.0,51.9],[35.0,55.0],[35.0,58.1],[35.0,61.1],[35.0,64.2],[35.0,67.2],[35.0,70.3],[35.0,73.3],[35.0,76.4],[35.0,79.4],[35.0,82.5],[35.0,85.5],[35.0,88.6],[35.0,91.6],[35.0,94.7],[35.0,97.7],[35.0,100.8],[35.0,103.8],[35.0,106.9],[35.0,109.9],[35.0,113.0],[35.0,116.0],[35.0,119.1],[35.0,128.2],[35.0,134.3],[35.0,137.4],[37.5,-120.1],[37.5,-117.0],[37.5,-113.8],[37.5,-110.7],[37.5,-107.5],[37.5,-104.4],[37.5,-101.2],[37.5,-98.1],[37.5,-94.9],[37.5,-91.8],[37.5,-88.6],[37.5,-85.5],[37.5,-82.3],[37.5,-79.2],[37.5,-6.7],[37.5,-3.5],[37.5,21.7],[37.5,28.0],[37.5,31.1],[37.5,34.3],[37.5,37.4],[37.5,40.6],[37.5,43.7],[37.5,46.9],[37.5,56.3],[37.5,59.5],[37.5,62.6],[37.5,65.8],[37.5,68.9],[37.5,72.1],[37.5,75.2],[37.5,78.4],[37.5,81.5],[37.5,84.7],[37.5,87.9],[37.5,91.0],[37.5,94.2],[37.5,97.3],[37.5,100.5],[37.5,103.6],[37.5,106.8],[37.5,109.9],[37.5,113.1],[37.5,116.2],[37.5,128.8],[40.0,-121.3],[40.0,-118.0],[40.0,-114.7],[40.0,-111.5],[40.0,-108.2],[40.0,-104.9],[40.0,-101.7],[40.0,-98.4],[40.0,-95.1],[40.0,-91.9],[40.0,-88.6],[40.0,-85.4],[40.0,-82.1],[40.0,-78.8],[40.0,-75.6],[40.0,-7.0],[40.0,-3.8],[40.0,-0.5],[40.0,9.3],[40.0,15.8],[40.0,22.3],[40.0,28.9],[40.0,32.1],[40.0,35.4],[40.0,38.7],[40.0,41.9],[40.0,45.2],[40.0,48.4],[40.0,55.0],[40.0,58.2],[40.0,61.5],[40.0,64.8],[40.0,68.0],[40.0,71.3],[40.0,74.6],[40.0,77.8],[40.0,81.1],[40.0,84.3],[40.0,87.6],[40.0,90.9],[40.0,94.1],[40.0,97.4],[40.0,100.7],[40.0,103.9],[40.0,107.2],[40.0,110.5],[40.0,113.7],[40.0,117.0],[40.0,123.5],[40.0,126.8],[42.5,-122.4],[42.5,-119.0],[42.5,-115.6],[42.5,-112.2],[42.5,-108.8],[42.5,-105.4],[42.5,-102.0],[42.5,-98.6],[42.5,-95.2],[42.5,-91.8],[42.5,-88.4],[42.5,-85.1],[42.5,-81.7],[42.5,-78.3],[42.5,-74.9],[42.5,-71.5],[42.5,-7.1],[42.5,-3.7],[42.5,-0.3],[42.5,13.3],[42.5,20.1],[42.5,23.5],[42.5,26.8],[42.5,43.8],[42.5,47.2],[42.5,54.0],[42.5,57.4],[42.5,60.8],[42.5,64.1],[42.5,67.5],[42.5,70.9],[42.5,74.3],[42.5,77.7],[42.5,81.1],[42.5,84.5],[42.5,87.9],[42.5,91.3],[42.5,94.7],[42.5,98.1],[42.5,101.4],[42.5,104.8],[42.5,108.2],[42.5,111.6],[42.5,115.0],[42.5,118.4],[42.5,121.8],[42.5,125.2],[42.5,128.6],[42.5,142.1],[45.0,-123.4],[45.0,-119.9],[45.0,-116.4],[45.0,-112.8],[45.0,-109.3],[45.0,-105.8],[45.0,-102.2],[45.0,-98.7],[45.0,-95.1],[45.0,-91.6],[45.0,-88.1],[45.0,-84.5],[45.0,-81.0],[45.0,-77.5],[45.0,-73.9],[45.0,-70.4],[45.0,-63.3],[45.0,0.3],[45.0,3.8],[45.0,7.4],[45.0,10.9],[45.0,18.0],[45.0,21.5],[45.0,25.1],[45.0,28.6],[45.0,39.2],[45.0,42.7],[45.0,46.3],[45.0,53.3],[45.0,56.9],[45.0,60.4],[45.0,64.0],[45.0,67.5],[45.0,71.0],[45.0,74.6],[45.0,78.1],[45.0,81.6],[45.0,85.2],[45.0,88.7],[45.0,92.2],[45.0,95.8],[45.0,99.3],[45.0,102.8],[45.0,106.4],[45.0,109.9],[45.0,113.4],[45.0,117.0],[45.0,120.5],[45.0,124.1],[45.0,127.6],[45.0,131.1],[45.0,134.7],[47.5,-120.8],[47.5,-117.1],[47.5,-113.4],[47.5,-109.7],[47.5,-106.0],[47.5,-102.3],[47.5,-98.6],[47.5,-94.9],[47.5,-91.2],[47.5,-87.5],[47.5,-83.8],[47.5,-80.1],[47.5,-76.4],[47.5,-72.7],[47.5,-69.0],[47.5,-65.3],[47.5,-2.4],[47.5,1.3],[47.5,5.0],[47.5,8.7],[47.5,12.4],[47.5,16.1],[47.5,19.8],[47.5,23.5],[47.5,27.2],[47.5,30.9],[47.5,34.6],[47.5,38.3],[47.5,42.0],[47.5,45.7],[47.5,49.4],[47.5,53.1],[47.5,56.8],[47.5,60.5],[47.5,64.2],[47.5,67.9],[47.5,71.6],[47.5,75.3],[47.5,79.0],[47.5,82.7],[47.5,86.4],[47.5,90.1],[47.5,93.8],[47.5,97.5],[47.5,101.2],[47.5,104.9],[47.5,108.6],[47.5,112.3],[47.5,116.0],[47.5,119.7],[47.5,123.4],[47.5,127.1],[47.5,130.8],[47.5,134.5],[47.5,138.2],[50.0,-125.5],[50.0,-121.7],[50.0,-117.8],[50.0,-113.9],[50.0,-110.0],[50.0,-106.1],[50.0,-102.2],[50.0,-98.3],[50.0,-94.4],[50.0,-90.5],[50.0,-86.7],[50.0,-82.8],[50.0,-78.9],[50.0,-75.0],[50.0,-71.1],[50.0,-67.2],[50.0,2.8],[50.0,6.7],[50.0,10.6],[50.0,14.5],[50.0,18.4],[50.0,22.2],[50.0,26.1],[50.0,30.0],[50.0,33.9],[50.0,37.8],[50.0,41.7],[50.0,45.6],[50.0,49.5],[50.0,53.4],[50.0,57.2],[50.0,61.1],[50.0,65.0],[50.0,68.9],[50.0,72.8],[50.0,76.7],[50.0,80.6],[50.0,84.5],[50.0,88.4],[50.0,92.3],[50.0,96.1],[50.0,100.0],[50.0,103.9],[50.0,107.8],[50.0,111.7],[50.0,115.6],[50.0,119.5],[50.0,123.4],[50.0,127.3],[50.0,131.1],[50.0,135.0],[50.0,138.9],[50.0,142.8],[52.5,-126.6],[52.5,-122.5],[52.5,-118.4],[52.5,-114.3],[52.5,-110.2],[52.5,-106.1],[52.5,-102.0],[52.5,-97.9],[52.5,-93.8],[52.5,-89.7],[52.5,-85.5],[52.5,-77.3],[52.5,-73.2],[52.5,-69.1],[52.5,-65.0],[52.5,-60.9],[52.5,-56.8],[52.5,-7.5],[52.5,-3.4],[52.5,0.7],[52.5,4.8],[52.5,8.9],[52.5,13.0],[52.5,17.1],[52.5,21.2],[52.5,25.3],[52.5,29.4],[52.5,33.5],[52.5,37.7],[52.5,41.8],[52.5,45.9],[52.5,50.0],[52.5,54.1],[52.5,58.2],[52.5,62.3],[52.5,66.4],[52.5,70.5],[52.5,74.6],[52.5,78.7],[52.5,82.8],[52.5,86.9],[52.5,91.0],[52.5,95.1],[52.5,99.3],[52.5,103.4],[52.5,107.5],[52.5,111.6],[52.5,115.7],[52.5,119.8],[52.5,123.9],[52.5,128.0],[52.5,132.1],[52.5,136.2],[52.5,140.3],[52.5,156.7],[55.0,-162.6],[55.0,-127.7],[55.0,-123.3],[55.0,-119.0],[55.0,-114.6],[55.0,-110.3],[55.0,-105.9],[55.0,-101.5],[55.0,-97.2],[55.0,-92.8],[55.0,-88.5],[55.0,-84.1],[55.0,-75.4],[55.0,-71.0],[55.0,-66.7],[55.0,-62.3],[55.0,11.8],[55.0,20.5],[55.0,24.9],[55.0,29.2],[55.0,33.6],[55.0,37.9],[55.0,42.3],[55.0,46.6],[55.0,51.0],[55.0,55.4],[55.0,59.7],[55.0,64.1],[55.0,68.4],[55.0,72.8],[55.0,77.2],[55.0,81.5],[55.0,85.9],[55.0,90.2],[55.0,94.6],[55.0,99.0],[55.0,103.3],[55.0,107.7],[55.0,112.0],[55.0,116.4],[55.0,120.7],[55.0,125.1],[55.0,129.5],[55.0,133.8],[55.0,155.6],[55.0,160.0],[57.5,-156.7],[57.5,-133.5],[57.5,-128.8],[57.5,-124.2],[57.5,-119.5],[57.5,-114.9],[57.5,-110.2],[57.5,-105.6],[57.5,-100.9],[57.5,-96.2],[57.5,-73.0],[57.5,-68.3],[57.5,-63.7],[57.5,-3.2],[57.5,15.4],[57.5,24.7],[57.5,29.4],[57.5,34.0],[57.5,38.7],[57.5,43.3],[57.5,48.0],[57.5,52.6],[57.5,57.3],[57.5,62.0],[57.5,66.6],[57.5,71.3],[57.5,75.9],[57.5,80.6],[57.5,85.2],[57.5,89.9],[57.5,94.5],[57.5,99.2],[57.5,103.8],[57.5,108.5],[57.5,113.1],[57.5,117.8],[57.5,122.4],[57.5,127.1],[57.5,131.7],[57.5,136.4],[57.5,159.7],[60.0,-160.0],[60.0,-155.0],[60.0,-150.0],[60.0,-140.0],[60.0,-135.0],[60.0,-130.0],[60.0,-125.0],[60.0,-120.0],[60.0,-115.0],[60.0,-110.0],[60.0,-105.0],[60.0,-100.0],[60.0,-95.0],[60.0,-75.0],[60.0,-70.0],[60.0,-65.0],[60.0,10.0],[60.0,15.0],[60.0,30.0],[60.0,35.0],[60.0,40.0],[60.0,45.0],[60.0,50.0],[60.0,55.0],[60.0,60.0],[60.0,65.0],[60.0,70.0],[60.0,75.0],[60.0,80.0],[60.0,85.0],[60.0,90.0],[60.0,95.0],[60.0,100.0],[60.0,105.0],[60.0,110.0],[60.0,115.0],[60.0,120.0],[60.0,125.0],[60.0,130.0],[60.0,135.0],[60.0,140.0],[60.0,145.0],[60.0,150.0],[60.0,165.0],[62.5,-163.8],[62.5,-158.3],[62.5,-152.9],[62.5,-147.5],[62.5,-142.1],[62.5,-136.7],[62.5,-131.3],[62.5,-125.9],[62.5,-120.4],[62.5,-115.0],[62.5,-109.6],[62.5,-104.2],[62.5,-98.8],[62.5,-93.4],[62.5,-82.5],[62.5,-77.1],[62.5,-50.1],[62.5,-44.6],[62.5,9.5],[62.5,14.9],[62.5,25.7],[62.5,31.2],[62.5,36.6],[62.5,42.0],[62.5,47.4],[62.5,52.8],[62.5,58.2],[62.5,63.6],[62.5,69.1],[62.5,74.5],[62.5,79.9],[62.5,85.3],[62.5,90.7],[62.5,96.1],[62.5,101.5],[62.5,107.0],[62.5,112.4],[62.5,117.8],[62.5,123.2],[62.5,128.6],[62.5,134.0],[62.5,139.4],[62.5,144.9],[62.5,150.3],[62.5,155.7],[62.5,161.1],[62.5,166.5],[62.5,171.9],[65.0,-180],[65.0,-174.1],[65.0,-162.3],[65.0,-156.3],[65.0,-150.4],[65.0,-144.5],[65.0,-138.6],[65.0,-132.7],[65.0,-126.8],[65.0,-120.8],[65.0,-114.9],[65.0,-109.0],[65.0,-103.1],[65.0,-97.2],[65.0,-91.3],[65.0,-85.4],[65.0,-73.5],[65.0,-67.6],[65.0,-49.9],[65.0,-43.9],[65.0,-20.3],[65.0,-14.4],[65.0,15.2],[65.0,21.1],[65.0,27.0],[65.0,33.0],[65.0,44.8],[65.0,50.7],[65.0,56.6],[65.0,62.5],[65.0,68.5],[65.0,74.4],[65.0,80.3],[65.0,86.2],[65.0,92.1],[65.0,98.0],[65.0,103.9],[65.0,109.9],[65.0,115.8],[65.0,121.7],[65.0,127.6],[65.0,133.5],[65.0,139.4],[65.0,145.4],[65.0,151.3],[65.0,157.2],[65.0,163.1],[65.0,169.0],[65.0,174.9],[67.5,-180],[67.5,-160.4],[67.5,-153.9],[67.5,-147.3],[67.5,-140.8],[67.5,-134.3],[67.5,-127.7],[67.5,-121.2],[67.5,-114.7],[67.5,-108.1],[67.5,-101.6],[67.5,-95.1],[67.5,-88.5],[67.5,-82.0],[67.5,-75.5],[67.5,-68.9],[67.5,-49.3],[67.5,-42.8],[67.5,-36.3],[67.5,16.0],[67.5,22.5],[67.5,29.1],[67.5,35.6],[67.5,48.6],[67.5,55.2],[67.5,61.7],[67.5,68.2],[67.5,74.8],[67.5,81.3],[67.5,87.8],[67.5,94.4],[67.5,100.9],[67.5,107.4],[67.5,114.0],[67.5,120.5],[67.5,127.0],[67.5,133.6],[67.5,140.1],[67.5,146.6],[67.5,153.2],[67.5,159.7],[67.5,166.2],[67.5,172.8],[67.5,179.3],[70.0,-158.1],[70.0,-150.8],[70.0,-143.5],[70.0,-114.2],[70.0,-106.9],[70.0,-92.3],[70.0,-85.0],[70.0,-77.7],[70.0,-70.4],[70.0,-48.4],[70.0,-41.1],[70.0,-33.8],[70.0,-26.5],[70.0,24.7],[70.0,68.5],[70.0,75.8],[70.0,83.1],[70.0,90.5],[70.0,97.8],[70.0,105.1],[70.0,112.4],[70.0,119.7],[70.0,127.0],[70.0,134.3],[70.0,141.6],[70.0,148.9],[70.0,156.2],[70.0,170.9],[72.5,-121.8],[72.5,-113.5],[72.5,-96.9],[72.5,-88.5],[72.5,-47.0],[72.5,-38.7],[72.5,-30.4],[72.5,52.8],[72.5,69.4],[72.5,86.0],[72.5,94.4],[72.5,102.7],[72.5,111.0],[72.5,119.3],[72.5,127.6],[72.5,144.2],[75.0,-108.6],[75.0,-99.6],[75.0,-90.7],[75.0,-81.8],[75.0,-55.0],[75.0,-46.1],[75.0,-37.1],[75.0,-28.2],[75.0,87.9],[75.0,96.8],[75.0,105.7],[75.0,141.4],[75.0,150.4],[77.5,-117.5],[77.5,-81.8],[77.5,-63.9],[77.5,-55.0],[77.5,-46.1],[77.5,-37.1],[77.5,-28.2],[77.5,16.4],[80.0,-90.7],[80.0,-81.8],[80.0,-72.9],[80.0,-63.9],[80.0,-55.0],[80.0,-46.1],[80.0,-37.1],[80.0,-28.2],[80.0,-19.3],[80.0,16.4],[80.0,25.4],[80.0,96.8],[82.5,-81.8],[82.5,-72.9],[82.5,-63.9],[82.5,-46.1],[82.5,-37.1],[82.5,-28.2]];
-  const canvas = root.querySelector('#fdx-globe');
-  const context = canvas.getContext && canvas.getContext('2d');
-  const motionButton = root.querySelector('#fdx-motion');
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let paused = reduced.matches, inView = true, frame = 0, last = 0, rotation = 25, sceneTime = 0, sceneIndex = 0;
-  const scenes = [...root.querySelectorAll('[data-scene]')];
-  const sceneButtons = [...root.querySelectorAll('[data-scene-select]')];
-  function setScene(index) {
-    sceneIndex = index; sceneTime = 0;
-    scenes.forEach((scene, i) => { scene.hidden = i !== index; });
-    sceneButtons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
-  }
-  sceneButtons.forEach(button => button.addEventListener('click', () => setScene(Number(button.dataset.sceneSelect))));
-  const radians = Math.PI / 180, tilt = 12 * radians, radius = 230, center = 280;
-  function project(lat, lon, lift = 1) {
-    const a = lat * radians, b = (lon - rotation) * radians;
-    const x = Math.cos(a)*Math.sin(b), y = Math.sin(a)*Math.cos(tilt)-Math.cos(a)*Math.cos(b)*Math.sin(tilt), z = Math.sin(a)*Math.sin(tilt)+Math.cos(a)*Math.cos(b)*Math.cos(tilt);
-    return [center+x*radius*lift, center-y*radius*lift, z];
-  }
-  const routes = [[[-1.29,36.82],[51.5,-.1]],[[-1.29,36.82],[25.2,55.3]],[[-1.29,36.82],[-26.2,28]],[[-1.29,36.82],[1.35,103.8]]];
-  const sphereVector = ([lat,lon]) => [Math.cos(lat*radians)*Math.cos(lon*radians),Math.sin(lat*radians),Math.cos(lat*radians)*Math.sin(lon*radians)];
-  const arcs = routes.map(([start,end]) => {
-    const a = sphereVector(start), b = sphereVector(end);
-    return Array.from({length:61}, (_,i) => { const t=i/60,v=a.map((n,k)=>n*(1-t)+b[k]*t),len=Math.hypot(...v); return [Math.asin(v[1]/len)/radians,Math.atan2(v[2],v[0])/radians,1+.075*Math.sin(Math.PI*t)]; });
-  });
-  function pathThrough(coords, color, width=1) {
-    context.beginPath(); let open=false;
-    coords.forEach(([lat,lon,lift]) => { const [x,y,z]=project(lat,lon,lift); if(z>0){if(open)context.lineTo(x,y);else context.moveTo(x,y);open=true;}else open=false; });
-    context.strokeStyle=color; context.lineWidth=width; context.stroke();
-  }
-  function draw() {
-    if (!context) return;
-    context.clearRect(0,0,560,560);
-    const glow=context.createRadialGradient(255,230,155,280,280,276);glow.addColorStop(0,'rgba(180,192,205,0)');glow.addColorStop(.78,'rgba(180,192,205,.04)');glow.addColorStop(1,'rgba(180,192,205,0)');
-    context.fillStyle=glow;context.fillRect(0,0,560,560);
-    const sphere=context.createRadialGradient(195,160,15,300,280,270);sphere.addColorStop(0,'#303944');sphere.addColorStop(.6,'#192027');sphere.addColorStop(1,'#10151a');
-    context.beginPath();context.arc(center,center,radius,0,Math.PI*2);context.fillStyle=sphere;context.fill();context.strokeStyle='#424a53';context.lineWidth=.8;context.stroke();
-    for(let lat=-60;lat<=60;lat+=30)pathThrough(Array.from({length:121},(_,i)=>[lat,-180+i*3]),'rgba(168,183,199,.12)',.7);
-    for(let lon=-180;lon<180;lon+=30)pathThrough(Array.from({length:61},(_,i)=>[-90+i*3,lon]),'rgba(168,183,199,.12)',.7);
-    points.forEach(([lat,lon])=>{const[x,y,z]=project(lat,lon);if(z<=0)return;context.beginPath();context.arc(x,y,1.1+z*.4,0,Math.PI*2);context.fillStyle=`rgba(214,223,231,${.25+z*.65})`;context.fill();});
-    arcs.forEach(arc=>pathThrough(arc,'rgba(255,104,113,.72)',1.3));
-    routes.flat().forEach(([lat,lon])=>{const[x,y,z]=project(lat,lon,1.005);if(z<=0)return;context.beginPath();context.arc(x,y,4,0,Math.PI*2);context.fillStyle='#ff8b93';context.fill();context.beginPath();context.arc(x,y,8,0,Math.PI*2);context.strokeStyle='rgba(255,123,131,.3)';context.stroke();});
-    canvas.dataset.drawn = 'true';
-  }
-  function resize() {
-    if(!context)return;
-    const scale = Math.min(window.devicePixelRatio || 1,2);
-    canvas.width = 560*scale; canvas.height = 560*scale; context.setTransform(scale,0,0,scale,0,0);
-    draw(); root.querySelector('.fdx-globe-static').style.visibility='hidden';
-  }
-  function tick(timestamp) {
-    frame=0;
-    if(paused || !inView || document.hidden)return;
-    const delta=last?Math.min(timestamp-last,60):0;last=timestamp;
-    rotation=(rotation+delta*.0025)%360;sceneTime+=delta;draw();
-    if(sceneTime>6500)setScene((sceneIndex+1)%scenes.length);
-    frame=requestAnimationFrame(tick);
-  }
-  function syncMotion() {
-    cancelAnimationFrame(frame); frame=0;last=0;
-    motionButton.setAttribute('aria-pressed', String(paused));
-    motionButton.innerHTML=paused?'Play animation <span aria-hidden="true">▷</span>':'Pause animation <span aria-hidden="true">Ⅱ</span>';
-    if(!paused && inView && !document.hidden)frame=requestAnimationFrame(tick);
-  }
-  motionButton.addEventListener('click',()=>{paused=!paused;syncMotion();});
-  if(reduced.addEventListener)reduced.addEventListener('change',event=>{paused=event.matches;syncMotion();});
-  document.addEventListener('visibilitychange',syncMotion);
-  if('IntersectionObserver' in window)new IntersectionObserver(entries=>{inView=entries[0].isIntersecting;syncMotion();},{threshold:0}).observe(root.querySelector('.fdx-hero'));
-  window.addEventListener('resize',resize,{passive:true});
-  resize();syncMotion();
-})();
-</script>
-{% endblock %}
+  const points = [[-70.0,-70.4],[-70.0,-63.0],[-70.0,17.4],[-70.0,32.0],[-70.0,39.3],[-70.0,46.6],[-70.0,53.9],[-70.0,61.2],[-70.0,75.8],[-70.0,83.1],[-70.0,90.5],[-70.0,97.8],[-70.0,105.1],[-70.0,112.4],[-70.0,119.7],[-70.0,127.0],[-70.0,134.3],[-70.0,141.6],[-70.0,148.9],[-70.0,156.2],[-67.5,48.6],[-67.5,55.2],[-67.5,87.8],[-67.5,94.4],[-67.5,100.9],[-67.5,107.4],[-67.5,114.0],[-67.5,120.5],[-67.5,127.0],[-67.5,133.6],[-67.5,140.1],[-55.0,-71.0],[-55.0,-66.7],[-52.5,-73.2],[-50.0,-75.0],[-50.0,-71.1],[-47.5,-72.7],[-47.5,-69.0],[-45.0,-73.9],[-45.0,-70.4],[-45.0,-66.9],[-45.0,170.0],[-42.5,-71.5],[-42.5,-68.1],[-42.5,-64.7],[-42.5,145.5],[-42.5,172.6],[-40.0,-72.3],[-40.0,-69.0],[-40.0,-65.8],[-40.0,-62.5],[-40.0,175.7],[-37.5,-72.9],[-37.5,-69.7],[-37.5,-66.6],[-37.5,-63.4],[-37.5,-60.3],[-37

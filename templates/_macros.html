@@ -2,16 +2,6 @@
   ============================================================================
   _macros.html — shared Jinja components for FABS Data Warehouse
   ============================================================================
-  Usage:
-    In base.html, once:
-        {% from '_macros.html' import macros_assets %}
-        {{ macros_assets() }}       → inside <head> or just before </body>
-
-    In any page:
-        {% from '_macros.html' import service_card, section_heading, stat,
-                                       pillar, badge %}
-        {{ service_card(service) }}
-  ============================================================================
 #}
 
 
@@ -334,7 +324,6 @@
 
     cards.forEach(function (c) { io.observe(c); });
 
-    // Failsafe — never leave cards hidden.
     setTimeout(function () {
       cards.forEach(function (c) {
         if (!c.classList.contains('is-visible')) c.classList.add('is-visible');
@@ -387,10 +376,6 @@
 
 {# ==========================================================================
    SERVICE CARD
-   Usage:  {{ service_card(service) }}
-           {{ service_card(service, tone='dark') }}
-   Expects on `service`:  .slug  .title
-   Optional:              .summary | .description | .blurb   .icon (lucide)
    ========================================================================== #}
 {% macro service_card(service, tone='auto') %}
   {%- if service -%}
@@ -403,7 +388,7 @@
     {%- set _tone    = 'svc-card--dark'  if tone == 'dark'  else
                       ('svc-card--light' if tone == 'light' else '') -%}
 
-    <a href="{{ url_for('service_detail', slug=service.slug) }}"
+    <a href="{{ url_for('main.contact') }}"
        class="svc-card {{ _tone }}"
        aria-label="{{ service.title }}">
 
@@ -428,9 +413,6 @@
 
 {# ==========================================================================
    SECTION HEADING
-   Usage:  {{ section_heading('What we do', 'Capabilities that connect.',
-                               lead='...', cta_href=url_for('services'),
-                               cta_label='View all services', tone='light') }}
    ========================================================================== #}
 {% macro section_heading(eyebrow, title, lead=None, cta_href=None,
                          cta_label=None, tone='light') %}
@@ -456,8 +438,6 @@
 
 {# ==========================================================================
    STAT
-   Usage:  {{ stat('2025', 'Year established') }}
-           {{ stat('4', 'Service lines', tone='light') }}
    ========================================================================== #}
 {% macro stat(value, label, tone='dark') %}
   <div class="svc-stat {{ 'svc-stat--light' if tone == 'light' else '' }}">
@@ -469,7 +449,6 @@
 
 {# ==========================================================================
    PILLAR
-   Usage:  {{ pillar('01', 'Assess', 'Studies and analysis that...') }}
    ========================================================================== #}
 {% macro pillar(number, title, body) %}
   <article class="svc-pillar reveal">
@@ -482,9 +461,6 @@
 
 {# ==========================================================================
    BADGE
-   Usage:  {{ badge('Est. 2025') }}
-           {{ badge('New', tone='copper') }}
-           {{ badge('Internal', tone='ink') }}
    ========================================================================== #}
 {% macro badge(text, tone='default') %}
   <span class="svc-badge {{ 'svc-badge--copper' if tone == 'copper'

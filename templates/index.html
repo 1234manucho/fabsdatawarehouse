@@ -1,435 +1,204 @@
 {% extends 'base.html' %}
-{% from '_macros.html' import service_card %}
-{% block title %}FABS Data Warehouse | Enterprise Data Solutions{% endblock %}
+
+{% block title %}Maintenance ongoing · {{ company.name if company is defined and company.name else 'Fabs Datawarehouse' }}{% endblock %}
+
+{# Hide header, footer, utility bar, WhatsApp, skip-link while maintenance is up #}
+{% block body_class %}is-maintenance{% endblock %}
 
 {% block head %}
 <style>
-/* =================================================================
-   Homepage redesign — scoped under bn- prefix.
-   ================================================================= */
+  /* ---- chrome off (scoped to this page) ---- */
+  .is-maintenance .utility-bar,
+  .is-maintenance .site-header,
+  .is-maintenance .site-footer,
+  .is-maintenance .whatsapp-button,
+  .is-maintenance .skip-link,
+  .is-maintenance .flash-stack { display: none !important; }
 
-/* ---------- 1. Hero ---------- */
-.bn-hero {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  padding: clamp(2.75rem, 6vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4.5rem);
-  background:
-    radial-gradient(90% 120% at 82% 10%, #16313f 0%, rgba(11,23,32,0) 62%),
-    radial-gradient(70% 90% at 6% 94%, rgba(199,137,75,.13) 0%, rgba(11,23,32,0) 62%),
-    linear-gradient(160deg, #0b1720 0%, #0a1420 55%, #070f16 100%);
-  color: #f4f1ea;
-}
-.bn-hero__grid {
-  position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background-image:
-    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
-  background-size: 64px 64px;
-  -webkit-mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
-  mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
-}
-.bn-hero__inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
-  gap: clamp(2rem, 5vw, 4rem);
-  align-items: center;
-}
-.bn-hero__title {
-  font-family: 'Manrope', sans-serif;
-  font-weight: 800;
-  font-size: clamp(2.4rem, 5.4vw, 4.25rem);
-  line-height: 1.03;
-  letter-spacing: -.02em;
-  margin: 1rem 0 1.15rem;
-}
-.bn-hero__title em { font-style: normal; color: #e3a970; }
-.bn-hero__lead {
-  max-width: 46ch;
-  font-size: clamp(1rem, 1.35vw, 1.15rem);
-  line-height: 1.65;
-  color: rgba(244,241,234,.78);
-  margin: 0 0 1.75rem;
-}
-.bn-hero__actions { display: flex; flex-wrap: wrap; gap: .85rem; }
-.bn-hero__facts {
-  display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem;
-  margin: 2.25rem 0 0; padding: 1.5rem 0 0;
-  list-style: none;
-  border-top: 1px solid rgba(255,255,255,.1);
-}
-.bn-hero__facts b {
-  display: block;
-  font-family: 'Manrope', sans-serif;
-  font-size: 1rem; font-weight: 700; color: #fff;
-}
-.bn-hero__facts span {
-  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
-  color: rgba(244,241,234,.55);
-}
-.bn-hero__visual { display: grid; place-items: center; }
+  .is-maintenance #main-content {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: 2rem 1.25rem;
+    background:
+      radial-gradient(60% 60% at 80% 10%, rgba(199,137,75,.22), transparent 60%),
+      radial-gradient(70% 70% at 10% 90%, rgba(199,137,75,.12), transparent 60%),
+      #0b1720;
+    color: #f4f1ea;
+    position: relative;
+    overflow: hidden;
+  }
 
-/* ---------- 2. Rotating globe ---------- */
-.bn-globe {
-  --size: clamp(250px, 33vw, 400px);
-  position: relative;
-  width: var(--size);
-  height: var(--size);
-  margin-inline: auto;
-  perspective: 1100px;
-  perspective-origin: 50% 45%;
-}
-.bn-globe__halo {
-  position: absolute; inset: -18%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(199,137,75,.22) 0%, rgba(199,137,75,0) 68%);
-  filter: blur(14px);
-  animation: bn-halo-pulse 7s ease-in-out infinite;
-  pointer-events: none;
-}
-.bn-globe__silhouette {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(199,137,75,.55);
-  box-shadow:
-    0 0 60px -12px rgba(199,137,75,.5),
-    inset 0 0 44px rgba(199,137,75,.14);
-  pointer-events: none;
-}
-.bn-globe__stage {
-  position: absolute; inset: 0;
-  transform-style: preserve-3d;
-  animation: bn-globe-spin 30s linear infinite;
-  will-change: transform;
-}
-.bn-globe__ring {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  border: 1px solid rgba(199,137,75,.32);
-  transform: rotateY(calc(var(--i) * 30deg));
-}
-.bn-globe__lat {
-  position: absolute;
-  inset: calc((1 - var(--s)) * 50%);
-  border-radius: 50%;
-  border: 1px solid rgba(199,137,75,.2);
-  transform: rotateX(90deg) translateZ(calc(var(--size) * var(--t)));
-}
-.bn-globe__pin {
-  position: absolute; inset: 0;
-  transform:
-    rotateY(calc(var(--lon) * 1deg))
-    rotateX(calc(var(--lat) * -1deg))
-    translateZ(calc(var(--size) / 2));
-}
-.bn-globe__pin::before {
-  content: "";
-  position: absolute; top: 50%; left: 50%;
-  width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px;
-  border-radius: 50%;
-  background: #f0b476;
-  box-shadow: 0 0 0 4px rgba(199,137,75,.16), 0 0 14px 3px rgba(240,180,118,.75);
-}
-.bn-globe__orbit {
-  position: absolute; inset: -7%;
-  border-radius: 50%;
-  border: 1px dashed rgba(199,137,75,.3);
-  animation: bn-orbit-spin 22s linear infinite;
-}
-.bn-globe__face {
-  position: absolute; inset: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 34% 28%, rgba(199,137,75,.12), transparent 56%);
-  box-shadow: inset 0 0 52px rgba(199,137,75,.18);
-  pointer-events: none;
-}
-@keyframes bn-globe-spin { to { transform: rotateY(360deg); } }
-@keyframes bn-orbit-spin {
-  from { transform: rotateX(72deg) rotateZ(0deg); }
-  to   { transform: rotateX(72deg) rotateZ(360deg); }
-}
-@keyframes bn-halo-pulse {
-  0%, 100% { opacity: .55; transform: scale(.96); }
-  50%      { opacity: 1;   transform: scale(1.04); }
-}
+  /* faint grid backdrop, matching the site aesthetic */
+  .is-maintenance #main-content::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 64px 64px;
+    -webkit-mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
+            mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
+    pointer-events: none;
+  }
 
-/* ---------- 3. Credentials strip ---------- */
-.bn-stats { background: #fff; border-bottom: 1px solid rgba(11,23,32,.09); }
-.bn-stats__inner {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1px;
-  background: rgba(11,23,32,.09);
-}
-.bn-stats__item { background: #fff; padding: 1.6rem 1.25rem; }
-.bn-stats__item b {
-  display: block;
-  font-family: 'Manrope', sans-serif;
-  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
-  color: #0b1720; line-height: 1.1;
-}
-.bn-stats__item span {
-  display: block; margin-top: .35rem;
-  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #6b7b85;
-}
+  /* ---- card ---- */
+  .mt-card {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    width: 100%;
+    text-align: center;
+    padding: 3rem 2.25rem 2.75rem;
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 24px;
+    background: linear-gradient(180deg, rgba(22,49,63,.65), rgba(11,23,32,.65));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 40px 80px -40px rgba(0,0,0,.75);
+  }
 
-/* ---------- 4. Approach pillars ---------- */
-.bn-pillars {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
-  gap: 1.1rem;
-  margin-top: 2.75rem;
-}
-.bn-pillar {
-  position: relative;
-  padding: 1.65rem 1.4rem;
-  border: 1px solid rgba(11,23,32,.1);
-  border-radius: 18px;
-  background: linear-gradient(180deg, #fff, #fbfaf7);
-  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
-}
-.bn-pillar:hover {
-  transform: translateY(-4px);
-  border-color: rgba(199,137,75,.5);
-  box-shadow: 0 26px 48px -34px rgba(11,23,32,.55);
-}
-.bn-pillar__num {
-  font-family: 'Manrope', sans-serif;
-  font-size: .75rem; font-weight: 700; letter-spacing: .16em; color: #c7894b;
-}
-.bn-pillar h3 {
-  font-family: 'Manrope', sans-serif;
-  font-size: 1.1rem; color: #0b1720;
-  margin: .55rem 0 .45rem;
-}
-.bn-pillar p { margin: 0; font-size: .93rem; line-height: 1.6; color: #5a6b75; }
+  .mt-brand {
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800; letter-spacing: .08em;
+    font-size: .72rem; text-transform: uppercase;
+    color: rgba(244,241,234,.6);
+    margin-bottom: 2rem;
+  }
+  .mt-brand::before {
+    content: ""; width: 26px; height: 2px; background: #c7894b;
+  }
 
-/* ---------- Responsive + motion ---------- */
-@media (max-width: 900px) {
-  .bn-hero__inner { grid-template-columns: 1fr; }
-  .bn-hero__title { font-size: clamp(2.15rem, 8.5vw, 3.1rem); }
-  .bn-globe { --size: clamp(220px, 62vw, 320px); margin-top: 1rem; }
-}
-@media (max-width: 720px) {
-  .bn-stats__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .bn-globe__stage,
-  .bn-globe__orbit,
-  .bn-globe__halo { animation: none !important; }
-  .bn-pillar { transition: none; }
-}
+  .mt-emoji {
+    display: block;
+    font-size: clamp(3.25rem, 11vw, 4.75rem);
+    line-height: 1;
+    margin: 0 auto 1.25rem;
+    filter: drop-shadow(0 8px 24px rgba(199,137,75,.4));
+    animation: mt-bob 3s ease-in-out infinite;
+  }
+  @keyframes mt-bob {
+    0%, 100% { transform: translateY(0) rotate(-2deg); }
+    50%      { transform: translateY(-8px) rotate(2deg); }
+  }
+
+  .mt-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: clamp(1.7rem, 5vw, 2.35rem);
+    line-height: 1.15;
+    letter-spacing: -.01em;
+    margin: 0 0 .85rem;
+    color: #f4f1ea;
+  }
+  .mt-title em { font-style: normal; color: #c7894b; }
+
+  .mt-lead {
+    margin: 0 auto 1.75rem;
+    max-width: 42ch;
+    color: rgba(244,241,234,.72);
+    line-height: 1.65;
+    font-size: clamp(.95rem, 1.5vw, 1.05rem);
+  }
+
+  .mt-soon {
+    display: inline-flex; align-items: center; gap: .6rem;
+    margin: 0 auto 2rem;
+    padding: .65rem 1.15rem;
+    border-radius: 999px;
+    background: rgba(199,137,75,.1);
+    border: 1px solid rgba(199,137,75,.35);
+    color: #e3a970;
+    font-size: .78rem; letter-spacing: .1em;
+    text-transform: uppercase; font-weight: 600;
+  }
+  .mt-soon::before {
+    content: ""; width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #c7894b;
+    box-shadow: 0 0 0 4px rgba(199,137,75,.18);
+    animation: mt-pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes mt-pulse {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: .35; }
+  }
+
+  .mt-contacts {
+    display: flex; flex-wrap: wrap;
+    justify-content: center; gap: .55rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid rgba(255,255,255,.08);
+  }
+  .mt-contacts a {
+    display: inline-flex; align-items: center; gap: .5rem;
+    padding: .6rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    color: #f4f1ea;
+    text-decoration: none;
+    font-size: .85rem;
+    transition: background .2s, border-color .2s, transform .2s;
+  }
+  .mt-contacts a:hover {
+    background: rgba(199,137,75,.12);
+    border-color: rgba(199,137,75,.55);
+    transform: translateY(-1px);
+  }
+  .mt-contacts svg { width: 14px; height: 14px; stroke: #c7894b; }
+
+  /* shimmer bar at the bottom of the card */
+  .mt-progress {
+    position: absolute; left: 22px; right: 22px; bottom: 14px;
+    height: 2px; border-radius: 2px;
+    background: rgba(255,255,255,.06);
+    overflow: hidden;
+  }
+  .mt-progress::after {
+    content: ""; position: absolute; top: 0; bottom: 0; width: 40%;
+    background: linear-gradient(90deg, transparent, #c7894b, transparent);
+    animation: mt-slide 2.4s ease-in-out infinite;
+  }
+  @keyframes mt-slide {
+    0%   { left: -40%; }
+    100% { left: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mt-emoji, .mt-soon::before, .mt-progress::after { animation: none !important; }
+  }
 </style>
 {% endblock %}
 
 {% block content %}
+  <div class="mt-card" role="status" aria-live="polite">
+    <span class="mt-brand">{{ company.name if company is defined and company.name else 'Fabs Datawarehouse' }}</span>
 
-{# Fallback variables so the page doesn't crash if main.py doesn't pass them #}
-{% set services = [
-    {'slug': 'payments', 'title': 'Payments', 'summary': 'Secure transactions across multiple channels.', 'icon': 'credit-card'},
-    {'slug': 'logistics', 'title': 'Logistics', 'summary': 'End-to-end freight and delivery coordination.', 'icon': 'truck'},
-    {'slug': 'biometrics', 'title': 'Biometrics', 'summary': 'Identity verification and access control.', 'icon': 'fingerprint'},
-    {'slug': 'tenders', 'title': 'Tenders', 'summary': 'Managed procurement and tender processes.', 'icon': 'file-text'}
-] %}
-{% set sectors = ['Companies', 'County', 'Merchants', 'Logistics'] %}
-{% set partners = ['Safaricom', 'KCB', 'Equity', 'NCBA'] %}
+    <span class="mt-emoji" role="img" aria-label="Under maintenance">🛠️</span>
 
-<!-- ============ 1. HERO ============ -->
-<section class="bn-hero">
-  <div class="bn-hero__grid" aria-hidden="true"></div>
-  <div class="shell bn-hero__inner">
+    <h1 class="mt-title">Sorry — <em>maintenance ongoing</em>.</h1>
+    <p class="mt-lead">
+      We're upgrading the site to serve you better. We're putting the finishing touches on things right now — please check back shortly.
+    </p>
 
-    <div class="bn-hero__copy reveal">
-      <span class="eyebrow eyebrow--light"><span></span> Integrated Data Solutions · Est. 2025</span>
-      <h1 class="bn-hero__title">Built to move<br><em>data forward.</em></h1>
-      <p class="bn-hero__lead">Secure data warehousing, payments, logistics and biometrics for demanding enterprises across East and Central Africa.</p>
-      <div class="bn-hero__actions">
-        <a href="{{ url_for('main.contact') }}" class="button button--copper">Request a demo <i data-lucide="arrow-up-right"></i></a>
-        <a href="{{ url_for('main.pricing') }}" class="button button--ghost">Explore pricing</a>
-      </div>
-      <ul class="bn-hero__facts">
-        <li><b>2025</b><span>Established</span></li>
-        <li><b>East &amp; Central</b><span>Africa coverage</span></li>
-        <li><b>One team</b><span>Source to site</span></li>
-      </ul>
+    <span class="mt-soon">You will hear from us soon</span>
+
+    {% if company is defined %}
+    <div class="mt-contacts">
+      {% if company.phone %}
+      <a href="tel:{{ company.phone|replace(' ', '') }}">
+        <i data-lucide="phone"></i> {{ company.phone }}
+      </a>
+      {% endif %}
+      {% if company.email %}
+      <a href="mailto:{{ company.email }}">
+        <i data-lucide="mail"></i> {{ company.email }}
+      </a>
+      {% endif %}
     </div>
+    {% endif %}
 
-    <div class="bn-hero__visual reveal">
-      <div class="bn-globe" role="img" aria-label="Rotating globe highlighting East and Central Africa">
-        <span class="bn-globe__halo" aria-hidden="true"></span>
-        <span class="bn-globe__silhouette" aria-hidden="true"></span>
-
-        <div class="bn-globe__stage" aria-hidden="true">
-          <div class="bn-globe__ring" style="--i:0"></div>
-          <div class="bn-globe__ring" style="--i:1"></div>
-          <div class="bn-globe__ring" style="--i:2"></div>
-          <div class="bn-globe__ring" style="--i:3"></div>
-          <div class="bn-globe__ring" style="--i:4"></div>
-          <div class="bn-globe__ring" style="--i:5"></div>
-
-          <div class="bn-globe__lat" style="--s:1;     --t:0"></div>
-          <div class="bn-globe__lat" style="--s:.866;  --t:-.25"></div>
-          <div class="bn-globe__lat" style="--s:.866;  --t:.25"></div>
-          <div class="bn-globe__lat" style="--s:.5;    --t:-.433"></div>
-          <div class="bn-globe__lat" style="--s:.5;    --t:.433"></div>
-
-          <div class="bn-globe__pin" style="--lon:36.8; --lat:-1.3"></div>
-          <div class="bn-globe__pin" style="--lon:15.3; --lat:-4.3"></div>
-          <div class="bn-globe__pin" style="--lon:32.5; --lat:15.6"></div>
-          <div class="bn-globe__pin" style="--lon:3.4;  --lat:6.5"></div>
-
-          <div class="bn-globe__orbit"></div>
-        </div>
-
-        <span class="bn-globe__face" aria-hidden="true"></span>
-      </div>
-    </div>
-
+    <div class="mt-progress" aria-hidden="true"></div>
   </div>
-</section>
-
-<!-- ============ 2. CREDENTIALS ============ -->
-<section class="bn-stats">
-  <div class="shell">
-    <div class="bn-stats__inner">
-      <div class="bn-stats__item"><b>2025</b><span>Year established</span></div>
-      <div class="bn-stats__item"><b>8+</b><span>Integrated modules</span></div>
-      <div class="bn-stats__item"><b>2</b><span>Regions served</span></div>
-      <div class="bn-stats__item"><b>1</b><span>Accountable partner</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 3. APPROACH ============ -->
-<section class="section intro-section">
-  <div class="shell">
-    <div class="intro-grid">
-      <div>
-        <span class="eyebrow"><span></span> The FABS approach</span>
-        <h2 class="display-title">One partner.<br>Every critical move.</h2>
-      </div>
-      <div class="intro-copy reveal">
-        <p class="lead">FABS Data Warehouse was established to bring data engineering, dependable procurement and practical logistics under one roof.</p>
-        <p>We help clients close the gaps between supplier, transporter and site team—protecting schedules, specifications and accountability at every stage of a project.</p>
-        <a href="{{ url_for('main.about') }}" class="text-link">How we work <i data-lucide="arrow-right"></i></a>
-      </div>
-    </div>
-
-    <div class="bn-pillars">
-      <article class="bn-pillar reveal">
-        <span class="bn-pillar__num">01</span>
-        <h3>Ingest</h3>
-        <p>Secure collection of data from payments, logistics, and biometric sources across the enterprise.</p>
-      </article>
-      <article class="bn-pillar reveal">
-        <span class="bn-pillar__num">02</span>
-        <h3>Process</h3>
-        <p>Transformation and cleansing of raw data into structured, queryable formats ready for analysis.</p>
-      </article>
-      <article class="bn-pillar reveal">
-        <span class="bn-pillar__num">03</span>
-        <h3>Store</h3>
-        <p>Highly available PostgreSQL clusters ensuring your critical business intelligence is never lost.</p>
-      </article>
-      <article class="bn-pillar reveal">
-        <span class="bn-pillar__num">04</span>
-        <h3>Analyze</h3>
-        <p>Dashboards and reporting tools that turn raw numbers into actionable operational insights.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 4. SERVICES ============ -->
-<section class="section section--ink services-feature">
-  <div class="shell">
-    <div class="section-heading section-heading--light">
-      <div>
-        <span class="eyebrow eyebrow--light"><span></span> What we do</span>
-        <h2>Capabilities that connect.</h2>
-      </div>
-      <a href="{{ url_for('main.pricing') }}" class="button button--outline-light">View pricing <i data-lucide="arrow-right"></i></a>
-    </div>
-    <div class="service-grid service-grid--dark">
-      {% for service in services[:4] %}{{ service_card(service) }}{% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ============ 5. CIVIL WORKS ============ -->
-<section class="split-feature">
-  <div class="split-feature__image bg-[#0b1720] flex items-center justify-center">
-    <i data-lucide="credit-card" class="w-32 h-32 text-brand-red opacity-50"></i>
-    <span class="image-label">Secure Payment Gateways</span>
-  </div>
-  <div class="split-feature__content">
-    <span class="eyebrow"><span></span> Financial Technology</span>
-    <h2>Engineered for real-world performance.</h2>
-    <p>From heavy-duty transaction processing to secure merchant portals, our teams focus on reliability, durability and safe execution.</p>
-    <ul class="check-list">
-      <li><i data-lucide="check"></i> Professional engineering oversight</li>
-      <li><i data-lucide="check"></i> Experienced technical workforce</li>
-      <li><i data-lucide="check"></i> Materials aligned to specification</li>
-      <li><i data-lucide="check"></i> Coordinated site delivery</li>
-    </ul>
-    <a href="{{ url_for('payments.index') }}" class="button button--dark">Explore payments <i data-lucide="arrow-up-right"></i></a>
-  </div>
-</section>
-
-<!-- ============ 6. LOGISTICS ============ -->
-<section class="section logistics-section">
-  <div class="shell logistics-card">
-    <div class="logistics-card__copy">
-      <span class="eyebrow eyebrow--light"><span></span> Integrated capability</span>
-      <h2>Materials do not create value until they reach the right site.</h2>
-      <p>Our transport and project-logistics service completes the procurement cycle with planned dispatch, coordinated loading, delivery documentation and site handover.</p>
-      <a href="{{ url_for('logistics.index') }}" class="button button--copper">Explore logistics <i data-lucide="arrow-up-right"></i></a>
-    </div>
-    <div class="route-map" aria-label="Procurement to delivery process">
-      <div class="route-line"></div>
-      <div class="route-step"><span>01</span><i data-lucide="shopping-cart"></i><b>Order</b><small>Confirm requirements</small></div>
-      <div class="route-step"><span>02</span><i data-lucide="package-check"></i><b>Prepare</b><small>Check and schedule</small></div>
-      <div class="route-step"><span>03</span><i data-lucide="truck"></i><b>Move</b><small>Coordinate transport</small></div>
-      <div class="route-step"><span>04</span><i data-lucide="map-pin-check"></i><b>Deliver</b><small>Handover at site</small></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ 7. SECTORS ============ -->
-<section class="section sectors-section">
-  <div class="shell">
-    <div class="section-heading">
-      <div>
-        <span class="eyebrow"><span></span> Where we work</span>
-        <h2>Built around your sector.</h2>
-      </div>
-      <p>Teams and supply plans are matched to the operating demands of each project environment.</p>
-    </div>
-    <div class="sector-list">
-      {% for sector in sectors %}
-        <a href="{{ url_for('main.contact') }}" class="sector-row reveal"><span>0{{ loop.index }}</span><strong>{{ sector }}</strong><i data-lucide="arrow-up-right"></i></a>
-      {% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ============ 8. PARTNERS ============ -->
-<section class="partner-strip">
-  <div class="shell">
-    <span class="partner-strip__label">Brands represented in our profile</span>
-    <div class="partner-names">
-      {% for partner in partners %}<span>{{ partner }}</span>{% endfor %}
-    </div>
-  </div>
-</section>
-
-<!-- ============ 9. CTA ============ -->
-<section class="section cta-section">
-  <div class="shell cta-card">
-    <span class="eyebrow eyebrow--light"><span></span> Start a conversation</span>
-    <h2>Tell us what you are building, buying or moving.</h2>
-    <p>Share the specification, quantity, project location and required timeline. Our team will respond with the clearest next step.</p>
-    <a href="{{ url_for('main.contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
-  </div>
-</section>
 {% endblock %}

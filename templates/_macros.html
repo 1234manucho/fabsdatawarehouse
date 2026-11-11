@@ -1,6 +1,6 @@
 {#
   ============================================================================
-  _macros.html — shared Jinja components for B&N Immo-Invest Limited
+  _macros.html — shared Jinja components for FABS Data Warehouse
   ============================================================================
   Usage:
     In base.html, once:
@@ -21,7 +21,7 @@
 {% macro macros_assets() %}
 <style id="bn-macros-styles">
 /* ----------------------------------------------------------------
-   B&N shared components — scoped under .svc-*
+   FABS shared components — scoped under .svc-*
    Palette: ink #0b1720 · copper #c7894b · sand #f2ece3
    ---------------------------------------------------------------- */
 
@@ -393,34 +393,36 @@
    Optional:              .summary | .description | .blurb   .icon (lucide)
    ========================================================================== #}
 {% macro service_card(service, tone='auto') %}
-  {%- if not service -%}{%- return -%}{%- endif -%}
+  {%- if service -%}
 
-  {%- set _summary =
-        service.summary     if service.summary     is defined and service.summary     else
-       (service.description if service.description is defined and service.description else
-       (service.blurb       if service.blurb       is defined and service.blurb       else '')) -%}
-  {%- set _icon    = service.icon if service.icon is defined and service.icon else 'layers' -%}
-  {%- set _tone    = 'svc-card--dark'  if tone == 'dark'  else
-                    ('svc-card--light' if tone == 'light' else '') -%}
+    {%- set _summary =
+          service.summary     if service.summary     is defined and service.summary     else
+         (service.description if service.description is defined and service.description else
+         (service.blurb       if service.blurb       is defined and service.blurb       else '')) -%}
+    {%- set _icon    = service.icon if service.icon is defined and service.icon else 'layers' -%}
+    {%- set _tone    = 'svc-card--dark'  if tone == 'dark'  else
+                      ('svc-card--light' if tone == 'light' else '') -%}
 
-  <a href="{{ url_for('service_detail', slug=service.slug) }}"
-     class="svc-card {{ _tone }}"
-     aria-label="{{ service.title }}">
+    <a href="{{ url_for('service_detail', slug=service.slug) }}"
+       class="svc-card {{ _tone }}"
+       aria-label="{{ service.title }}">
 
-    <span class="svc-card__icon" aria-hidden="true">
-      <i data-lucide="{{ _icon }}"></i>
-    </span>
+      <span class="svc-card__icon" aria-hidden="true">
+        <i data-lucide="{{ _icon }}"></i>
+      </span>
 
-    <h3 class="svc-card__title">{{ service.title }}</h3>
+      <h3 class="svc-card__title">{{ service.title }}</h3>
 
-    {% if _summary %}
-      <p class="svc-card__summary">{{ _summary }}</p>
-    {% endif %}
+      {% if _summary %}
+        <p class="svc-card__summary">{{ _summary }}</p>
+      {% endif %}
 
-    <span class="svc-card__link">
-      Explore <i data-lucide="arrow-up-right" aria-hidden="true"></i>
-    </span>
-  </a>
+      <span class="svc-card__link">
+        Explore <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+      </span>
+    </a>
+
+  {%- endif -%}
 {% endmacro %}
 
 

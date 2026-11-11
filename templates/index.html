@@ -4,8 +4,7 @@
 {% block head_extra %}
 <link rel="preconnect" href="https://images.pexels.com" crossorigin>
 <script>
-/* Remote operational photography → packaged photograph → neutral placeholder.
-   Install before the images are parsed, so even early failures are recovered. */
+/* Remote operational photography → packaged photograph → neutral placeholder. */
 (() => {
   const placeholder = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
   document.addEventListener('error', event => {
@@ -26,7 +25,6 @@
 <noscript><style>.fdx-remote{display:none!important}.fdx-motion-button{display:none!important}</style></noscript>
 {% endblock %}
 {% block content %}
-{# Each photo is a real equipment/infrastructure photograph. No portrait stock imagery. #}
 {% set photos = {
  'port':(24244232,'Container stacks and handling equipment at a shipping terminal'),
  'payments':(12935098,'Point-of-sale payment terminal on a merchant counter'),
@@ -106,32 +104,15 @@
       <div class="fdx-pillar-grid">
         <a class="fdx-pillar" href="#services" data-category-link="payments">
           <span class="fdx-photo"><img src="/static/images/operations/payments.jpg" alt="Point-of-sale payment terminal on a merchant counter" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">01 / PAYMENTS</span>
-            <h3>Every transaction, connected.</h3>
-            <p>Collections, settlements, merchant onboarding and bulk disbursements.</p>
-            <span class="fdx-text-link">Explore payment solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
+          <div><span class="fdx-card-kicker">01 / PAYMENTS</span><h3>Every transaction, connected.</h3><p>Collections, settlements, merchant onboarding and bulk disbursements.</p><span class="fdx-text-link">Explore payment solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
         </a>
-
         <a class="fdx-pillar" href="#biometrics">
           <span class="fdx-photo"><img src="/static/images/operations/security.jpg" alt="Building security cameras and their connections" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">02 / SECURITY</span>
-            <h3>Confidence in every identity.</h3>
-            <p>Face-to-ID records, biometric integrations and controlled access.</p>
-            <span class="fdx-text-link">Explore identity &amp; security <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
+          <div><span class="fdx-card-kicker">02 / SECURITY</span><h3>Confidence in every identity.</h3><p>Face-to-ID records, biometric integrations and controlled access.</p><span class="fdx-text-link">Explore identity &amp; security <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
         </a>
-
         <a class="fdx-pillar" href="#tracking">
           <span class="fdx-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">03 / OPERATIONAL SYSTEMS</span>
-            <h3>Keep the bigger picture moving.</h3>
-            <p>Shipments, petroleum fleets, county revenue, stock and business administration.</p>
-            <span class="fdx-text-link">Explore operational solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span>
-          </div>
+          <div><span class="fdx-card-kicker">03 / OPERATIONAL SYSTEMS</span><h3>Keep the bigger picture moving.</h3><p>Shipments, petroleum fleets, county revenue, stock and business administration.</p><span class="fdx-text-link">Explore operational solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
         </a>
       </div>
     </div>
@@ -196,38 +177,22 @@
   <section class="fdx-section fdx-logistics-section" id="tracking" aria-labelledby="fdx-tracking-title">
     <div class="fdx-wrap fdx-split fdx-split-reverse">
       <div class="fdx-logistics-visual">
-        <span class="fdx-photo fdx-logistics-photo">
-          <img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async">
-        </span>
-        <div class="fdx-warehouse-inset">
-          <span class="fdx-photo">
-            <img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async">
-          </span>
-          <span>From dispatch to delivery.</span>
-        </div>
+        <span class="fdx-photo fdx-logistics-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
+        <div class="fdx-warehouse-inset"><span class="fdx-photo"><img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async"></span><span>From dispatch to delivery.</span></div>
         <span class="fdx-photo-label">IMPORT / EXPORT / SHIPMENT VISIBILITY</span>
       </div>
-
       <div class="fdx-feature-copy">
         <p class="fdx-eyebrow">IMPORT &amp; EXPORT SHIPMENT TRACKING</p>
         <h2 id="fdx-tracking-title">Every shipment has a story.<br>Keep yours together.</h2>
         <p class="fdx-body">Give your operations team a shared view of shipments, movement milestones and supporting documents—from the dispatch desk to the destination.</p>
-
         <ul class="fdx-check-list">
-          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Import and export shipment references.</li>
-          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Waybills, customs paperwork and delivery documents.</li>
-          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Available updates from connected carriers.</li>
-          <li><svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg> Dispatch coordination and delivery follow-up.</li>
+          <li>{{ icon('check') }} Import and export shipment references.</li>
+          <li>{{ icon('check') }} Waybills, customs paperwork and delivery documents.</li>
+          <li>{{ icon('check') }} Available updates from connected carriers.</li>
+          <li>{{ icon('check') }} Dispatch coordination and delivery follow-up.</li>
         </ul>
-
-        <div class="fdx-milestones" aria-label="Illustrative shipment milestones">
-          <span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span>
-        </div>
-
-        <a class="fdx-text-link" href="#contact" data-contact-interest="logistics">
-          Connect your shipment workflow
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-        </a>
+        <div class="fdx-milestones" aria-label="Illustrative shipment milestones"><span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span></div>
+        <a class="fdx-text-link" href="#contact" data-contact-interest="logistics">Connect your shipment workflow {{ icon('arrow') }}</a>
       </div>
     </div>
   </section>
@@ -243,31 +208,12 @@
         <h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2>
         <p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p>
         <div class="fdx-fleet-features">
-          <div>
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>
-            <h3>Transport &amp; security</h3>
-            <p>Vehicle records, dispatch, trip oversight and incident follow-up.</p>
-          </div>
-          <div>
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
-            <h3>Driver documents</h3>
-            <p>Licence and document uploads, expiry reviews and organised records.</p>
-          </div>
-          <div>
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>
-            <h3>Vetting &amp; employment</h3>
-            <p>Driver applications, checks, human review and employment records.</p>
-          </div>
-          <div>
-            <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/></svg>
-            <h3>Salary disbursements</h3>
-            <p>Approved driver payroll batches and payment reconciliation.</p>
-          </div>
+          <div>{{ icon('truck') }}<h3>Transport &amp; security</h3><p>Vehicle records, dispatch, trip oversight and incident follow-up.</p></div>
+          <div>{{ icon('file') }}<h3>Driver documents</h3><p>Licence and document uploads, expiry reviews and organised records.</p></div>
+          <div>{{ icon('shield') }}<h3>Vetting &amp; employment</h3><p>Driver applications, checks, human review and employment records.</p></div>
+          <div>{{ icon('payout') }}<h3>Salary disbursements</h3><p>Approved driver payroll batches and payment reconciliation.</p></div>
         </div>
-        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">
-          Plan your fleet solution
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-        </a>
+        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">Plan your fleet solution {{ icon('arrow') }}</a>
       </div>
     </div>
   </section>
@@ -287,9 +233,7 @@
         <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="stock">Discuss stock management {{ icon('arrow') }}</a>
       </div>
       <div class="fdx-logistics-visual">
-        <span class="fdx-photo fdx-logistics-photo">
-          <img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async">
-        </span>
+        <span class="fdx-photo fdx-logistics-photo"><img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async"></span>
         <span class="fdx-photo-label">INVENTORY · WAREHOUSE · STORES</span>
       </div>
     </div>
@@ -298,41 +242,21 @@
   <section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title">
     <div class="fdx-wrap">
       <div class="fdx-section-head">
-        <div>
-          <p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p>
-          <h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2>
-        </div>
+        <div><p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p><h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2></div>
         <p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p>
       </div>
       <div class="fdx-editorial-grid">
         <article class="fdx-editorial">
           <span class="fdx-photo"><img src="/static/images/operations/county.jpg" alt="Aerial view of an urban car park" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span>
-            <h3>Make collections easier to account for.</h3>
-            <p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p>
-            <a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-          </div>
+          <div><span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span><h3>Make collections easier to account for.</h3><p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p><a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions {{ icon('arrow') }}</a></div>
         </article>
-
         <article class="fdx-editorial">
           <span class="fdx-photo"><img src="/static/images/operations/documents.jpg" alt="Business files, payment terminal and calculator on a desk" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span>
-            <h3>Give records and deadlines a home.</h3>
-            <p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p>
-            <a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-          </div>
+          <div><span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span><h3>Give records and deadlines a home.</h3><p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p><a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management {{ icon('arrow') }}</a></div>
         </article>
-
         <article class="fdx-editorial">
           <span class="fdx-photo"><img src="/static/images/operations/infrastructure.jpg" alt="Computer equipment in an IT workspace" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div>
-            <span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span>
-            <h3>Add technical capacity where it counts.</h3>
-            <p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p>
-            <a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
-          </div>
+          <div><span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span><h3>Add technical capacity where it counts.</h3><p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p><a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope {{ icon('arrow') }}</a></div>
         </article>
       </div>
     </div>
@@ -340,10 +264,7 @@
 
   <section class="fdx-process-section" aria-labelledby="fdx-process-title">
     <div class="fdx-wrap">
-      <div class="fdx-process-heading">
-        <p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p>
-        <h2 id="fdx-process-title">A practical way to work together.</h2>
-      </div>
+      <div class="fdx-process-heading"><p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p><h2 id="fdx-process-title">A practical way to work together.</h2></div>
       <ol class="fdx-process">
         <li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li>
         <li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li>
@@ -359,38 +280,19 @@
         <p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p>
         <h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2>
         <p>Need payment aggregation, stronger onboarding, transport visibility, stock control or extra IT capacity? Tell us what you are building and where you need support.</p>
-        <div class="fdx-contact-note">
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/></svg>
-          <div>
-            <h3>Make the first conversation useful.</h3>
-            <p>Share your organisation, the service you need, your current systems and your intended timeline.</p>
-          </div>
-        </div>
-        <a class="fdx-text-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">
-          Already onboarded? Open the platform
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-        </a>
+        <div class="fdx-contact-note">{{ icon('file') }}<div><h3>Make the first conversation useful.</h3><p>Share your organisation, the service you need, your current systems and your intended timeline.</p></div></div>
+        <a class="fdx-text-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Already onboarded? Open the platform {{ icon('arrow') }}</a>
         <div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div>
       </div>
-
       <form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
         <h3>Tell us what you need.</h3>
         <p>Fields marked * are required.</p>
         <div class="fdx-form-row">
-          <div class="fdx-field">
-            <label for="fdx-full-name">Full name *</label>
-            <input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name">
-          </div>
-          <div class="fdx-field">
-            <label for="fdx-company">Company / organisation</label>
-            <input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation">
-          </div>
+          <div class="fdx-field"><label for="fdx-full-name">Full name *</label><input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name"></div>
+          <div class="fdx-field"><label for="fdx-company">Company / organisation</label><input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation"></div>
         </div>
-        <div class="fdx-field">
-          <label for="fdx-email">Work email *</label>
-          <input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com">
-        </div>
+        <div class="fdx-field"><label for="fdx-email">Work email *</label><input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com"></div>
         <div class="fdx-field">
           <label for="fdx-interest">How can we help?</label>
           <select id="fdx-interest" name="interest">
@@ -405,14 +307,8 @@
             <option value="enterprise">Company management &amp; IT support</option>
           </select>
         </div>
-        <div class="fdx-field">
-          <label for="fdx-message">Project details *</label>
-          <textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea>
-        </div>
-        <button class="fdx-button fdx-button-red" type="submit">
-          Send project enquiry
-          <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
-        </button>
+        <div class="fdx-field"><label for="fdx-message">Project details *</label><textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea></div>
+        <button class="fdx-button fdx-button-red" type="submit">Send project enquiry {{ icon('arrow') }}</button>
         <p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p>
       </form>
     </div>
@@ -420,90 +316,6 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
-(() => {
-  'use strict';
-  const root = document.getElementById('fdw-home');
-  if (!root) return;
-  // Service filters use native buttons, with the result count announced to screen readers.
-  const filterButtons = [...root.querySelectorAll('[data-filter]')];
-  const cards = [...root.querySelectorAll('[data-service-category]')];
-  const filterServices = category => {
-    if (!filterButtons.some(button => button.dataset.filter === category)) category = 'all';
-    filterButtons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.filter === category)));
-    cards.forEach(card => { card.hidden = category !== 'all' && card.dataset.serviceCategory !== category && card.dataset.serviceCategory !== 'all'; });
-    const count = cards.filter(card => !card.hidden && card.dataset.serviceCategory !== 'all').length;
-    root.querySelector('#fdx-filter-status').textContent = `Showing ${count} services.`;
-  };
-  filterButtons.forEach(button => button.addEventListener('click', () => filterServices(button.dataset.filter)));
-  const serviceDialog = root.querySelector('#fdx-service-dialog');
-  root.querySelectorAll('[data-service-details]').forEach(button => button.addEventListener('click', () => {
-    root.querySelector('#fdx-service-dialog-title').textContent = button.dataset.title;
-    root.querySelector('#fdx-service-dialog-description').textContent = button.dataset.description;
-    const contact = root.querySelector('#fdx-service-dialog-contact');
-    contact.dataset.contactInterest = button.dataset.interest;
-    if (typeof serviceDialog.showModal === 'function') serviceDialog.showModal();
-    else serviceDialog.setAttribute('open', '');
-  }));
-  serviceDialog.querySelector('[data-dialog-close]').addEventListener('click', () => serviceDialog.close());
-  serviceDialog.querySelector('#fdx-service-dialog-contact').addEventListener('click', () => serviceDialog.close());
-  root.querySelectorAll('[data-category-link]').forEach(link => link.addEventListener('click', () => filterServices(link.dataset.categoryLink)));
-  function revealAnchor(hash) {
-    let id; try { id = decodeURIComponent((hash || '').slice(1)); } catch (_) { return; }
-    const target = document.getElementById(id);
-    const card = target && target.closest('[data-service-category]');
-    if (card && card.hidden) filterServices('all');
-  }
-  document.addEventListener('click', event => {
-    const link = event.target.closest('a[href]');
-    if (!link) return;
-    const url = new URL(link.href, location.href);
-    if (url.origin === location.origin && url.pathname === location.pathname) revealAnchor(url.hash);
-    if (link.dataset.contactInterest) root.querySelector('#fdx-interest').value = link.dataset.contactInterest;
-  });
-  window.addEventListener('hashchange', () => revealAnchor(location.hash));
-  revealAnchor(location.hash);
-
-  // A local, consent-gated image-pairing preview. No upload or recognition API is called.
-  const slots = ['face', 'id'].map(name => ({name, input:root.querySelector(`#fdx-${name}-file`), preview:root.querySelector(`#fdx-${name}-preview`), label:root.querySelector(`#fdx-${name}-name`), url:null, ready:false, revision:0}));
-  const consent = root.querySelector('#fdx-preview-consent');
-  const linkRecord = root.querySelector('#fdx-link-record');
-  const status = root.querySelector('#fdx-record-status');
-  function updateReady() { linkRecord.disabled = !consent.checked || slots.some(slot => !slot.ready); }
-  function resetStatus() { status.classList.remove('is-linked'); status.textContent = 'Choose both images and confirm permission to preview a linked record.'; }
-  function clearSlot(slot) {
-    slot.revision++;
-    if (slot.url) URL.revokeObjectURL(slot.url);
-    slot.url = null; slot.ready = false; slot.input.value = ''; slot.preview.hidden = true;
-    slot.preview.removeAttribute('src'); slot.label.textContent = 'Choose an image';
-  }
-  slots.forEach(slot => slot.input.addEventListener('change', () => {
-    const file = slot.input.files[0];
-    clearSlot(slot); resetStatus(); updateReady();
-    if (!file) return;
-    if (!['image/jpeg','image/png','image/webp'].includes(file.type) || file.size > 5 * 1024 * 1024) {
-      status.textContent = 'Please choose a JPG, PNG or WebP image no larger than 5 MB.'; return;
-    }
-    const revision = slot.revision;
-    const objectURL = URL.createObjectURL(file); slot.url = objectURL;
-    const probe = new Image();
-    probe.onload = () => {
-      if (revision !== slot.revision) return;
-      slot.preview.src = objectURL; slot.preview.hidden = false; slot.ready = true;
-      slot.label.textContent = file.name; updateReady();
-      status.textContent = slots.every(item => item.ready) ? 'Both images are ready. Confirm permission, then link the record preview.' : 'Image ready. Choose the other image to continue.';
-    };
-    probe.onerror = () => { if (revision !== slot.revision) return; clearSlot(slot); updateReady(); status.textContent = 'This image could not be read. Please choose another image.'; };
-    probe.src = objectURL;
-  }));
-  consent.addEventListener('change', () => { updateReady(); resetStatus(); });
-  linkRecord.addEventListener('click', () => {
-    if (linkRecord.disabled) return;
-    status.classList.add('is-linked'); status.textContent = 'Images linked in this preview. Identity verification is still pending.';
-  });
-  root.querySelector('#fdx-clear-record').addEventListener('click', () => { slots.forEach(clearSlot); consent.checked = false; updateReady(); resetStatus(); });
-  window.addEventListener('pagehide', () => { slots.forEach(clearSlot); consent.checked = false; updateReady(); resetStatus(); });
-
-  // Code-native globe: public-domain Natural Earth land points, orthographic projection.
-  // Route arcs are an illustration, not a live transaction or shipment feed.
-  const points = [[-70.0,-70.4],[-70.0,-63.0],[-70.0,17.4],[-70.0,32.0],[-70.0,39.3],[-70.0,46.6],[-70.0,53.9],[-70.0,61.2],[-70.0,75.8],[-70.0,83.1],[-70.0,90.5],[-70.0,97.8],[-70.0,105.1],[-70.0,112.4],[-70.0,119.7],[-70.0,127.0],[-70.0,134.3],[-70.0,141.6],[-70.0,148.9],[-70.0,156.2],[-67.5,48.6],[-67.5,55.2],[-67.5,87.8],[-67.5,94.4],[-67.5,100.9],[-67.5,107.4],[-67.5,114.0],[-67.5,120.5],[-67.5,127.0],[-67.5,133.6],[-67.5,140.1],[-55.0,-71.0],[-55.0,-66.7],[-52.5,-73.2],[-50.0,-75.0],[-50.0,-71.1],[-47.5,-72.7],[-47.5,-69.0],[-45.0,-73.9],[-45.0,-70.4],[-45.0,-66.9],[-45.0,170.0],[-42.5,-71.5],[-42.5,-68.1],[-42.5,-64.7],[-42.5,145.5],[-42.5,172.6],[-40.0,-72.3],[-40.0,-69.0],[-40.0,-65.8],[-40.0,-62.5],[-40.0,175.7],[-37.5,-72.9],[-37.5,-69.7],[-37.5,-66.6],[-37.5,-63.4],[-37.5,-60.3],[-37
+<script src="{{ url_for('static', filename='js/globe-points.js') }}"></script>
+<script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+{% endblock %}

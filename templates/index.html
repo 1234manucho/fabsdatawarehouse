@@ -1,321 +1,429 @@
-{% extends "base.html" %}
-{% block title %}FABS Trading | Payment Aggregation, Cloud Hosting & Business Operations{% endblock %}
-{% block meta_description %}Payment aggregation, collections, payouts, biometrics, cloud hosting, stock management, county revenue, fleet operations and shipment tracking — connected in one platform.{% endblock %}
-{% block head_extra %}
-<link rel="preconnect" href="https://images.pexels.com" crossorigin>
-<script>
-/* Remote operational photography → packaged photograph → neutral placeholder. */
-(() => {
-  const placeholder = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
-  document.addEventListener('error', event => {
-    const image = event.target;
-    if (!(image instanceof HTMLImageElement) || !image.hasAttribute('data-home-image')) return;
-    event.stopImmediatePropagation();
-    image.removeAttribute('srcset');
-    if (!image.dataset.localTried) {
-      image.dataset.localTried = 'true';
-      image.src = image.dataset.fallbackSrc;
-    } else if (!image.dataset.placeholderTried) {
-      image.dataset.placeholderTried = 'true';
-      image.src = placeholder;
-    }
-  }, true);
-})();
-</script>
-<noscript><style>.fdx-remote{display:none!important}.fdx-motion-button{display:none!important}</style></noscript>
+{% extends 'base.html' %}
+{% from '_macros.html' import service_card %}
+{% block title %}Construction, Materials & Logistics | B&N Immo-Invest Limited{% endblock %}
+
+{% block head %}
+<style>
+/* =================================================================
+   Homepage redesign — scoped under bn- prefix.
+   Move into site.css when you're happy with it.
+   ================================================================= */
+
+/* ---------- 1. Hero ---------- */
+.bn-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: clamp(2.75rem, 6vw, 5.5rem) 0 clamp(2.5rem, 5vw, 4.5rem);
+  background:
+    radial-gradient(90% 120% at 82% 10%, #16313f 0%, rgba(11,23,32,0) 62%),
+    radial-gradient(70% 90% at 6% 94%, rgba(199,137,75,.13) 0%, rgba(11,23,32,0) 62%),
+    linear-gradient(160deg, #0b1720 0%, #0a1420 55%, #070f16 100%);
+  color: #f4f1ea;
+}
+.bn-hero__grid {
+  position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
+  mask-image: radial-gradient(75% 75% at 50% 42%, #000 0%, transparent 78%);
+}
+.bn-hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: center;
+}
+.bn-hero__title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 5.4vw, 4.25rem);
+  line-height: 1.03;
+  letter-spacing: -.02em;
+  margin: 1rem 0 1.15rem;
+}
+.bn-hero__title em { font-style: normal; color: #e3a970; }
+.bn-hero__lead {
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.35vw, 1.15rem);
+  line-height: 1.65;
+  color: rgba(244,241,234,.78);
+  margin: 0 0 1.75rem;
+}
+.bn-hero__actions { display: flex; flex-wrap: wrap; gap: .85rem; }
+.bn-hero__facts {
+  display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem;
+  margin: 2.25rem 0 0; padding: 1.5rem 0 0;
+  list-style: none;
+  border-top: 1px solid rgba(255,255,255,.1);
+}
+.bn-hero__facts b {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: 1rem; font-weight: 700; color: #fff;
+}
+.bn-hero__facts span {
+  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  color: rgba(244,241,234,.55);
+}
+.bn-hero__visual { display: grid; place-items: center; }
+
+/* ---------- 2. Rotating globe ---------- */
+.bn-globe {
+  --size: clamp(250px, 33vw, 400px);
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  margin-inline: auto;
+  perspective: 1100px;
+  perspective-origin: 50% 45%;
+}
+.bn-globe__halo {
+  position: absolute; inset: -18%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(199,137,75,.22) 0%, rgba(199,137,75,0) 68%);
+  filter: blur(14px);
+  animation: bn-halo-pulse 7s ease-in-out infinite;
+  pointer-events: none;
+}
+.bn-globe__silhouette {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(199,137,75,.55);
+  box-shadow:
+    0 0 60px -12px rgba(199,137,75,.5),
+    inset 0 0 44px rgba(199,137,75,.14);
+  pointer-events: none;
+}
+.bn-globe__stage {
+  position: absolute; inset: 0;
+  transform-style: preserve-3d;
+  animation: bn-globe-spin 30s linear infinite;
+  will-change: transform;
+}
+/* meridians: full circles rotated about Y */
+.bn-globe__ring {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(199,137,75,.32);
+  transform: rotateY(calc(var(--i) * 30deg));
+}
+/* parallels: circles laid flat, scaled + lifted */
+.bn-globe__lat {
+  position: absolute;
+  inset: calc((1 - var(--s)) * 50%);
+  border-radius: 50%;
+  border: 1px solid rgba(199,137,75,.2);
+  transform: rotateX(90deg) translateZ(calc(var(--size) * var(--t)));
+}
+/* pins sit on the surface via spherical placement */
+.bn-globe__pin {
+  position: absolute; inset: 0;
+  transform:
+    rotateY(calc(var(--lon) * 1deg))
+    rotateX(calc(var(--lat) * -1deg))
+    translateZ(calc(var(--size) / 2));
+}
+.bn-globe__pin::before {
+  content: "";
+  position: absolute; top: 50%; left: 50%;
+  width: 7px; height: 7px; margin: -3.5px 0 0 -3.5px;
+  border-radius: 50%;
+  background: #f0b476;
+  box-shadow: 0 0 0 4px rgba(199,137,75,.16), 0 0 14px 3px rgba(240,180,118,.75);
+}
+.bn-globe__orbit {
+  position: absolute; inset: -7%;
+  border-radius: 50%;
+  border: 1px dashed rgba(199,137,75,.3);
+  animation: bn-orbit-spin 22s linear infinite;
+}
+.bn-globe__face {
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 28%, rgba(199,137,75,.12), transparent 56%);
+  box-shadow: inset 0 0 52px rgba(199,137,75,.18);
+  pointer-events: none;
+}
+@keyframes bn-globe-spin { to { transform: rotateY(360deg); } }
+@keyframes bn-orbit-spin {
+  from { transform: rotateX(72deg) rotateZ(0deg); }
+  to   { transform: rotateX(72deg) rotateZ(360deg); }
+}
+@keyframes bn-halo-pulse {
+  0%, 100% { opacity: .55; transform: scale(.96); }
+  50%      { opacity: 1;   transform: scale(1.04); }
+}
+
+/* ---------- 3. Credentials strip ---------- */
+.bn-stats { background: #fff; border-bottom: 1px solid rgba(11,23,32,.09); }
+.bn-stats__inner {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: rgba(11,23,32,.09);
+}
+.bn-stats__item { background: #fff; padding: 1.6rem 1.25rem; }
+.bn-stats__item b {
+  display: block;
+  font-family: 'Manrope', sans-serif;
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  color: #0b1720; line-height: 1.1;
+}
+.bn-stats__item span {
+  display: block; margin-top: .35rem;
+  font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: #6b7b85;
+}
+
+/* ---------- 4. Approach pillars ---------- */
+.bn-pillars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(215px, 1fr));
+  gap: 1.1rem;
+  margin-top: 2.75rem;
+}
+.bn-pillar {
+  position: relative;
+  padding: 1.65rem 1.4rem;
+  border: 1px solid rgba(11,23,32,.1);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fff, #fbfaf7);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.bn-pillar:hover {
+  transform: translateY(-4px);
+  border-color: rgba(199,137,75,.5);
+  box-shadow: 0 26px 48px -34px rgba(11,23,32,.55);
+}
+.bn-pillar__num {
+  font-family: 'Manrope', sans-serif;
+  font-size: .75rem; font-weight: 700; letter-spacing: .16em; color: #c7894b;
+}
+.bn-pillar h3 {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.1rem; color: #0b1720;
+  margin: .55rem 0 .45rem;
+}
+.bn-pillar p { margin: 0; font-size: .93rem; line-height: 1.6; color: #5a6b75; }
+
+/* ---------- Responsive + motion ---------- */
+@media (max-width: 900px) {
+  .bn-hero__inner { grid-template-columns: 1fr; }
+  .bn-hero__title { font-size: clamp(2.15rem, 8.5vw, 3.1rem); }
+  .bn-globe { --size: clamp(220px, 62vw, 320px); margin-top: 1rem; }
+}
+@media (max-width: 720px) {
+  .bn-stats__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bn-globe__stage,
+  .bn-globe__orbit,
+  .bn-globe__halo { animation: none !important; }
+  .bn-pillar { transition: none; }
+}
+</style>
 {% endblock %}
+
 {% block content %}
-{% set photos = {
- 'port':(24244232,'Container stacks and handling equipment at a shipping terminal'),
- 'payments':(12935098,'Point-of-sale payment terminal on a merchant counter'),
- 'petroleum':(30115404,'Petroleum tanker parked at a service station'),
- 'infrastructure':(5092815,'Computer equipment in an IT workspace'),
- 'security':(430208,'Building security cameras and their connections'),
- 'documents':(8296948,'Business files, payment terminal and calculator on a desk'),
- 'county':(29380377,'Aerial view of an urban car park'),
- 'warehouse':(5156696,'Warehouse aisles with organised stock and storage shelves')
-} %}
-{% macro photo(name, extra='', eager=false) -%}
-<span class="fdx-photo {{ extra }}">
-  <img class="fdx-remote" src="https://images.pexels.com/photos/{{ photos[name][0] }}/pexels-photo-{{ photos[name][0] }}.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1600&amp;q=85" data-home-image data-fallback-src="{{ url_for('static', filename='images/operations/' ~ name ~ '.jpg') }}" alt="{{ photos[name][1] }}" width="1600" height="1067" loading="{{ 'eager' if eager else 'lazy' }}" decoding="async">
-  <noscript><img src="{{ url_for('static', filename='images/operations/' ~ name ~ '.jpg') }}" alt="{{ photos[name][1] }}" width="1600" height="1067" loading="lazy"></noscript>
-</span>
-{%- endmacro %}
-{% macro icon(name) -%}
-<svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-{% if name=='arrow' %}<path d="M5 12h14m-6-6 6 6-6 6"/>
-{% elif name=='card' %}<rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/>
-{% elif name=='payout' %}<path d="M12 3v7m-3-3 3 3 3-3M5 20v-5h14v5M12 15v5"/><circle cx="5" cy="21" r="1"/><circle cx="12" cy="21" r="1"/><circle cx="19" cy="21" r="1"/>
-{% elif name=='shield' %}<path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6zM8.5 12l2.5 2.5 4.5-5"/>
-{% elif name=='file' %}<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9zM14 3v6h6M8 13h8M8 17h5"/>
-{% elif name=='box' %}<path d="m12 3 9 5v9l-9 5-9-5V8zM3 8l9 5 9-5M12 13v9M7 5.7l9 5"/>
-{% elif name=='building' %}<path d="M3 21h18M5 21V8h14v13M3 8l9-5 9 5M9 11v6M15 11v6"/>
-{% elif name=='truck' %}<path d="M2 6h12v12H2zM14 10h4l4 4v4h-8M17 10v4h5"/><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>
-{% elif name=='company' %}<path d="M4 21V3h11v18M15 9h5v12M2 21h20M8 7h3M8 11h3M8 15h3M8 21v-3h3v3"/>
-{% elif name=='store' %}<path d="M4 10v11h16V10M3 10l2-7h14l2 7M3 10c0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0 0 3 4.5 3 4.5 0M9 21v-6h6v6"/>
-{% elif name=='code' %}<path d="m8 7-5 5 5 5m8-10 5 5-5 5M14 4l-4 16"/>
-{% elif name=='server' %}<rect x="3" y="3" width="18" height="7" rx="2"/><rect x="3" y="14" width="18" height="7" rx="2"/><path d="M7 6.5h.01M7 17.5h.01M12 6.5h5M12 17.5h5"/>
-{% elif name=='face' %}<path d="M3 8V4h4m10 0h4v4M3 16v4h4m10 0h4v-4"/><circle cx="12" cy="10" r="3"/><path d="M7 18c0-5 10-5 10 0"/>
-{% elif name=='id' %}<rect x="2" y="5" width="20" height="14" rx="2"/><circle cx="8" cy="10" r="2"/><path d="M5 16c0-4 6-4 6 0M14 10h5M14 14h4"/>
-{% elif name=='check' %}<path d="m5 12 4 4L19 6"/>
-{% elif name=='link' %}<path d="m9 15 6-6M7 14l-2 2a3 3 0 0 0 4 4l4-4m-2-8 4-4a3 3 0 0 1 4 4l-2 2"/>
-{% elif name=='stock' %}<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>
-{% elif name=='chart' %}<path d="M3 3v18h18"/><path d="m7 15 3-3 3 3 5-6"/>
-{% elif name=='cloud' %}<path d="M7 18a4 4 0 0 1 0-8 6 6 0 0 1 11.3 2A4 4 0 0 1 17 18z"/>
-{% endif %}</svg>
-{%- endmacro %}
-<div id="fdw-home" class="fdx-home">
 
-  <section class="fdx-hero" aria-labelledby="fdx-hero-title">
-    <div class="fdx-wrap fdx-hero-grid">
-      <div class="fdx-hero-copy">
-        <p class="fdx-eyebrow"><span class="fdx-mark"></span> FABS TRADING · PAYMENT AGGREGATOR</p>
-        <h1 id="fdx-hero-title">Payments.<br>Hosting.<br><span>Operations.</span></h1>
-        <p class="fdx-hero-lead">FABS Trading is a payment aggregator and cloud-platform partner — connecting collections, payouts, biometrics, cloud hosting, stock management and business operations in one place.</p>
-        <p class="fdx-hero-description">From mobile money and card collections to cloud deployments and inventory, we help companies, merchants, counties and transport businesses operate on connected systems.</p>
-        <div class="fdx-actions">
-          <a class="fdx-button fdx-button-red" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform {{ icon('arrow') }}</a>
-          <a class="fdx-button fdx-button-outline" href="#services">Explore our services</a>
+<!-- ============ 1. HERO ============ -->
+<section class="bn-hero">
+  <div class="bn-hero__grid" aria-hidden="true"></div>
+  <div class="shell bn-hero__inner">
+
+    <div class="bn-hero__copy reveal">
+      <span class="eyebrow eyebrow--light"><span></span> Integrated project delivery · Est. 2025</span>
+      <h1 class="bn-hero__title">Built to move<br><em>projects forward.</em></h1>
+      <p class="bn-hero__lead">Construction, material supply and coordinated logistics for demanding projects across East and Central Africa.</p>
+      <div class="bn-hero__actions">
+        <a href="{{ url_for('contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
+        <a href="{{ url_for('services') }}" class="button button--ghost">Explore services</a>
+      </div>
+      <ul class="bn-hero__facts">
+        <li><b>2025</b><span>Established</span></li>
+        <li><b>East &amp; Central</b><span>Africa coverage</span></li>
+        <li><b>One team</b><span>Source to site</span></li>
+      </ul>
+    </div>
+
+    <div class="bn-hero__visual reveal">
+      <div class="bn-globe" role="img" aria-label="Rotating globe highlighting East and Central Africa">
+        <span class="bn-globe__halo" aria-hidden="true"></span>
+        <span class="bn-globe__silhouette" aria-hidden="true"></span>
+
+        <div class="bn-globe__stage" aria-hidden="true">
+          <div class="bn-globe__ring" style="--i:0"></div>
+          <div class="bn-globe__ring" style="--i:1"></div>
+          <div class="bn-globe__ring" style="--i:2"></div>
+          <div class="bn-globe__ring" style="--i:3"></div>
+          <div class="bn-globe__ring" style="--i:4"></div>
+          <div class="bn-globe__ring" style="--i:5"></div>
+
+          <div class="bn-globe__lat" style="--s:1;     --t:0"></div>
+          <div class="bn-globe__lat" style="--s:.866;  --t:-.25"></div>
+          <div class="bn-globe__lat" style="--s:.866;  --t:.25"></div>
+          <div class="bn-globe__lat" style="--s:.5;    --t:-.433"></div>
+          <div class="bn-globe__lat" style="--s:.5;    --t:.433"></div>
+
+          <div class="bn-globe__pin" style="--lon:36.8; --lat:-1.3"></div>
+          <div class="bn-globe__pin" style="--lon:15.3; --lat:-4.3"></div>
+          <div class="bn-globe__pin" style="--lon:32.5; --lat:15.6"></div>
+          <div class="bn-globe__pin" style="--lon:3.4;  --lat:6.5"></div>
+
+          <div class="bn-globe__orbit"></div>
         </div>
-        <div class="fdx-hero-tags"><span>Payment aggregation</span><span>Cloud hosting</span><span>Stock &amp; operations</span></div>
-      </div>
-      <div class="fdx-hero-visual">
-        <div class="fdx-orbit-label fdx-orbit-label-top"><span></span> CONNECTED BY DESIGN</div>
-        <div class="fdx-scenes" aria-label="Operational photography" style="position:absolute; z-index:1">
-          <div class="fdx-scene" data-scene="0">{{ photo('port','',true) }}<span>Import &amp; export logistics</span></div>
-          <div class="fdx-scene" data-scene="1" hidden>{{ photo('petroleum') }}<span>Petroleum &amp; fleet operations</span></div>
-          <div class="fdx-scene" data-scene="2" hidden>{{ photo('payments') }}<span>Merchant payments, integration &amp; stock</span></div>
-          <div class="fdx-scene-controls" aria-label="Choose a photograph" hidden><button type="button" data-scene-select="0" aria-label="Show import and export logistics" aria-pressed="true"></button><button type="button" data-scene-select="1" aria-label="Show petroleum and fleet operations" aria-pressed="false"></button><button type="button" data-scene-select="2" aria-label="Show merchant payment solutions" aria-pressed="false"></button></div>
-        </div>
-        <div class="fdx-globe" id="fdx-globe-wrap" style="position:relative; z-index:2">
-          <img class="fdx-globe-static" src="{{ url_for('static', filename='images/operations/globe.svg') }}" width="560" height="560" alt="Globe illustration centred on Africa">
-          <canvas id="fdx-globe" width="560" height="560" aria-hidden="true"></canvas>
-        </div>
-        <span class="fdx-globe-tag fdx-globe-tag-one">{{ icon('card') }} Payments</span><span class="fdx-globe-tag fdx-globe-tag-two">{{ icon('shield') }} Identity</span><span class="fdx-globe-tag fdx-globe-tag-three">{{ icon('box') }} Movement</span>
-        <button class="fdx-motion-button" id="fdx-motion" type="button" aria-pressed="false">Pause animation <span aria-hidden="true">Ⅱ</span></button>
-      </div>
-    </div>
-    <div class="fdx-hero-bottom"><div class="fdx-wrap"><p>One partner. Connected services.</p><span>For businesses that collect, protect and move.</span><a href="#services" aria-label="Discover what we do">↓</a></div></div>
-  </section>
 
-  <section class="fdx-section fdx-intro" aria-labelledby="fdx-intro-title">
-    <div class="fdx-wrap">
-      <div class="fdx-section-head"><div><p class="fdx-eyebrow">YOUR BUSINESS, BETTER CONNECTED</p><h2 id="fdx-intro-title">The right systems.<br>A clearer way to operate.</h2></div></div>
-      <div class="fdx-pillar-grid">
-        <a class="fdx-pillar" href="#services" data-category-link="payments">
-          <span class="fdx-photo"><img src="/static/images/operations/payments.jpg" alt="Point-of-sale payment terminal on a merchant counter" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">01 / PAYMENTS</span><h3>Every transaction, connected.</h3><p>Collections, settlements, merchant onboarding and bulk disbursements.</p><span class="fdx-text-link">Explore payment solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
-        </a>
-        <a class="fdx-pillar" href="#biometrics">
-          <span class="fdx-photo"><img src="/static/images/operations/security.jpg" alt="Building security cameras and their connections" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">02 / SECURITY</span><h3>Confidence in every identity.</h3><p>Face-to-ID records, biometric integrations and controlled access.</p><span class="fdx-text-link">Explore identity &amp; security <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
-        </a>
-        <a class="fdx-pillar" href="#tracking">
-          <span class="fdx-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">03 / OPERATIONAL SYSTEMS</span><h3>Keep the bigger picture moving.</h3><p>Shipments, petroleum fleets, county revenue, stock and business administration.</p><span class="fdx-text-link">Explore operational solutions <svg class="fdx-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></span></div>
-        </a>
+        <span class="bn-globe__face" aria-hidden="true"></span>
       </div>
     </div>
-  </section>
 
-  <section class="fdx-section fdx-services" id="services" aria-labelledby="fdx-services-title">
-    <div class="fdx-wrap">
-      <div class="fdx-section-head"><div><p class="fdx-eyebrow">WHAT WE DO</p><h2 id="fdx-services-title">Built around the work<br>you need to get done.</h2></div><p>Start with one service or bring several together. We help scope the workflow, connect the systems and support the people who run them.</p></div>
-      <div class="fdx-filters" role="group" aria-label="Filter services"><button type="button" data-filter="all" aria-pressed="true">All services <span>15</span></button><button type="button" data-filter="payments" aria-pressed="false">Payments</button><button type="button" data-filter="security" aria-pressed="false">Security</button><button type="button" data-filter="operations" aria-pressed="false">Operations</button><button type="button" data-filter="enterprise" aria-pressed="false">Enterprise &amp; IT</button></div>
-      <p class="fdx-sr-only" id="fdx-filter-status" role="status" aria-live="polite">Showing all 15 services.</p>
-      {% set services = [
-        ('payments','payments','card','Payments & collections','Accept and reconcile customer payments across your activated mobile money, card and bank channels.','payments','Explore collections'),
-        ('payouts','payments','payout','Bulk payouts','Organise salaries, supplier payments and other disbursements with approval steps and payment records.','payments','Plan your payouts'),
-        ('pos','payments','store','Point of sale & retail','Bring sales, receipts, stock and payment collection into one workflow for your shop, branch or outlet.','payments','Plan your POS'),
-        ('merchants','payments','store','Merchant onboarding','Guide merchants through business registration, document collection, review and payment activation.','payments','Build your onboarding flow'),
-        ('aggregator','payments','code','Aggregator APIs','Connect your application to payment collection, disbursement, callback and reporting workflows.','payments','Discuss an API integration'),
-        ('identity-service','security','shield','Biometric security','Connect consent-based face-to-ID records, biometric devices and access workflows for your organisation.','biometrics','Discuss identity & security'),
-        ('stock','operations','stock','Stock & inventory management','Track products, stock levels, movements and reorder points across your warehouse, store or branch network.','stock','Explore stock management'),
-        ('shipment-service','operations','box','Import & export tracking','Bring shipment references, customs documents and available carrier updates into a shared view.','logistics','Connect your shipments'),
-        ('county','operations','building','County revenue collection','Coordinate parking, permits, market fees and rates with collection records, receipts and reporting.','county','Explore county collections'),
-        ('fleet-service','operations','truck','Petroleum & fleet operations','Manage transport security, vehicles, driver documents, vetting, employment and salary disbursement.','petroleum','Plan your fleet workflow'),
-        ('tenders','enterprise','file','Tender tracking','Keep opportunities, deadlines, bid documents and submission progress visible to your tender team.','tenders','Organise your tender pipeline'),
-        ('companies','enterprise','company','Company management','Bring company records, team roles, approvals and day-to-day business administration together.','enterprise','Connect your organisation'),
-        ('hosting','enterprise','cloud','Cloud hosting & deployment','Deploy and run your applications on managed cloud infrastructure with secure environments, monitoring and backups.','hosting','Discuss hosting'),
-        ('analytics','enterprise','chart','Analytics & reporting','Bring operational, payment and stock data into dashboards and reports your team can act on.','enterprise','Discuss reporting'),
-        ('it-support','enterprise','server','IT support subcontracts','Extend your delivery team with scoped support for installations, integrations, maintenance and technical operations.','enterprise','Discuss a support contract')
-      ] %}
-      <div class="fdx-service-grid">
-        {% for slug,category,symbol,title,description,interest,link in services %}
-        <article class="fdx-service" id="{{ slug }}" data-service-category="{{ category }}"><div class="fdx-service-top"><span class="fdx-service-icon">{{ icon(symbol) }}</span><span class="fdx-service-number">{{ '%02d'|format(loop.index) }}</span></div><h3>{{ title }}</h3><p>{{ description }}</p><button type="button" class="fdx-text-link" data-service-details data-title="{{ title }}" data-description="{{ description }}" data-interest="{{ interest }}">Learn more {{ icon('arrow') }}</button><a href="#contact" class="fdx-text-link" data-contact-interest="{{ interest }}">{{ link }} {{ icon('arrow') }}</a></article>
-        {% endfor %}
-        <article class="fdx-service fdx-service-cta" data-service-category="all"><span class="fdx-card-kicker">LET’S BUILD YOUR SCOPE</span><h3>One requirement?<br>Several moving parts?</h3><p>Tell us what your organisation needs to achieve. We’ll help shape a practical delivery plan.</p><a class="fdx-text-link" href="#contact">Start a conversation {{ icon('arrow') }}</a></article>
-      </div>
-      <dialog id="fdx-service-dialog" aria-labelledby="fdx-service-dialog-title"><button type="button" data-dialog-close aria-label="Close service details">×</button><p class="fdx-eyebrow">SERVICE DETAILS</p><h2 id="fdx-service-dialog-title"></h2><p id="fdx-service-dialog-description"></p><p>We can help define the workflow, required integrations, user roles and reporting for your organisation. The exact scope is agreed around your systems, providers and operational requirements.</p><a class="fdx-button fdx-button-red" id="fdx-service-dialog-contact" href="#contact">Discuss this service</a></dialog>
-    </div>
-  </section>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-payments-section" id="payments" aria-labelledby="fdx-payments-title">
-    <div class="fdx-wrap fdx-split">
-      <div class="fdx-feature-copy"><p class="fdx-eyebrow">PAYMENT AGGREGATION</p><h2 id="fdx-payments-title">One aggregator.<br>Every payment channel.</h2><p class="fdx-body">As a payment aggregator, FABS Trading connects your business to mobile money, card and bank channels — bringing collections, disbursements, merchant onboarding and reconciliation into one coordinated workflow.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Collections and transaction references in one workflow.</li><li>{{ icon('check') }} Review and approval steps for bulk disbursements.</li><li>{{ icon('check') }} Reconciliation records and reporting for your team.</li><li>{{ icon('check') }} API integration for your website, app or business system.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="{{ url_for('payments.index') }}">Explore payment services {{ icon('arrow') }}</a></div></div>
-      <div class="fdx-payment-diagram" aria-label="Example payment workflow"><div class="fdx-diagram-head"><span>THE PAYMENT WORKFLOW</span>{{ icon('card') }}</div><div class="fdx-payment-sources"><span>Mobile money</span><span>Cards</span><span>Bank channels</span><span>Wallets</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>FABS payment aggregation</strong><small>Connect · reconcile · report</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('store') }}<strong>Merchant collections</strong><span>Payment records</span></div><div>{{ icon('payout') }}<strong>Approved payouts</strong><span>Disbursement records</span></div></div><p class="fdx-diagram-note">Channels and capabilities depend on your provider activation and agreed integration.</p></div>
+<!-- ============ 2. CREDENTIALS ============ -->
+<section class="bn-stats">
+  <div class="shell">
+    <div class="bn-stats__inner">
+      <div class="bn-stats__item"><b>2025</b><span>Year established</span></div>
+      <div class="bn-stats__item"><b>4</b><span>Integrated service lines</span></div>
+      <div class="bn-stats__item"><b>2</b><span>Regions served</span></div>
+      <div class="bn-stats__item"><b>1</b><span>Accountable partner</span></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-payments-section" id="hosting" aria-labelledby="fdx-hosting-title">
-    <div class="fdx-wrap fdx-split fdx-split-reverse">
-      <div class="fdx-feature-copy"><p class="fdx-eyebrow">CLOUD HOSTING &amp; PLATFORM</p><h2 id="fdx-hosting-title">Your applications,<br>hosted on reliable infrastructure.</h2><p class="fdx-body">The FABS Data Warehouse platform — deployed on managed cloud infrastructure at <strong>platform.fabsdatawarehouse.com</strong> — runs every service on this site: payments, payouts, biometrics, stock, logistics and reporting, all in one secure workspace.</p><ul class="fdx-check-list"><li>{{ icon('check') }} Managed cloud deployment with monitoring and backups.</li><li>{{ icon('check') }} Isolated environments for every organisation.</li><li>{{ icon('check') }} Role-based access for your team.</li><li>{{ icon('check') }} Ready-made integrations for payments, stock and logistics workflows.</li></ul><div class="fdx-actions"><a class="fdx-button fdx-button-red" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform {{ icon('arrow') }}</a><a class="fdx-button fdx-button-outline" href="#contact">Request a walkthrough</a></div></div>
-      <div class="fdx-payment-diagram" aria-label="Platform overview"><div class="fdx-diagram-head"><span>THE FABS PLATFORM</span>{{ icon('cloud') }}</div><div class="fdx-payment-sources"><span>Payments</span><span>Payouts</span><span>Biometrics</span><span>Stock</span><span>Logistics</span></div><div class="fdx-flow-line"></div><div class="fdx-flow-hub"><span class="fdx-hub-mark">F</span><div><strong>platform.fabsdatawarehouse.com</strong><small>One connected workspace</small></div>{{ icon('link') }}</div><div class="fdx-flow-line"></div><div class="fdx-payment-destinations"><div>{{ icon('server') }}<strong>Managed hosting</strong><span>Deployed on cloud</span></div><div>{{ icon('shield') }}<strong>Secure access</strong><span>Roles &amp; permissions</span></div></div><p class="fdx-diagram-note">Access requires an account. Contact us to be onboarded.</p></div>
+<!-- ============ 3. APPROACH ============ -->
+<section class="section intro-section">
+  <div class="shell">
+    <div class="intro-grid">
+      <div>
+        <span class="eyebrow"><span></span> The B&amp;N approach</span>
+        <h2 class="display-title">One partner.<br>Every critical move.</h2>
+      </div>
+      <div class="intro-copy reveal">
+        <p class="lead">B&amp;N Immo-Invest Limited was established in 2025 to bring construction expertise, dependable procurement and practical logistics under one roof.</p>
+        <p>We help clients close the gaps between supplier, transporter and site team—protecting schedules, specifications and accountability at every stage of a project.</p>
+        <a href="{{ url_for('about') }}" class="text-link">How we work <i data-lucide="arrow-right"></i></a>
+      </div>
     </div>
-  </section>
 
-  <section class="fdx-section fdx-identity-section" id="biometrics" aria-labelledby="fdx-identity-title">
-    <div class="fdx-wrap fdx-split">
-      <div class="fdx-feature-copy"><p class="fdx-eyebrow">IDENTITY &amp; BIOMETRIC SECURITY</p><h2 id="fdx-identity-title">The face. The ID.<br>A connected record.</h2><p class="fdx-body">Bring a person’s submitted photograph, identity document and enrolment details together. Build a consent-based review process for staff, drivers, merchants and authorised visitors.</p><ol class="fdx-number-list"><li><span>01</span><div><h3>Capture with permission</h3><p>Collect the required photograph and ID images through an agreed onboarding process.</p></div></li><li><span>02</span><div><h3>Link and review</h3><p>Keep the images with the right record. Add provider-backed identity checks and a human review stage.</p></div></li><li><span>03</span><div><h3>Control access</h3><p>Define who may view records, how long they are kept and how approved biometric devices connect.</p></div></li></ol><a class="fdx-text-link" href="#contact" data-contact-interest="biometrics">Design your verification workflow {{ icon('arrow') }}</a></div>
-      <div class="fdx-identity-demo" id="fdx-identity-demo"><div class="fdx-demo-head"><div><span class="fdx-card-kicker">INTERACTIVE RECORD PREVIEW</span><h3>Face-to-ID linking</h3></div><span class="fdx-preview-badge">Preview</span></div><p class="fdx-demo-intro">Try pairing two images in a single record.</p><div class="fdx-upload-grid">
-        <label class="fdx-upload" for="fdx-face-file"><span class="fdx-upload-art">{{ icon('face') }}<img id="fdx-face-preview" alt="Selected face photograph preview" hidden></span><strong>Face photograph</strong><span class="fdx-upload-filename" id="fdx-face-name">Choose an image</span><input id="fdx-face-file" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="fdx-upload-help"></label>
-        <label class="fdx-upload" for="fdx-id-file"><span class="fdx-upload-art">{{ icon('id') }}<img id="fdx-id-preview" alt="Selected identity document preview" hidden></span><strong>ID document</strong><span class="fdx-upload-filename" id="fdx-id-name">Choose an image</span><input id="fdx-id-file" type="file" accept="image/jpeg,image/png,image/webp" aria-describedby="fdx-upload-help"></label>
-      </div><p id="fdx-upload-help" class="fdx-small">JPG, PNG or WebP · Up to 5 MB per image.</p><label class="fdx-consent"><input id="fdx-preview-consent" type="checkbox"><span>I have permission to use these images for this preview.</span></label><div class="fdx-demo-actions"><button type="button" class="fdx-button fdx-button-dark" id="fdx-link-record" disabled>Link record preview {{ icon('link') }}</button><button type="button" class="fdx-reset" id="fdx-clear-record">Clear</button></div><p class="fdx-record-status" id="fdx-record-status" role="status" aria-live="polite">Choose both images and confirm permission to preview a linked record.</p><p class="fdx-demo-note">Preview only. Images are displayed locally; they are not submitted, saved to your account or verified.</p><noscript><p class="fdx-small">Enable JavaScript to use this optional preview.</p></noscript></div>
+    <div class="bn-pillars">
+      <article class="bn-pillar reveal">
+        <span class="bn-pillar__num">01</span>
+        <h3>Engineer</h3>
+        <p>Specifications, quantities and buildability reviewed by people who will actually build the work.</p>
+      </article>
+      <article class="bn-pillar reveal">
+        <span class="bn-pillar__num">02</span>
+        <h3>Source</h3>
+        <p>Materials and skilled workforce procured against the approved specification—not the nearest substitute.</p>
+      </article>
+      <article class="bn-pillar reveal">
+        <span class="bn-pillar__num">03</span>
+        <h3>Transport</h3>
+        <p>Dispatch and loading planned around site readiness, with documentation that travels with the load.</p>
+      </article>
+      <article class="bn-pillar reveal">
+        <span class="bn-pillar__num">04</span>
+        <h3>Deliver</h3>
+        <p>Site handover, checked and recorded, so the project team receives exactly what was ordered.</p>
+      </article>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-logistics-section" id="tracking" aria-labelledby="fdx-tracking-title">
-    <div class="fdx-wrap fdx-split fdx-split-reverse">
-      <div class="fdx-logistics-visual">
-        <span class="fdx-photo fdx-logistics-photo"><img src="/static/images/operations/port.jpg" alt="Container stacks and handling equipment at a shipping terminal" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <div class="fdx-warehouse-inset"><span class="fdx-photo"><img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async"></span><span>From dispatch to delivery.</span></div>
-        <span class="fdx-photo-label">IMPORT / EXPORT / SHIPMENT VISIBILITY</span>
+<!-- ============ 4. SERVICES ============ -->
+<section class="section section--ink services-feature">
+  <div class="shell">
+    <div class="section-heading section-heading--light">
+      <div>
+        <span class="eyebrow eyebrow--light"><span></span> What we do</span>
+        <h2>Capabilities that connect.</h2>
       </div>
-      <div class="fdx-feature-copy">
-        <p class="fdx-eyebrow">IMPORT &amp; EXPORT SHIPMENT TRACKING</p>
-        <h2 id="fdx-tracking-title">Every shipment has a story.<br>Keep yours together.</h2>
-        <p class="fdx-body">Give your operations team a shared view of shipments, movement milestones and supporting documents—from the dispatch desk to the destination.</p>
-        <ul class="fdx-check-list">
-          <li>{{ icon('check') }} Import and export shipment references.</li>
-          <li>{{ icon('check') }} Waybills, customs paperwork and delivery documents.</li>
-          <li>{{ icon('check') }} Available updates from connected carriers.</li>
-          <li>{{ icon('check') }} Dispatch coordination and delivery follow-up.</li>
-        </ul>
-        <div class="fdx-milestones" aria-label="Illustrative shipment milestones"><span>Booked</span><span>In transit</span><span>Cleared</span><span>Delivered</span></div>
-        <a class="fdx-text-link" href="#contact" data-contact-interest="logistics">Connect your shipment workflow {{ icon('arrow') }}</a>
-      </div>
+      <a href="{{ url_for('services') }}" class="button button--outline-light">View all services <i data-lucide="arrow-right"></i></a>
     </div>
-  </section>
+    <div class="service-grid service-grid--dark">
+      {% for service in services[:4] %}{{ service_card(service) }}{% endfor %}
+    </div>
+  </div>
+</section>
 
-  <section class="fdx-fleet-section" id="petroleum" aria-labelledby="fdx-fleet-title">
-    <div class="fdx-wrap fdx-fleet-grid">
-      <div class="fdx-fleet-photo">
-        <span class="fdx-photo"><img src="/static/images/operations/petroleum.jpg" alt="Petroleum tanker parked at a service station" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <div><span>TRANSPORT OPERATIONS</span><strong>Vehicles. Drivers.<br>Documents. Payments.</strong></div>
-      </div>
-      <div class="fdx-fleet-copy">
-        <p class="fdx-eyebrow">PETROLEUM &amp; FLEET MANAGEMENT</p>
-        <h2 id="fdx-fleet-title">Keep your fleet moving.<br>Keep your team in control.</h2>
-        <p>Coordinate petroleum transport, fleet security and driver administration through a workflow built around your operation.</p>
-        <div class="fdx-fleet-features">
-          <div>{{ icon('truck') }}<h3>Transport &amp; security</h3><p>Vehicle records, dispatch, trip oversight and incident follow-up.</p></div>
-          <div>{{ icon('file') }}<h3>Driver documents</h3><p>Licence and document uploads, expiry reviews and organised records.</p></div>
-          <div>{{ icon('shield') }}<h3>Vetting &amp; employment</h3><p>Driver applications, checks, human review and employment records.</p></div>
-          <div>{{ icon('payout') }}<h3>Salary disbursements</h3><p>Approved driver payroll batches and payment reconciliation.</p></div>
-        </div>
-        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="petroleum">Plan your fleet solution {{ icon('arrow') }}</a>
-      </div>
-    </div>
-  </section>
+<!-- ============ 5. CIVIL WORKS ============ -->
+<section class="split-feature">
+  <div class="split-feature__image">
+    <img src="{{ url_for('static', filename='images/civil-works.jpg') }}" alt="Excavator operating on a building site" loading="lazy">
+    <span class="image-label">Civil &amp; industrial works</span>
+  </div>
+  <div class="split-feature__content">
+    <span class="eyebrow"><span></span> Construction expertise</span>
+    <h2>Engineered for real-world performance.</h2>
+    <p>From heavy-duty foundations and steel structures to commercial spaces and site infrastructure, our teams focus on buildability, durability and safe execution.</p>
+    <ul class="check-list">
+      <li><i data-lucide="check"></i> Professional engineering oversight</li>
+      <li><i data-lucide="check"></i> Experienced technical workforce</li>
+      <li><i data-lucide="check"></i> Materials aligned to specification</li>
+      <li><i data-lucide="check"></i> Coordinated site delivery</li>
+    </ul>
+    <a href="{{ url_for('service_detail', slug='civil-engineering') }}" class="button button--dark">Explore construction <i data-lucide="arrow-up-right"></i></a>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-logistics-section" id="stock-management" aria-labelledby="fdx-stock-title">
-    <div class="fdx-wrap fdx-split">
-      <div class="fdx-feature-copy">
-        <p class="fdx-eyebrow">STOCK &amp; INVENTORY MANAGEMENT</p>
-        <h2 id="fdx-stock-title">Every product.<br>Every movement. In view.</h2>
-        <p class="fdx-body">Track products, stock levels and movements across your warehouse, store or branch network. Set reorder points, record receipts and issues, and keep your team working from the same inventory data.</p>
-        <ul class="fdx-check-list">
-          <li>{{ icon('check') }} Product records, categories and variants.</li>
-          <li>{{ icon('check') }} Stock receipts, issues, transfers and adjustments.</li>
-          <li>{{ icon('check') }} Reorder points, low-stock alerts and stock counts.</li>
-          <li>{{ icon('check') }} Movement history and stock reports for your team.</li>
-        </ul>
-        <a class="fdx-button fdx-button-red" href="#contact" data-contact-interest="stock">Discuss stock management {{ icon('arrow') }}</a>
-      </div>
-      <div class="fdx-logistics-visual">
-        <span class="fdx-photo fdx-logistics-photo"><img src="/static/images/operations/warehouse.jpg" alt="Warehouse aisles with organised stock and storage shelves" width="1600" height="1067" loading="lazy" decoding="async"></span>
-        <span class="fdx-photo-label">INVENTORY · WAREHOUSE · STORES</span>
-      </div>
+<!-- ============ 6. LOGISTICS ============ -->
+<section class="section logistics-section">
+  <div class="shell logistics-card">
+    <div class="logistics-card__copy">
+      <span class="eyebrow eyebrow--light"><span></span> Integrated capability</span>
+      <h2>Materials do not create value until they reach the right site.</h2>
+      <p>Our transport and project-logistics service completes the procurement cycle with planned dispatch, coordinated loading, delivery documentation and site handover.</p>
+      <a href="{{ url_for('service_detail', slug='transport-logistics') }}" class="button button--copper">Explore logistics <i data-lucide="arrow-up-right"></i></a>
     </div>
-  </section>
+    <div class="route-map" aria-label="Procurement to delivery process">
+      <div class="route-line"></div>
+      <div class="route-step"><span>01</span><i data-lucide="shopping-cart"></i><b>Order</b><small>Confirm requirements</small></div>
+      <div class="route-step"><span>02</span><i data-lucide="package-check"></i><b>Prepare</b><small>Check and schedule</small></div>
+      <div class="route-step"><span>03</span><i data-lucide="truck"></i><b>Move</b><small>Coordinate transport</small></div>
+      <div class="route-step"><span>04</span><i data-lucide="map-pin-check"></i><b>Deliver</b><small>Handover at site</small></div>
+    </div>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-enterprise-section" aria-labelledby="fdx-enterprise-title">
-    <div class="fdx-wrap">
-      <div class="fdx-section-head">
-        <div><p class="fdx-eyebrow">PUBLIC SERVICES. PRIVATE ENTERPRISE. PRACTICAL SUPPORT.</p><h2 id="fdx-enterprise-title">Capacity for the work<br>behind the scenes.</h2></div>
-        <p>Put the right records, responsibilities and technical support around the work your organisation depends on.</p>
+<!-- ============ 7. SECTORS ============ -->
+<section class="section sectors-section">
+  <div class="shell">
+    <div class="section-heading">
+      <div>
+        <span class="eyebrow"><span></span> Where we work</span>
+        <h2>Built around your sector.</h2>
       </div>
-      <div class="fdx-editorial-grid">
-        <article class="fdx-editorial">
-          <span class="fdx-photo"><img src="/static/images/operations/county.jpg" alt="Aerial view of an urban car park" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">COUNTIES &amp; PUBLIC SERVICES</span><h3>Make collections easier to account for.</h3><p>Bring parking, permits, market fees and rates into a structured collection process, with receipts and reporting for the teams responsible.</p><a class="fdx-text-link" href="{{ url_for('county.index') }}">County revenue solutions {{ icon('arrow') }}</a></div>
-        </article>
-        <article class="fdx-editorial">
-          <span class="fdx-photo"><img src="/static/images/operations/documents.jpg" alt="Business files, payment terminal and calculator on a desk" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">COMPANIES &amp; PROCUREMENT</span><h3>Give records and deadlines a home.</h3><p>Coordinate company administration, merchant records and tender documents so your team can follow the next action and its owner.</p><a class="fdx-text-link" href="{{ url_for('companies.index') }}">Company management {{ icon('arrow') }}</a></div>
-        </article>
-        <article class="fdx-editorial">
-          <span class="fdx-photo"><img src="/static/images/operations/infrastructure.jpg" alt="Computer equipment in an IT workspace" width="1600" height="1067" loading="lazy" decoding="async"></span>
-          <div><span class="fdx-card-kicker">IT SUPPORT SUBCONTRACTS</span><h3>Add technical capacity where it counts.</h3><p>Bring us into a defined project or ongoing support scope for system integration, equipment setup, maintenance and issue resolution.</p><a class="fdx-text-link" href="#contact" data-contact-interest="enterprise">Discuss your support scope {{ icon('arrow') }}</a></div>
-        </article>
-      </div>
+      <p>Teams and supply plans are matched to the operating demands of each project environment.</p>
     </div>
-  </section>
+    <div class="sector-list">
+      {% for sector in sectors %}
+        <a href="{{ url_for('contact') }}" class="sector-row reveal"><span>0{{ loop.index }}</span><strong>{{ sector }}</strong><i data-lucide="arrow-up-right"></i></a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
-  <section class="fdx-process-section" aria-labelledby="fdx-process-title">
-    <div class="fdx-wrap">
-      <div class="fdx-process-heading"><p class="fdx-eyebrow">FROM REQUIREMENT TO DELIVERY</p><h2 id="fdx-process-title">A practical way to work together.</h2></div>
-      <ol class="fdx-process">
-        <li><span>01</span><h3>Understand</h3><p>Define your operation, users, priorities and desired outcomes.</p></li>
-        <li><span>02</span><h3>Scope</h3><p>Agree the services, integrations, responsibilities and delivery plan.</p></li>
-        <li><span>03</span><h3>Connect</h3><p>Configure the workflow, test key journeys and prepare your team.</p></li>
-        <li><span>04</span><h3>Support</h3><p>Set handover, training and ongoing support around your agreed scope.</p></li>
-      </ol>
+<!-- ============ 8. PARTNERS ============ -->
+<section class="partner-strip">
+  <div class="shell">
+    <span class="partner-strip__label">Brands represented in our profile</span>
+    <div class="partner-names">
+      {% for partner in partners %}<span>{{ partner }}</span>{% endfor %}
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="fdx-section fdx-contact-section" id="contact" aria-labelledby="fdx-contact-title">
-    <div class="fdx-wrap fdx-contact-grid">
-      <div class="fdx-contact-copy">
-        <p class="fdx-eyebrow">LET’S TALK ABOUT YOUR NEXT PROJECT</p>
-        <h2 id="fdx-contact-title">Bring us your<br>next challenge.</h2>
-        <p>Need payment aggregation, stronger onboarding, transport visibility, stock control or extra IT capacity? Tell us what you are building and where you need support.</p>
-        <div class="fdx-contact-note">{{ icon('file') }}<div><h3>Make the first conversation useful.</h3><p>Share your organisation, the service you need, your current systems and your intended timeline.</p></div></div>
-        <a class="fdx-text-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Already onboarded? Open the platform {{ icon('arrow') }}</a>
-        <div class="fdx-contact-wordmark" aria-hidden="true">Let’s connect<span>.</span></div>
-      </div>
-      <form class="fdx-contact-form" method="POST" action="{{ url_for('main.contact') }}" id="fdw-contact-form">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-        <h3>Tell us what you need.</h3>
-        <p>Fields marked * are required.</p>
-        <div class="fdx-form-row">
-          <div class="fdx-field"><label for="fdx-full-name">Full name *</label><input id="fdx-full-name" name="full_name" type="text" required autocomplete="name" maxlength="150" placeholder="Your full name"></div>
-          <div class="fdx-field"><label for="fdx-company">Company / organisation</label><input id="fdx-company" name="company" type="text" autocomplete="organization" maxlength="180" placeholder="Your organisation"></div>
-        </div>
-        <div class="fdx-field"><label for="fdx-email">Work email *</label><input id="fdx-email" name="email" type="email" required autocomplete="email" maxlength="254" placeholder="you@company.com"></div>
-        <div class="fdx-field">
-          <label for="fdx-interest">How can we help?</label>
-          <select id="fdx-interest" name="interest">
-            <option value="payments">Payments, payouts, POS, merchants &amp; APIs</option>
-            <option value="biometrics">Face-to-ID &amp; biometric security</option>
-            <option value="stock">Stock &amp; inventory management</option>
-            <option value="hosting">Cloud hosting &amp; platform</option>
-            <option value="county">County revenue collection</option>
-            <option value="tenders">Tender tracking</option>
-            <option value="logistics">Import, export &amp; shipment tracking</option>
-            <option value="petroleum">Petroleum, fleets &amp; driver management</option>
-            <option value="enterprise">Company management &amp; IT support</option>
-          </select>
-        </div>
-        <div class="fdx-field"><label for="fdx-message">Project details *</label><textarea id="fdx-message" name="message" rows="4" required maxlength="5000" placeholder="What would you like to achieve? Tell us about your requirements and timeline."></textarea></div>
-        <button class="fdx-button fdx-button-red" type="submit">Send project enquiry {{ icon('arrow') }}</button>
-        <p class="fdx-form-note">We’ll use these details to respond to your enquiry. <a href="{{ url_for('main.privacy') }}">Read our privacy policy.</a></p>
-      </form>
-    </div>
-  </section>
-</div>
-{% endblock %}
-{% block scripts %}
-<script src="{{ url_for('static', filename='js/globe-points.js') }}"></script>
-<script src="{{ url_for('static', filename='js/home.js') }}" defer></script>
+<!-- ============ 9. CTA ============ -->
+<section class="section cta-section">
+  <div class="shell cta-card">
+    <span class="eyebrow eyebrow--light"><span></span> Start a conversation</span>
+    <h2>Tell us what you are building, buying or moving.</h2>
+    <p>Share the specification, quantity, project location and required timeline. Our team will respond with the clearest next step.</p>
+    <a href="{{ url_for('contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
+  </div>
+</section>
 {% endblock %}

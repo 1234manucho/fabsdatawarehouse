@@ -238,8 +238,8 @@
       <h1 class="bn-hero__title">Built to move<br><em>projects forward.</em></h1>
       <p class="bn-hero__lead">Construction, material supply and coordinated logistics for demanding projects across East and Central Africa.</p>
       <div class="bn-hero__actions">
-        <a href="{{ url_for('contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
-        <a href="{{ url_for('services') }}" class="button button--ghost">Explore services</a>
+        <a href="{{ url_for('main.contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
+        <a href="{{ url_for('main.services') }}" class="button button--ghost">Explore services</a>
       </div>
       <ul class="bn-hero__facts">
         <li><b>2025</b><span>Established</span></li>
@@ -305,7 +305,7 @@
       <div class="intro-copy reveal">
         <p class="lead">B&amp;N Immo-Invest Limited was established in 2025 to bring construction expertise, dependable procurement and practical logistics under one roof.</p>
         <p>We help clients close the gaps between supplier, transporter and site team—protecting schedules, specifications and accountability at every stage of a project.</p>
-        <a href="{{ url_for('about') }}" class="text-link">How we work <i data-lucide="arrow-right"></i></a>
+        <a href="{{ url_for('main.about') }}" class="text-link">How we work <i data-lucide="arrow-right"></i></a>
       </div>
     </div>
 
@@ -342,7 +342,7 @@
         <span class="eyebrow eyebrow--light"><span></span> What we do</span>
         <h2>Capabilities that connect.</h2>
       </div>
-      <a href="{{ url_for('services') }}" class="button button--outline-light">View all services <i data-lucide="arrow-right"></i></a>
+      <a href="{{ url_for('main.services') }}" class="button button--outline-light">View all services <i data-lucide="arrow-right"></i></a>
     </div>
     <div class="service-grid service-grid--dark">
       {% for service in services[:4] %}{{ service_card(service) }}{% endfor %}
@@ -366,7 +366,7 @@
       <li><i data-lucide="check"></i> Materials aligned to specification</li>
       <li><i data-lucide="check"></i> Coordinated site delivery</li>
     </ul>
-    <a href="{{ url_for('service_detail', slug='civil-engineering') }}" class="button button--dark">Explore construction <i data-lucide="arrow-up-right"></i></a>
+    <a href="{{ url_for('main.service_detail', slug='civil-engineering') }}" class="button button--dark">Explore construction <i data-lucide="arrow-up-right"></i></a>
   </div>
 </section>
 
@@ -377,7 +377,7 @@
       <span class="eyebrow eyebrow--light"><span></span> Integrated capability</span>
       <h2>Materials do not create value until they reach the right site.</h2>
       <p>Our transport and project-logistics service completes the procurement cycle with planned dispatch, coordinated loading, delivery documentation and site handover.</p>
-      <a href="{{ url_for('service_detail', slug='transport-logistics') }}" class="button button--copper">Explore logistics <i data-lucide="arrow-up-right"></i></a>
+      <a href="{{ url_for('main.service_detail', slug='transport-logistics') }}" class="button button--copper">Explore logistics <i data-lucide="arrow-up-right"></i></a>
     </div>
     <div class="route-map" aria-label="Procurement to delivery process">
       <div class="route-line"></div>
@@ -401,7 +401,7 @@
     </div>
     <div class="sector-list">
       {% for sector in sectors %}
-        <a href="{{ url_for('contact') }}" class="sector-row reveal"><span>0{{ loop.index }}</span><strong>{{ sector }}</strong><i data-lucide="arrow-up-right"></i></a>
+        <a href="{{ url_for('main.contact') }}" class="sector-row reveal"><span>0{{ loop.index }}</span><strong>{{ sector }}</strong><i data-lucide="arrow-up-right"></i></a>
       {% endfor %}
     </div>
   </div>
@@ -423,7 +423,7 @@
     <span class="eyebrow eyebrow--light"><span></span> Start a conversation</span>
     <h2>Tell us what you are building, buying or moving.</h2>
     <p>Share the specification, quantity, project location and required timeline. Our team will respond with the clearest next step.</p>
-    <a href="{{ url_for('contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
+    <a href="{{ url_for('main.contact') }}" class="button button--copper">Request a quote <i data-lucide="arrow-up-right"></i></a>
   </div>
 </section>
 {% endblock %}

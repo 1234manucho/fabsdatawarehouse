@@ -1,5 +1,6 @@
 {# FABS Trading · main company website shell.
-   Brand tokens live in static/css/style.css. Flask endpoint names are preserved. #}
+   Brand tokens live in static/css/style.css. Flask endpoint names are preserved.
+   v2: production hardening (SEO, a11y, first-paint, safety). No visual changes. #}
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
@@ -7,25 +8,60 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#ED3138">
   <meta name="color-scheme" content="light">
+  <meta name="format-detection" content="telephone=no">
   <meta name="csrf-token" content="{{ csrf_token() if csrf_token is defined else '' }}">
+  <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+
   <title>{% block title %}FABS Trading | Payment Aggregation, Cloud Hosting & Business Operations{% endblock %}</title>
   <meta name="description" content="{% block meta_description %}FABS Trading is a payment aggregator and cloud platform partner — connecting collections, payouts, biometric security, cloud hosting, stock management and enterprise logistics across East Africa.{% endblock %}">
   <meta name="author" content="FABS Trading">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="{{ request.url }}">
+
+  {# Canonical — strip query string and fragment so tracking params don't fragment indexation. #}
+  <link rel="canonical" href="{{ request.base_url }}">
+
   <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+  {# Preload brand logo — used above the fold in the header. #}
+  <link rel="preload" as="image"
+        href="{{ url_for('static', filename='images/fabs-brand-v2.png') }}"
+        fetchpriority="high">
+  <link rel="dns-prefetch" href="https://platform.fabsdatawarehouse.com">
+  <link rel="preconnect" href="https://platform.fabsdatawarehouse.com" crossorigin>
+
+  {# OpenGraph — follow the child blocks so pages don't all advertise the same title. #}
   <meta property="og:site_name" content="FABS Trading">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="FABS Trading — Payment Aggregation, Cloud Hosting & Operations">
-  <meta property="og:description" content="Payments, payouts, biometrics, cloud hosting, stock management and logistics — connected in one platform.">
-  <meta property="og:url" content="{{ request.url }}">
+  <meta property="og:title" content="{{ self.title()|striptags|trim }}">
+  <meta property="og:description" content="{{ self.meta_description()|striptags|trim }}">
+  <meta property="og:url" content="{{ request.base_url }}">
   <meta property="og:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
   <meta property="og:locale" content="en_KE">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="FABS Trading — Payment Aggregation, Cloud Hosting & Operations">
-  <meta name="twitter:description" content="Payments, payouts, biometrics, cloud hosting, stock management and logistics — connected in one platform.">
+  <meta name="twitter:title" content="{{ self.title()|striptags|trim }}">
+  <meta name="twitter:description" content="{{ self.meta_description()|striptags|trim }}">
   <meta name="twitter:image" content="{{ url_for('static', filename='images/fabs-brand-v2.png', _external=True) }}">
+
+  {# Organization structured data — helps Google render the brand panel. #}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "FABS Trading",
+    "url": {{ request.url_root|tojson }},
+    "logo": {{ url_for('static', filename='images/fabs-brand-v2.png', _external=True)|tojson }},
+    "description": "Payment aggregation, cloud hosting, stock management, biometric security and enterprise logistics across East Africa.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Nairobi",
+      "addressCountry": "KE"
+    },
+    "areaServed": "KE"
+  }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     // Legacy colour names remain aliases so existing child templates still compile.
@@ -53,19 +89,54 @@
       } }
     };
   </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css', v='fabs-main-company-20261201') }}">
+
+  {# `head` and `head_extra` are intentionally synonyms — both render.
+     Child templates may use either without error. #}
+  {% block head %}{% endblock %}
   {% block head_extra %}{% endblock %}
 </head>
-<body class="bg-brand-bg text-brand-text font-sans antialiased">
+<body class="bg-brand-bg text-brand-text font-sans antialiased{% block body_class %}{% endblock %}">
+
+<noscript>
+  <style>
+    /* Tailwind is compiled at runtime by the CDN script. Without JS, no
+       utilities apply — this keeps the site legible with graceful defaults. */
+    body { font-family: system-ui, -apple-system, 'Segoe UI', sans-serif; margin:0; padding:0; color:#121820; background:#fff; line-height:1.5; }
+    a { color:#C9252D; }
+    .fabs-shell { max-width:1200px; margin:0 auto; padding:0 1rem; }
+    .fabs-header { border-bottom:1px solid #DFE3E8; padding:1rem 0; background:#fff; }
+    .fabs-nav-row { display:flex; align-items:center; gap:1.5rem; }
+    .fabs-desktop-nav, .fabs-desktop-auth { display:flex; gap:1rem; align-items:center; margin-left:auto; }
+    .fabs-desktop-nav a, .fabs-desktop-auth a { text-decoration:none; color:#121820; font-weight:500; }
+    .fabs-menu-toggle { display:none; }
+    .fabs-main { padding:2rem 0; }
+    .fabs-footer { border-top:1px solid #DFE3E8; padding:2rem 0; background:#F5F6F7; margin-top:3rem; }
+    .fabs-footer h2 { font-size:.9rem; text-transform:uppercase; letter-spacing:.08em; color:#59636F; }
+    .fabs-footer ul { list-style:none; padding:0; }
+    .fabs-footer a { text-decoration:none; color:#121820; }
+    .fabs-flashes { margin:1rem auto; max-width:1200px; padding:0 1rem; }
+    .fabs-flash { padding:.75rem 1rem; margin:.5rem 0; border-left:4px solid #ED3138; background:#FFF0F1; }
+    .skip-link { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
+    .skip-link:focus { position:static; width:auto; height:auto; padding:.5rem 1rem; background:#121820; color:#fff; }
+    #fabs-mobile-menu { display:none; }
+  </style>
+  <p style="background:#FFF0F1;color:#121820;padding:1rem;text-align:center;margin:0;border-bottom:1px solid #DFE3E8;">
+    This site works best with JavaScript enabled. Some interactive features may not display.
+  </p>
+</noscript>
+
 {% macro fabs_logo(size=42) -%}
   <span class="fabs-company-logo" style="--logo-height:{{ size * 1.4 }}px">
     <img src="{{ url_for('static', filename='images/fabs-brand-v2.png') }}" alt="FABS Trading" width="2035" height="773" data-fabs-brand decoding="async">
     <span class="fabs-logo-fallback" hidden><strong>FABS <b>TRADING</b></strong><small></small></span>
   </span>
 {%- endmacro %}
+
 {% macro partner_logo(name) -%}
   {% set partner_files = {'safaricom':'safaricom.svg','mpesa':'mpesa.png','dhl':'dhl.svg','dpo':'dpo.png','pesapal':'pesapal.png','finserve':'finserve.png','visa':'visa.svg','mastercard':'mastercard.svg'} %}
   {% set partner_names = {'safaricom':'Safaricom','mpesa':'M-PESA','dhl':'DHL Express','dpo':'DPO / Network','pesapal':'Pesapal','finserve':'Finserve','visa':'Visa','mastercard':'Mastercard'} %}
@@ -75,20 +146,24 @@
     <span class="fabs-provider-name">{{ {'mifos':'Mifos / Fineract','fleetbase':'Fleetbase'}.get(name, name) }}</span>
   {% endif %}
 {%- endmacro %}
+
 <a href="#main-content" class="skip-link">Skip to content</a>
+
 <header id="navbar" class="fabs-header">
   <div class="fabs-shell fabs-nav-row">
     <a class="fabs-brand-lockup" href="{{ url_for('main.index') }}" aria-label="FABS Trading home">
       {{ fabs_logo(40) }}
       <span class="fabs-product-label">FABS<br><strong>TRADING</strong></span>
     </a>
+
     <nav class="fabs-desktop-nav" aria-label="Primary">
       {% for label,target in [('Services','#services'),('Payments','#payments'),('Platform','#hosting'),('Logistics','#tracking'),('Stock','#stock-management')] %}
         <a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>
       {% endfor %}
-      <a href="{{ url_for('main.about') }}">About</a>
-      <a href="{{ url_for('main.contact') }}">Contact</a>
+      <a href="{{ url_for('main.about') }}" {% if request.endpoint == 'main.about' %}aria-current="page"{% endif %}>About</a>
+      <a href="{{ url_for('main.contact') }}" {% if request.endpoint == 'main.contact' %}aria-current="page"{% endif %}>Contact</a>
     </nav>
+
     <div class="fabs-desktop-auth">
       {% if current_user.is_authenticated %}
         {% if current_user.is_admin %}<a class="fabs-nav-auth" href="{{ url_for('admin.index') }}">Admin</a>{% endif %}
@@ -99,16 +174,20 @@
         <a class="btn-primary fabs-nav-button" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open platform <span aria-hidden="true">↗</span></a>
       {% endif %}
     </div>
+
     <button id="fabs-menu-toggle" class="fabs-menu-toggle" type="button" aria-expanded="false" aria-controls="fabs-mobile-menu" aria-label="Open menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" width="24" height="24" aria-hidden="true"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
   </div>
+
   <nav id="fabs-mobile-menu" class="fabs-mobile-menu fabs-shell" aria-label="Mobile" hidden>
-    {% for label,target in [('Services','#services'),('Payments','#payments'),('Platform','#hosting'),('Logistics','#tracking'),('Stock','#stock-management')] %}<a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>{% endfor %}
-    <a href="{{ url_for('main.about') }}">About</a>
-    <a href="{{ url_for('main.pricing') }}">Pricing</a>
-    <a href="{{ url_for('main.faqs') }}">FAQs</a>
-    <a href="{{ url_for('main.contact') }}">Contact</a>
+    {% for label,target in [('Services','#services'),('Payments','#payments'),('Platform','#hosting'),('Logistics','#tracking'),('Stock','#stock-management')] %}
+      <a href="{{ url_for('main.index') }}{{ target }}">{{ label }}</a>
+    {% endfor %}
+    <a href="{{ url_for('main.about') }}" {% if request.endpoint == 'main.about' %}aria-current="page"{% endif %}>About</a>
+    <a href="{{ url_for('main.pricing') }}" {% if request.endpoint == 'main.pricing' %}aria-current="page"{% endif %}>Pricing</a>
+    <a href="{{ url_for('main.faqs') }}" {% if request.endpoint == 'main.faqs' %}aria-current="page"{% endif %}>FAQs</a>
+    <a href="{{ url_for('main.contact') }}" {% if request.endpoint == 'main.contact' %}aria-current="page"{% endif %}>Contact</a>
     <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform <span aria-hidden="true">↗</span></a>
     <div class="fabs-mobile-auth">
       {% if current_user.is_authenticated %}
@@ -120,19 +199,24 @@
     </div>
   </nav>
 </header>
+
 {% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
     <div id="flashZone" class="fabs-flashes" role="status" aria-live="polite">
       {% for category,message in messages %}
-        <div class="flash-item fabs-flash fabs-flash-{{ category if category in ['success','error','danger','warning','info'] else 'info' }}">
+        {% set norm = category if category in ['success','error','danger','warning','info'] else 'info' %}
+        <div class="flash-item fabs-flash fabs-flash-{{ norm }}" data-flash-category="{{ norm }}">
           <span class="fabs-flash-label">{{ {'success':'Success','error':'Error','danger':'Error','warning':'Notice'}.get(category,'Information') }}</span>
-          <span>{{ message }}</span><button type="button" onclick="this.parentElement.remove()" aria-label="Dismiss message">×</button>
+          <span>{{ message }}</span>
+          <button type="button" data-flash-dismiss aria-label="Dismiss message">×</button>
         </div>
       {% endfor %}
     </div>
   {% endif %}
 {% endwith %}
+
 <main id="main-content" class="fabs-main">{% block content %}{% endblock %}</main>
+
 <footer class="fabs-footer">
   <div class="fabs-shell">
     <section class="fabs-footer-partners" aria-label="Payment and logistics ecosystem">
@@ -142,6 +226,7 @@
       </div>
       <p class="fabs-provider-note">Services depend on your account configuration and provider activation.</p>
     </section>
+
     <div class="fabs-footer-grid">
       <div class="fabs-footer-about">
         <a class="fabs-brand-lockup" href="{{ url_for('main.index') }}">{{ fabs_logo(48) }}</a>
@@ -150,6 +235,7 @@
         <a class="fabs-parent-link" href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform <span aria-hidden="true">↗</span></a>
         <span class="fabs-location">Nairobi, Kenya</span>
       </div>
+
       <div><h2>Platform</h2><ul>
         <li><a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer">Open the platform ↗</a></li>
         <li><a href="{{ url_for('main.index') }}#payments">Payment aggregation</a></li>
@@ -158,6 +244,7 @@
         <li><a href="{{ url_for('main.index') }}#hosting">Cloud hosting</a></li>
         <li><a href="{{ url_for('main.index') }}#tracking">Shipment tracking</a></li>
       </ul></div>
+
       <div><h2>Solutions</h2><ul>
         <li><a href="{{ url_for('county.index') }}">County revenue</a></li>
         <li><a href="{{ url_for('main.index') }}#petroleum">Petroleum transport</a></li>
@@ -166,59 +253,169 @@
         <li><a href="{{ url_for('payments.index') }}">Aggregator APIs</a></li>
         <li><a href="{{ url_for('main.index') }}#it-support">IT support subcontracts</a></li>
       </ul></div>
+
       <div><h2>Company</h2><ul>
-        <li><a href="{{ url_for('main.about') }}">About us</a></li><li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
-        <li><a href="{{ url_for('main.faqs') }}">FAQs</a></li><li><a href="{{ url_for('main.contact') }}">Contact sales</a></li>
-        <li><a href="{{ url_for('auth.signup') }}">Create account</a></li><li><a href="{{ url_for('auth.login') }}">Sign in</a></li>
+        <li><a href="{{ url_for('main.about') }}">About us</a></li>
+        <li><a href="{{ url_for('main.pricing') }}">Pricing</a></li>
+        <li><a href="{{ url_for('main.faqs') }}">FAQs</a></li>
+        <li><a href="{{ url_for('main.contact') }}">Contact sales</a></li>
+        <li><a href="{{ url_for('auth.signup') }}">Create account</a></li>
+        <li><a href="{{ url_for('auth.login') }}">Sign in</a></li>
       </ul></div>
     </div>
+
     <div class="fabs-footer-bottom">
       <p>© <span data-year>{{ current_year|default(2026, true) }}</span> FABS Trading</p>
-      <nav aria-label="Legal"><a href="/api/health">System status</a><a href="{{ url_for('main.privacy') }}">Privacy</a><a href="{{ url_for('main.terms') }}">Terms</a></nav>
+      <nav aria-label="Legal">
+        <a href="/api/health">System status</a>
+        <a href="{{ url_for('main.privacy') }}">Privacy</a>
+        <a href="{{ url_for('main.terms') }}">Terms</a>
+      </nav>
     </div>
   </div>
 </footer>
+
 <script>
 (() => {
   'use strict';
+
+  /* ------------------------------------------------------------------
+     Mobile menu — with focus trap and focus-return.
+     ------------------------------------------------------------------ */
   const toggle = document.getElementById('fabs-menu-toggle');
-  const menu = document.getElementById('fabs-mobile-menu');
-  const setMenu = open => {
+  const menu   = document.getElementById('fabs-mobile-menu');
+  const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  const setMenu = (open, opts) => {
+    const { returnFocus = false } = opts || {};
     menu.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-  };
-  toggle.addEventListener('click', () => setMenu(menu.hidden));
-  menu.addEventListener('click', event => { if (event.target.closest('a')) setMenu(false); });
-  document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && !menu.hidden) { setMenu(false); toggle.focus(); }
-  });
-  document.addEventListener('click', event => { if (!menu.hidden && !event.target.closest('.fabs-header')) setMenu(false); });
-  const desktop = window.matchMedia('(min-width:1280px)');
-  if (desktop.addEventListener) desktop.addEventListener('change', event => { if (event.matches) setMenu(false); });
-  document.querySelectorAll('[data-year]').forEach(node => { node.textContent = new Date().getFullYear(); });
-  // One shared handler covers company, provider and photographic fallback assets.
-  const fallback = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
-  const recoverImage = image => {
-    if (!(image instanceof HTMLImageElement) || image.hasAttribute('data-home-image') || image.dataset.fallbackApplied) return;
-    image.dataset.fallbackApplied = 'true';
-    if (image.hasAttribute('data-fabs-brand')) {
-      image.hidden = true;
-      const text = image.parentElement.querySelector('.fabs-logo-fallback');
-      if (text) text.hidden = false;
-    } else if (image.hasAttribute('data-partner-logo') || image.closest('.fdw-brand,.fdw-payment-provider-row,.fdw-payment-card-logos,.fdw-dhl-badge')) {
-      image.hidden = true;
-      const text = document.createElement('span');
-      text.className = 'fabs-provider-name'; text.textContent = image.alt || 'Provider';
-      image.insertAdjacentElement('afterend', text);
-    } else if (image.closest('#fdw-home')) {
-      image.removeAttribute('srcset'); image.src = fallback;
+    if (open) {
+      const first = menu.querySelector(FOCUSABLE);
+      if (first) first.focus();
+    } else if (returnFocus) {
+      toggle.focus();
     }
   };
-  document.addEventListener('error', event => recoverImage(event.target), true);
-  document.querySelectorAll('img').forEach(image => { if (image.complete && !image.naturalWidth) recoverImage(image); });
+
+  toggle.addEventListener('click', () => setMenu(menu.hidden));
+
+  // Close when any link inside the menu is activated (including in-page anchors).
+  menu.addEventListener('click', (event) => {
+    if (event.target.closest('a')) setMenu(false);
+  });
+
+  // Escape closes; Tab cycles inside the menu while it's open.
+  document.addEventListener('keydown', (event) => {
+    if (menu.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      setMenu(false, { returnFocus: true });
+      return;
+    }
+    if (event.key === 'Tab') {
+      const items = menu.querySelectorAll(FOCUSABLE);
+      if (!items.length) return;
+      const first = items[0];
+      const last  = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  // Click outside closes.
+  document.addEventListener('click', (event) => {
+    if (!menu.hidden && !event.target.closest('.fabs-header')) setMenu(false);
+  });
+
+  // Desktop resize closes.
+  const desktop = window.matchMedia('(min-width:1280px)');
+  if (desktop.addEventListener) {
+    desktop.addEventListener('change', (event) => {
+      if (event.matches && !menu.hidden) setMenu(false);
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Footer year — server-rendered value already exists; this keeps
+     tabs open across midnight correct.
+     ------------------------------------------------------------------ */
+  document.querySelectorAll('[data-year]').forEach((node) => {
+    node.textContent = new Date().getFullYear();
+  });
+
+  /* ------------------------------------------------------------------
+     Flash auto-dismiss + delegated dismiss handler.
+     Replaces inline onclick (safer under a Content-Security-Policy).
+     ------------------------------------------------------------------ */
+  const flashZone = document.getElementById('flashZone');
+  if (flashZone) {
+    flashZone.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-flash-dismiss]');
+      if (!btn) return;
+      const item = btn.closest('.fabs-flash');
+      if (item) item.remove();
+    });
+
+    flashZone.querySelectorAll('.fabs-flash').forEach((item) => {
+      const cat = item.getAttribute('data-flash-category');
+      // Keep errors visible; auto-dismiss confirmations after 6s.
+      if (cat === 'success' || cat === 'info') {
+        setTimeout(() => {
+          item.style.transition = 'opacity .4s ease, transform .4s ease';
+          item.style.opacity = '0';
+          item.style.transform = 'translateY(-6px)';
+          setTimeout(() => item.remove(), 420);
+        }, 6000);
+      }
+    });
+  }
+
+  /* ------------------------------------------------------------------
+     Image fallbacks — unchanged behaviour, wrapped in a guard so the
+     single document-level listener isn't added twice on SPA-style nav.
+     ------------------------------------------------------------------ */
+  if (!window.__fabsImageRecoveryBound) {
+    window.__fabsImageRecoveryBound = true;
+    const fallback = {{ url_for('static', filename='images/image-fallback.svg')|tojson }};
+
+    const recoverImage = (image) => {
+      if (!(image instanceof HTMLImageElement) ||
+          image.hasAttribute('data-home-image') ||
+          image.dataset.fallbackApplied) return;
+      image.dataset.fallbackApplied = 'true';
+
+      if (image.hasAttribute('data-fabs-brand')) {
+        image.hidden = true;
+        const text = image.parentElement.querySelector('.fabs-logo-fallback');
+        if (text) text.hidden = false;
+      } else if (image.hasAttribute('data-partner-logo') ||
+                 image.closest('.fdw-brand,.fdw-payment-provider-row,.fdw-payment-card-logos,.fdw-dhl-badge')) {
+        image.hidden = true;
+        const text = document.createElement('span');
+        text.className = 'fabs-provider-name';
+        text.textContent = image.alt || 'Provider';
+        image.insertAdjacentElement('afterend', text);
+      } else if (image.closest('#fdw-home')) {
+        image.removeAttribute('srcset');
+        image.src = fallback;
+      }
+    };
+
+    document.addEventListener('error', (event) => recoverImage(event.target), true);
+    document.querySelectorAll('img').forEach((image) => {
+      if (image.complete && !image.naturalWidth) recoverImage(image);
+    });
+  }
 })();
 </script>
+
 {# Keep the application's existing common behaviours. This file is not replaced by the patch. #}
 <script src="{{ url_for('static', filename='js/main.js') }}" defer></script>
 {% block scripts %}{% endblock %}

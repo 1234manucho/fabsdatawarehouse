@@ -1,0 +1,492 @@
+{#
+  ============================================================================
+  _macros.html — shared Jinja components for B&N Immo-Invest Limited
+  ============================================================================
+  Usage:
+    In base.html, once:
+        {% from '_macros.html' import macros_assets %}
+        {{ macros_assets() }}       → inside <head> or just before </body>
+
+    In any page:
+        {% from '_macros.html' import service_card, section_heading, stat,
+                                       pillar, badge %}
+        {{ service_card(service) }}
+  ============================================================================
+#}
+
+
+{# ==========================================================================
+   ASSETS — emit once per document
+   ========================================================================== #}
+{% macro macros_assets() %}
+<style id="bn-macros-styles">
+/* ----------------------------------------------------------------
+   B&N shared components — scoped under .svc-*
+   Palette: ink #0b1720 · copper #c7894b · sand #f2ece3
+   ---------------------------------------------------------------- */
+
+/* ---------- Service card ---------- */
+.svc-card {
+  --svc-accent: #c7894b;
+  --svc-accent-soft: rgba(199,137,75,.14);
+  --svc-bg: #ffffff;
+  --svc-border: rgba(11,23,32,.08);
+  --svc-text: #0b1720;
+  --svc-muted: #556673;
+  --svc-hover-border: rgba(199,137,75,.55);
+  --svc-hover-shadow: 0 30px 60px -40px rgba(11,23,32,.55);
+  --svc-delay: 0ms;
+  --tx: 0deg;
+  --ty: 0deg;
+  --hover-y: 0px;
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .85rem;
+  padding: 2rem 1.65rem;
+  background: var(--svc-bg);
+  border: 1px solid var(--svc-border);
+  border-radius: 18px;
+  color: var(--svc-text);
+  text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
+  opacity: 0;
+  translate: 0 16px;
+  transform:
+    perspective(900px)
+    translateY(var(--hover-y))
+    rotateX(var(--ty))
+    rotateY(var(--tx));
+  transition:
+    opacity .65s ease var(--svc-delay),
+    translate .65s cubic-bezier(.2,.8,.2,1) var(--svc-delay),
+    transform .35s cubic-bezier(.2,.8,.2,1),
+    box-shadow .35s ease,
+    border-color .35s ease,
+    background .35s ease;
+  will-change: transform, opacity;
+}
+.svc-card.is-visible { opacity: 1; translate: 0 0; }
+
+.svc-card::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--svc-accent), transparent 70%);
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+.svc-card::after {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(70% 70% at 0% 0%,
+              rgba(199,137,75,.12), transparent 65%);
+  opacity: 0;
+  transition: opacity .35s ease;
+  pointer-events: none;
+}
+.svc-card:hover,
+.svc-card:focus-visible {
+  --hover-y: -6px;
+  border-color: var(--svc-hover-border);
+  box-shadow: var(--svc-hover-shadow);
+  outline: none;
+}
+.svc-card:hover::before,
+.svc-card:focus-visible::before,
+.svc-card:hover::after,
+.svc-card:focus-visible::after { opacity: 1; }
+
+.svc-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  background: var(--svc-accent-soft);
+  color: var(--svc-accent);
+  transition: background .35s ease, color .35s ease, transform .35s ease;
+}
+.svc-card__icon svg { width: 20px; height: 20px; }
+.svc-card:hover .svc-card__icon {
+  background: var(--svc-accent);
+  color: #ffffff;
+  transform: rotate(-4deg) scale(1.04);
+}
+
+.svc-card__title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: 1.12rem;
+  line-height: 1.3;
+  margin: 0;
+  color: inherit;
+}
+.svc-card__summary {
+  margin: 0;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: var(--svc-muted);
+  flex: 1;
+}
+.svc-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  margin-top: .35rem;
+  font-family: 'Manrope', sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--svc-accent);
+}
+.svc-card__link svg { width: 15px; height: 15px; transition: transform .3s ease; }
+.svc-card:hover .svc-card__link svg,
+.svc-card:focus-visible .svc-card__link svg { transform: translate(3px, -3px); }
+
+/* Dark variant — auto-applies inside .service-grid--dark */
+.service-grid--dark .svc-card,
+.svc-card--dark {
+  --svc-bg: rgba(255,255,255,.045);
+  --svc-border: rgba(255,255,255,.10);
+  --svc-text: #f4f1ea;
+  --svc-muted: rgba(244,241,234,.72);
+  --svc-hover-border: rgba(199,137,75,.6);
+  --svc-hover-shadow: 0 30px 60px -35px rgba(0,0,0,.85);
+}
+.service-grid--dark .svc-card__icon,
+.svc-card--dark .svc-card__icon { background: rgba(199,137,75,.18); }
+
+/* Stagger cards inside any .service-grid */
+.service-grid > .svc-card:nth-child(1) { --svc-delay: 0ms; }
+.service-grid > .svc-card:nth-child(2) { --svc-delay: 80ms; }
+.service-grid > .svc-card:nth-child(3) { --svc-delay: 160ms; }
+.service-grid > .svc-card:nth-child(4) { --svc-delay: 240ms; }
+.service-grid > .svc-card:nth-child(5) { --svc-delay: 320ms; }
+.service-grid > .svc-card:nth-child(6) { --svc-delay: 400ms; }
+
+/* ---------- Section heading ---------- */
+.svc-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.svc-head__copy { max-width: 56ch; }
+.svc-head__title {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.65rem, 3vw, 2.4rem);
+  line-height: 1.15;
+  margin: .55rem 0 0;
+  color: #0b1720;
+}
+.svc-head__lead {
+  margin: .85rem 0 0;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: #556673;
+  max-width: 60ch;
+}
+.svc-head--light .svc-head__title { color: #f4f1ea; }
+.svc-head--light .svc-head__lead { color: rgba(244,241,234,.78); }
+
+/* ---------- Stat ---------- */
+.svc-stat {
+  display: flex;
+  flex-direction: column;
+  gap: .35rem;
+}
+.svc-stat__value {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  line-height: 1.1;
+  color: inherit;
+  margin: 0;
+}
+.svc-stat__label {
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: rgba(11,23,32,.55);
+  margin: 0;
+}
+.svc-stat--light .svc-stat__label { color: rgba(244,241,234,.55); }
+
+/* ---------- Pillar ---------- */
+.svc-pillar {
+  position: relative;
+  padding: 1.65rem 1.4rem;
+  border: 1px solid rgba(11,23,32,.1);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff, #fbfaf7);
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+.svc-pillar:hover {
+  transform: translateY(-4px);
+  border-color: rgba(199,137,75,.5);
+  box-shadow: 0 26px 48px -34px rgba(11,23,32,.55);
+}
+.svc-pillar__num {
+  font-family: 'Manrope', sans-serif;
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  color: #c7894b;
+  display: block;
+}
+.svc-pillar__title {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.08rem;
+  color: #0b1720;
+  margin: .55rem 0 .45rem;
+}
+.svc-pillar__body {
+  margin: 0;
+  font-size: .93rem;
+  line-height: 1.6;
+  color: #5a6b75;
+}
+
+/* ---------- Badge ---------- */
+.svc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .35rem .85rem;
+  border-radius: 999px;
+  font-family: 'Manrope', sans-serif;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  background: rgba(11,23,32,.05);
+  border: 1px solid rgba(11,23,32,.08);
+  color: #0b1720;
+  line-height: 1;
+  white-space: nowrap;
+}
+.svc-badge--copper {
+  background: rgba(199,137,75,.14);
+  border-color: rgba(199,137,75,.3);
+  color: #8a5a26;
+}
+.svc-badge--ink {
+  background: #0b1720;
+  border-color: #0b1720;
+  color: #ffffff;
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .svc-card,
+  .svc-card__icon,
+  .svc-card__link svg,
+  .svc-pillar { transition: none !important; }
+  .svc-card { opacity: 1; translate: 0 0; transform: none; }
+  .svc-pillar:hover { transform: none; }
+}
+</style>
+<script id="bn-macros-script">
+(function () {
+  'use strict';
+  if (window.__bnMacrosInit) return;
+  window.__bnMacrosInit = true;
+
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+                 && !reduced;
+
+  function paintIcons() {
+    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+      try { window.lucide.createIcons({ attrs: { 'stroke-width': 1.8 } }); }
+      catch (e) { /* no-op — icons are decorative */ }
+    }
+  }
+
+  function revealCards() {
+    var cards = document.querySelectorAll(
+      '.svc-card:not(.is-visible):not([data-svc-ready])'
+    );
+    if (!cards.length) return;
+
+    if (reduced || !('IntersectionObserver' in window)) {
+      cards.forEach(function (c) {
+        c.setAttribute('data-svc-ready', '');
+        c.classList.add('is-visible');
+      });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.setAttribute('data-svc-ready', '');
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
+
+    cards.forEach(function (c) { io.observe(c); });
+
+    // Failsafe — never leave cards hidden.
+    setTimeout(function () {
+      cards.forEach(function (c) {
+        if (!c.classList.contains('is-visible')) c.classList.add('is-visible');
+      });
+    }, 2400);
+  }
+
+  function enableTilt() {
+    if (!canHover) return;
+    document.querySelectorAll('.svc-card:not([data-tilt])').forEach(function (card) {
+      card.setAttribute('data-tilt', '');
+      var frame = 0;
+
+      card.addEventListener('pointermove', function (e) {
+        if (frame) return;
+        frame = requestAnimationFrame(function () {
+          var rect = card.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top) / rect.height - 0.5;
+          card.style.setProperty('--tx', (x * 4).toFixed(2) + 'deg');
+          card.style.setProperty('--ty', (-y * 4).toFixed(2) + 'deg');
+          frame = 0;
+        });
+      });
+
+      card.addEventListener('pointerleave', function () {
+        card.style.removeProperty('--tx');
+        card.style.removeProperty('--ty');
+      });
+    });
+  }
+
+  function boot() {
+    revealCards();
+    enableTilt();
+    paintIcons();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    setTimeout(boot, 0);
+  }
+  window.addEventListener('load', boot);
+  document.addEventListener('bn:content-changed', boot);
+})();
+</script>
+{% endmacro %}
+
+
+{# ==========================================================================
+   SERVICE CARD
+   Usage:  {{ service_card(service) }}
+           {{ service_card(service, tone='dark') }}
+   Expects on `service`:  .slug  .title
+   Optional:              .summary | .description | .blurb   .icon (lucide)
+   ========================================================================== #}
+{% macro service_card(service, tone='auto') %}
+  {%- if not service -%}{%- return -%}{%- endif -%}
+
+  {%- set _summary =
+        service.summary     if service.summary     is defined and service.summary     else
+       (service.description if service.description is defined and service.description else
+       (service.blurb       if service.blurb       is defined and service.blurb       else '')) -%}
+  {%- set _icon    = service.icon if service.icon is defined and service.icon else 'layers' -%}
+  {%- set _tone    = 'svc-card--dark'  if tone == 'dark'  else
+                    ('svc-card--light' if tone == 'light' else '') -%}
+
+  <a href="{{ url_for('service_detail', slug=service.slug) }}"
+     class="svc-card {{ _tone }}"
+     aria-label="{{ service.title }}">
+
+    <span class="svc-card__icon" aria-hidden="true">
+      <i data-lucide="{{ _icon }}"></i>
+    </span>
+
+    <h3 class="svc-card__title">{{ service.title }}</h3>
+
+    {% if _summary %}
+      <p class="svc-card__summary">{{ _summary }}</p>
+    {% endif %}
+
+    <span class="svc-card__link">
+      Explore <i data-lucide="arrow-up-right" aria-hidden="true"></i>
+    </span>
+  </a>
+{% endmacro %}
+
+
+{# ==========================================================================
+   SECTION HEADING
+   Usage:  {{ section_heading('What we do', 'Capabilities that connect.',
+                               lead='...', cta_href=url_for('services'),
+                               cta_label='View all services', tone='light') }}
+   ========================================================================== #}
+{% macro section_heading(eyebrow, title, lead=None, cta_href=None,
+                         cta_label=None, tone='light') %}
+  <div class="svc-head {{ 'svc-head--light' if tone == 'light' else '' }}">
+    <div class="svc-head__copy">
+      {% if eyebrow %}
+        <span class="eyebrow {{ 'eyebrow--light' if tone == 'light' else '' }}">
+          <span></span> {{ eyebrow }}
+        </span>
+      {% endif %}
+      <h2 class="svc-head__title">{{ title }}</h2>
+      {% if lead %}<p class="svc-head__lead">{{ lead }}</p>{% endif %}
+    </div>
+    {% if cta_href and cta_label %}
+      <a href="{{ cta_href }}"
+         class="button {{ 'button--outline-light' if tone == 'light' else 'button--dark' }}">
+        {{ cta_label }} <i data-lucide="arrow-right" aria-hidden="true"></i>
+      </a>
+    {% endif %}
+  </div>
+{% endmacro %}
+
+
+{# ==========================================================================
+   STAT
+   Usage:  {{ stat('2025', 'Year established') }}
+           {{ stat('4', 'Service lines', tone='light') }}
+   ========================================================================== #}
+{% macro stat(value, label, tone='dark') %}
+  <div class="svc-stat {{ 'svc-stat--light' if tone == 'light' else '' }}">
+    <p class="svc-stat__value">{{ value }}</p>
+    <p class="svc-stat__label">{{ label }}</p>
+  </div>
+{% endmacro %}
+
+
+{# ==========================================================================
+   PILLAR
+   Usage:  {{ pillar('01', 'Assess', 'Studies and analysis that...') }}
+   ========================================================================== #}
+{% macro pillar(number, title, body) %}
+  <article class="svc-pillar reveal">
+    <span class="svc-pillar__num">{{ number }}</span>
+    <h3 class="svc-pillar__title">{{ title }}</h3>
+    <p class="svc-pillar__body">{{ body }}</p>
+  </article>
+{% endmacro %}
+
+
+{# ==========================================================================
+   BADGE
+   Usage:  {{ badge('Est. 2025') }}
+           {{ badge('New', tone='copper') }}
+           {{ badge('Internal', tone='ink') }}
+   ========================================================================== #}
+{% macro badge(text, tone='default') %}
+  <span class="svc-badge {{ 'svc-badge--copper' if tone == 'copper'
+                          else ('svc-badge--ink' if tone == 'ink' else '') }}">
+    {{ text }}
+  </span>
+{% endmacro %}

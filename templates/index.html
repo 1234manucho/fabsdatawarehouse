@@ -7,7 +7,7 @@
 {% block content %}
 
 <!-- ============================================================
-     HERO — clean product framing, no fabricated numbers
+     HERO — rotating wireframe globe with interlinked service nodes
      ============================================================ -->
 <section class="relative overflow-hidden bg-ink-950 text-white">
   <div class="absolute inset-0 bg-grid"></div>
@@ -62,73 +62,82 @@
         </ul>
       </div>
 
-      <!-- Product card — real workflow, not fake data -->
+      <!-- Rotating globe with interlinked nodes -->
       <div class="reveal" data-delay="0.12">
-        <div class="floaty relative mx-auto max-w-md">
-          <div class="absolute -inset-3 rounded-3xl bg-gradient-to-br from-brand-500/25 via-transparent to-accent/20 blur-2xl" aria-hidden="true"></div>
+        <div class="relative mx-auto flex max-w-md flex-col items-center gap-6">
 
-          <div class="relative rounded-2xl border border-white/10 bg-ink-900/90 p-5 sm:p-6 shadow-2xl backdrop-blur-xl">
-            <div class="flex items-center justify-between border-b border-white/10 pb-4">
-              <div class="flex items-center gap-2.5">
-                <span class="grid h-9 w-9 place-items-center rounded-lg bg-brand-500/15 text-brand-300">
-                  <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7.5 12 3l9 4.5M3 12.5 12 17l9-4.5M3 17.5 12 22l9-4.5"/></svg>
-                </span>
-                <div>
-                  <p class="text-[13px] font-semibold text-white">Payment flow</p>
-                  <p class="text-[10.5px] text-slate-500">End-to-end, one dashboard</p>
-                </div>
-              </div>
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-brand-500/15 px-2.5 py-1 text-[10.5px] font-semibold text-brand-300">
-                <span class="h-1.5 w-1.5 rounded-full bg-brand-400 animate-pulse"></span>
-                Live
-              </span>
+          <!-- Globe container -->
+          <div class="relative flex h-[22rem] w-[22rem] items-center justify-center sm:h-[26rem] sm:w-[26rem] lg:h-[28rem] lg:w-[28rem]">
+
+            <!-- Outer glow ring -->
+            <div class="absolute inset-0 rounded-full bg-[radial-gradient(circle,rgba(212,175,55,0.15),transparent_70%)] blur-2xl" aria-hidden="true"></div>
+
+            <!-- Rotating globe -->
+            <div class="globe-spin relative h-[16rem] w-[16rem] sm:h-[18rem] sm:w-[18rem] lg:h-[20rem] lg:w-[20rem]">
+              <svg viewBox="0 0 300 300" class="h-full w-full overflow-visible" aria-hidden="true">
+                <!-- Latitude rings -->
+                <ellipse cx="150" cy="150" rx="140" ry="40" fill="none" stroke="rgba(212,175,55,0.25)" stroke-width="1"/>
+                <ellipse cx="150" cy="150" rx="140" ry="40" fill="none" stroke="rgba(212,175,55,0.12)" stroke-width="1" transform="rotate(60 150 150)"/>
+                <ellipse cx="150" cy="150" rx="140" ry="40" fill="none" stroke="rgba(212,175,55,0.12)" stroke-width="1" transform="rotate(-60 150 150)"/>
+
+                <!-- Meridians -->
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.35)" stroke-width="1"/>
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" transform="rotate(30 150 150)"/>
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" transform="rotate(60 150 150)"/>
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" transform="rotate(90 150 150)"/>
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" transform="rotate(120 150 150)"/>
+                <ellipse cx="150" cy="150" rx="50" ry="140" fill="none" stroke="rgba(212,175,55,0.2)" stroke-width="1" transform="rotate(150 150 150)"/>
+
+                <!-- Equator highlight -->
+                <ellipse cx="150" cy="150" rx="140" ry="40" fill="none" stroke="rgba(212,175,55,0.5)" stroke-width="1.2"/>
+              </svg>
             </div>
 
-            <ol class="mt-5 space-y-2.5">
-              <li class="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2.5">
-                <span class="grid h-8 w-8 place-items-center rounded-md bg-brand-500/15 text-[10px] font-bold text-brand-300">01</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[12px] font-medium text-white truncate">Upload batch</p>
-                  <p class="text-[10px] text-slate-500 truncate">CSV, XLSX, or API</p>
-                </div>
-                <svg class="h-3.5 w-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
-              </li>
-              <li class="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2.5">
-                <span class="grid h-8 w-8 place-items-center rounded-md bg-brand-500/15 text-[10px] font-bold text-brand-300">02</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[12px] font-medium text-white truncate">Validate &amp; verify</p>
-                  <p class="text-[10px] text-slate-500 truncate">Automated compliance checks</p>
-                </div>
-                <svg class="h-3.5 w-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
-              </li>
-              <li class="flex items-center gap-3 rounded-lg bg-white/5 px-3 py-2.5">
-                <span class="grid h-8 w-8 place-items-center rounded-md bg-brand-500/15 text-[10px] font-bold text-brand-300">03</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[12px] font-medium text-white truncate">Disburse funds</p>
-                  <p class="text-[10px] text-slate-500 truncate">Bank, wallet, card</p>
-                </div>
-                <svg class="h-3.5 w-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7"/></svg>
-              </li>
-              <li class="flex items-center gap-3 rounded-lg border border-brand-500/25 bg-brand-500/10 px-3 py-2.5">
-                <span class="grid h-8 w-8 place-items-center rounded-md bg-brand-500 text-[10px] font-bold text-ink-950">04</span>
-                <div class="flex-1 min-w-0">
-                  <p class="text-[12px] font-medium text-white truncate">Reconcile</p>
-                  <p class="text-[10px] text-slate-400 truncate">Real-time reports &amp; exports</p>
-                </div>
-                <svg class="h-3.5 w-3.5 text-brand-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
-              </li>
-            </ol>
+            <!-- Orbit ring + nodes -->
+            <div class="globe-orbit pointer-events-none absolute inset-0">
+              <div class="relative h-full w-full">
+                <!-- Orbital dashed ring -->
+                <div class="absolute inset-[6%] rounded-full border border-dashed border-white/10"></div>
 
-            <div class="mt-5 grid grid-cols-2 gap-3 border-t border-white/10 pt-4">
-              <div>
-                <p class="text-[10px] uppercase tracking-wider text-slate-500">Throughput</p>
-                <p class="mt-1 text-[13px] font-semibold text-white">Real-time</p>
-              </div>
-              <div>
-                <p class="text-[10px] uppercase tracking-wider text-slate-500">Availability</p>
-                <p class="mt-1 text-[13px] font-semibold text-white">99.9% SLA</p>
+                <!-- Service nodes -->
+                <div class="node-pulse absolute left-[10%] top-[18%]">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>Payments
+                  </span>
+                </div>
+                <div class="node-pulse absolute right-[8%] top-[22%]" style="animation-delay:1.2s">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>Logistics
+                  </span>
+                </div>
+                <div class="node-pulse absolute right-[2%] top-[50%]" style="animation-delay:2.4s">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>Hosting
+                  </span>
+                </div>
+                <div class="node-pulse absolute bottom-[16%] right-[14%]" style="animation-delay:3.1s">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>Tenders
+                  </span>
+                </div>
+                <div class="node-pulse absolute bottom-[10%] left-[32%]" style="animation-delay:4.0s">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>Fleet
+                  </span>
+                </div>
+                <div class="node-pulse absolute left-[4%] top-[48%]" style="animation-delay:2.0s">
+                  <span class="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-ink-900/90 px-2.5 py-1 text-[10px] font-medium text-slate-200 shadow-lg backdrop-blur">
+                    <span class="h-1.5 w-1.5 rounded-full bg-brand-400"></span>IT Support
+                  </span>
+                </div>
               </div>
             </div>
+          </div>
+
+          <!-- Bottom caption -->
+          <div class="text-center">
+            <p class="text-[11px] uppercase tracking-[0.18em] text-slate-500">Nine services</p>
+            <p class="mt-1 font-display text-[15px] font-semibold text-white">One unified network</p>
           </div>
         </div>
       </div>

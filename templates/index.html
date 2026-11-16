@@ -6,23 +6,39 @@
 {% block content %}
 
 <style>
-  @keyframes earth-float {
-    0%, 100% { transform: translateY(0) rotate(-1.5deg); }
-    50%      { transform: translateY(-8px) rotate(1.5deg); }
+  @keyframes globe-float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-10px); }
+  }
+  @keyframes globe-spin {
+    from { transform: rotateY(0deg); }
+    to   { transform: rotateY(360deg); }
   }
   @keyframes dash-flow {
-    to { stroke-dashoffset: -20; }
+    to { stroke-dashoffset: -30; }
   }
-  @keyframes ping-slow {
-    75%, 100% { transform: scale(2.4); opacity: 0; }
+  @keyframes pulse-ring {
+    0%   { transform: scale(1);   opacity: 0.8; }
+    100% { transform: scale(2.5); opacity: 0; }
   }
-  .earth-container { animation: earth-float 8s ease-in-out infinite; }
-  .dash-line { animation: dash-flow 2s linear infinite; }
-  .node-ping { animation: ping-slow 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+  @keyframes ping-dot {
+    75%, 100% { transform: scale(2.2); opacity: 0; }
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 0.2; }
+    50%      { opacity: 1; }
+  }
+  .globe-float { animation: globe-float 8s ease-in-out infinite; }
+  .globe-spin  { animation: globe-spin 22s linear infinite; transform-style: preserve-3d; }
+  .dash-line   { animation: dash-flow 2.5s linear infinite; }
+  .pulse-ring  { animation: pulse-ring 3s ease-out infinite; }
+  .ping-dot    { animation: ping-dot 2s cubic-bezier(0, 0, 0.2, 1) infinite; }
+  .sparkle     { animation: sparkle 3s ease-in-out infinite; }
+  .perspective { perspective: 1200px; }
 </style>
 
 <!-- ============================================================
-     HERO — Earth globe with global service connections
+     HERO — Holographic globe with partner network
      ============================================================ -->
 <section class="relative overflow-hidden bg-slate-950 text-white border-b border-slate-800">
   <!-- Subtle grid background -->
@@ -38,7 +54,7 @@
       <!-- Copy -->
       <div class="max-w-2xl">
         <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur">
-          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+          <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
           Payment Aggregator &amp; Enterprise Partner
         </span>
 
@@ -77,237 +93,166 @@
         </ul>
       </div>
 
-      <!-- Earth Globe with Global Service Connections -->
-      <div class="relative flex items-center justify-center aspect-square w-full max-w-[500px] mx-auto lg:mx-0">
+      <!-- Holographic Globe with Partner Network -->
+      <div class="relative flex items-center justify-center aspect-square w-full max-w-[520px] mx-auto lg:mx-0">
 
-        <!-- Outer atmosphere glow -->
-        <div class="absolute inset-0 rounded-full bg-blue-500/10 blur-[80px]"></div>
-        <div class="absolute inset-8 rounded-full bg-red-500/10 blur-[60px]"></div>
+        <!-- Outer atmosphere glows -->
+        <div class="absolute inset-0 rounded-full bg-red-500/15 blur-[100px]"></div>
+        <div class="absolute inset-[15%] rounded-full bg-red-600/10 blur-[60px]"></div>
 
-        <!-- Earth + Rotating rings -->
-        <div class="relative w-[75%] h-[75%]">
+        <!-- Globe wrapper with perspective -->
+        <div class="perspective relative w-[80%] h-[80%]">
           
-          <!-- Earth Container (gentle floating animation) -->
-          <div class="earth-container relative w-full h-full">
+          <!-- Rotating globe -->
+          <div class="globe-float w-full h-full relative">
+            <div class="globe-spin w-full h-full relative">
+              
+              <!-- SVG wireframe sphere -->
+              <svg viewBox="0 0 300 300" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(237,49,56,0.35)"/>
+                    <stop offset="40%" stop-color="rgba(237,49,56,0.08)"/>
+                    <stop offset="100%" stop-color="rgba(237,49,56,0)"/>
+                  </radialGradient>
+                  <radialGradient id="sphereFade" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="rgba(15,23,42,0)"/>
+                    <stop offset="70%" stop-color="rgba(15,23,42,0.2)"/>
+                    <stop offset="100%" stop-color="rgba(2,6,23,0.6)"/>
+                  </radialGradient>
+                  <linearGradient id="meridianGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(237,49,56,0.05)"/>
+                    <stop offset="50%" stop-color="rgba(237,49,56,0.7)"/>
+                    <stop offset="100%" stop-color="rgba(237,49,56,0.05)"/>
+                  </linearGradient>
+                </defs>
+
+                <!-- Inner glow -->
+                <circle cx="150" cy="150" r="140" fill="url(#coreGlow)"/>
+                
+                <!-- Meridians (vertical wires) -->
+                <ellipse cx="150" cy="150" rx="25" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
+                <ellipse cx="150" cy="150" rx="60" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
+                <ellipse cx="150" cy="150" rx="100" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
+                <ellipse cx="150" cy="150" rx="130" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
+                
+                <!-- Latitude rings -->
+                <ellipse cx="150" cy="60" rx="75" ry="10" stroke="rgba(96,165,250,0.25)" stroke-width="0.8"/>
+                <ellipse cx="150" cy="95" rx="120" ry="14" stroke="rgba(96,165,250,0.2)" stroke-width="0.8"/>
+                <ellipse cx="150" cy="150" rx="140" ry="16" stroke="rgba(237,49,56,0.9)" stroke-width="1.5"/>
+                <ellipse cx="150" cy="205" rx="120" ry="14" stroke="rgba(96,165,250,0.2)" stroke-width="0.8"/>
+                <ellipse cx="150" cy="240" rx="75" ry="10" stroke="rgba(96,165,250,0.25)" stroke-width="0.8"/>
+                
+                <!-- Outer boundary -->
+                <circle cx="150" cy="150" r="140" stroke="rgba(237,49,56,0.5)" stroke-width="1.2"/>
+                <circle cx="150" cy="150" r="142" stroke="rgba(237,49,56,0.15)" stroke-width="4" opacity="0.5"/>
+                
+                <!-- Depth fade -->
+                <circle cx="150" cy="150" r="140" fill="url(#sphereFade)"/>
+                
+                <!-- Center pulsing dot -->
+                <circle cx="150" cy="150" r="4" fill="#ED3138"/>
+                <circle cx="150" cy="150" r="4" fill="none" stroke="#ED3138" stroke-width="1" class="pulse-ring" style="transform-origin: 150px 150px;"/>
+                <circle cx="150" cy="150" r="4" fill="none" stroke="#ED3138" stroke-width="1" class="pulse-ring" style="transform-origin: 150px 150px; animation-delay: 1.5s;"/>
+              </svg>
+            </div>
             
-            <!-- Earth SVG -->
-            <svg viewBox="0 0 300 300" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <!-- Ocean gradient -->
-                <radialGradient id="oceanGrad" cx="30%" cy="30%" r="80%">
-                  <stop offset="0%" stop-color="#1e3a8a"/>
-                  <stop offset="60%" stop-color="#1e40af"/>
-                  <stop offset="100%" stop-color="#0c1e4a"/>
-                </radialGradient>
-                
-                <!-- Continent gradient -->
-                <radialGradient id="landGrad" cx="30%" cy="30%" r="70%">
-                  <stop offset="0%" stop-color="#4ade80"/>
-                  <stop offset="100%" stop-color="#15803d"/>
-                </radialGradient>
-                
-                <!-- Desert/arid continent variant -->
-                <radialGradient id="landDry" cx="40%" cy="40%" r="60%">
-                  <stop offset="0%" stop-color="#a3e635"/>
-                  <stop offset="100%" stop-color="#4d7c0f"/>
-                </radialGradient>
-                
-                <!-- Atmosphere glow gradient -->
-                <radialGradient id="atmosGlow" cx="50%" cy="50%" r="50%">
-                  <stop offset="85%" stop-color="transparent"/>
-                  <stop offset="100%" stop-color="rgba(96,165,250,0.5)"/>
-                </radialGradient>
-                
-                <!-- Specular highlight -->
-                <radialGradient id="specular" cx="30%" cy="25%" r="50%">
-                  <stop offset="0%" stop-color="rgba(255,255,255,0.45)"/>
-                  <stop offset="50%" stop-color="rgba(255,255,255,0.05)"/>
-                  <stop offset="100%" stop-color="transparent"/>
-                </radialGradient>
-              </defs>
-              
-              <!-- Ocean base -->
-              <circle cx="150" cy="150" r="140" fill="url(#oceanGrad)"/>
-              
-              <!-- Continents (simplified global view) -->
-              <g fill="url(#landGrad)">
-                <!-- Africa -->
-                <path d="M 148 95 C 158 92 170 100 174 115 C 178 130 178 145 172 165 C 168 178 160 185 155 180 C 148 172 142 155 141 140 C 140 125 144 108 148 95 Z"/>
-                
-                <!-- Europe -->
-                <path d="M 142 70 C 150 65 162 65 168 75 C 172 85 168 92 158 92 C 148 92 140 85 142 70 Z"/>
-                
-                <!-- Asia -->
-                <path d="M 165 72 C 180 65 205 68 225 80 C 242 95 248 115 240 130 C 230 142 210 145 195 138 C 178 128 170 112 168 95 C 166 85 163 78 165 72 Z"/>
-                
-                <!-- Greenland -->
-                <path d="M 118 45 C 128 42 138 45 140 55 C 142 65 135 72 125 70 C 116 68 112 58 118 45 Z" fill="url(#landDry)"/>
-              </g>
-              
-              <g fill="url(#landDry)">
-                <!-- North America (with desert tones) -->
-                <path d="M 68 72 C 80 60 100 58 118 68 C 130 78 128 95 120 110 C 110 122 95 125 82 118 C 68 108 62 90 68 72 Z"/>
-              </g>
-              
-              <g fill="url(#landGrad)">
-                <!-- South America -->
-                <path d="M 100 138 C 112 132 125 140 128 155 C 130 172 125 192 115 200 C 105 205 95 200 92 185 C 88 170 92 148 100 138 Z"/>
-                
-                <!-- Australia -->
-                <path d="M 218 188 C 228 182 245 182 252 195 C 257 208 250 220 235 222 C 222 223 212 215 210 202 C 208 194 213 190 218 188 Z"/>
-              </g>
-              
-              <!-- Latitude lines -->
-              <g stroke="rgba(255,255,255,0.12)" stroke-width="0.5" fill="none">
-                <ellipse cx="150" cy="150" rx="140" ry="140"/>
-                <ellipse cx="150" cy="95" rx="118" ry="22"/>
-                <ellipse cx="150" cy="125" rx="133" ry="18"/>
-                <ellipse cx="150" cy="150" rx="140" ry="18"/>
-                <ellipse cx="150" cy="175" rx="133" ry="18"/>
-                <ellipse cx="150" cy="205" rx="118" ry="22"/>
-              </g>
-              
-              <!-- Longitude lines -->
-              <g stroke="rgba(255,255,255,0.12)" stroke-width="0.5" fill="none">
-                <ellipse cx="150" cy="150" rx="30" ry="140"/>
-                <ellipse cx="150" cy="150" rx="70" ry="140"/>
-                <ellipse cx="150" cy="150" rx="105" ry="140"/>
-                <ellipse cx="150" cy="150" rx="130" ry="140"/>
-              </g>
-              
-              <!-- Pulse markers on service regions -->
-              <!-- Europe (Payments) -->
-              <g>
-                <circle cx="155" cy="80" r="3" fill="#ED3138"/>
-                <circle cx="155" cy="80" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 155px 80px;"/>
-              </g>
-              
-              <!-- Africa (Logistics) -->
-              <g>
-                <circle cx="162" cy="150" r="3" fill="#ED3138"/>
-                <circle cx="162" cy="150" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 162px 150px; animation-delay: 0.3s;"/>
-              </g>
-              
-              <!-- North America (Hosting) -->
-              <g>
-                <circle cx="90" cy="100" r="3" fill="#ED3138"/>
-                <circle cx="90" cy="100" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 90px 100px; animation-delay: 0.6s;"/>
-              </g>
-              
-              <!-- Asia (Tenders) -->
-              <g>
-                <circle cx="215" cy="110" r="3" fill="#ED3138"/>
-                <circle cx="215" cy="110" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 215px 110px; animation-delay: 0.9s;"/>
-              </g>
-              
-              <!-- South America (Fleet) -->
-              <g>
-                <circle cx="112" cy="170" r="3" fill="#ED3138"/>
-                <circle cx="112" cy="170" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 112px 170px; animation-delay: 1.2s;"/>
-              </g>
-              
-              <!-- Australia (IT Support) -->
-              <g>
-                <circle cx="235" cy="200" r="3" fill="#ED3138"/>
-                <circle cx="235" cy="200" r="3" fill="none" stroke="#ED3138" stroke-width="1.5" opacity="0.6" class="node-ping" style="transform-origin: 235px 200px; animation-delay: 1.5s;"/>
-              </g>
-              
-              <!-- Earth outline ring -->
-              <circle cx="150" cy="150" r="140" stroke="rgba(96,165,250,0.35)" stroke-width="1"/>
-              
-              <!-- Specular highlight (3D sphere feel) -->
-              <circle cx="150" cy="150" r="140" fill="url(#specular)"/>
-              
-              <!-- Shadow edge -->
-              <circle cx="150" cy="150" r="140" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="1" style="filter: blur(2px);"/>
-            </svg>
-            
-            <!-- Atmospheric glow ring (outside the earth) -->
-            <div class="absolute inset-0 rounded-full pointer-events-none" style="box-shadow: 0 0 60px rgba(96,165,250,0.4), 0 0 120px rgba(96,165,250,0.15);"></div>
-            
-            <!-- Outer light source (top-left sun) -->
-            <div class="absolute inset-0 rounded-full pointer-events-none" style="background: radial-gradient(circle at 25% 20%, rgba(255,255,255,0.25), transparent 40%);"></div>
+            <!-- Outer rotating orbit rings -->
+            <div class="absolute inset-[-8%] rounded-full border border-dashed border-red-500/20" style="animation: globe-spin 40s linear infinite reverse;"></div>
+            <div class="absolute inset-[-16%] rounded-full border border-red-500/10" style="animation: globe-spin 60s linear infinite;"></div>
+            <div class="absolute inset-[-24%] rounded-full border border-dashed border-blue-500/10" style="animation: globe-spin 80s linear infinite reverse;"></div>
           </div>
-          
-          <!-- Rotating outer atmospheric rings -->
-          <div class="absolute inset-[-8%] rounded-full border border-dashed border-red-500/15" style="animation: spin 60s linear infinite;"></div>
-          <div class="absolute inset-[-15%] rounded-full border border-dashed border-blue-500/10" style="animation: spin 90s linear infinite reverse;"></div>
         </div>
 
-        <!-- Interlinked Service Nodes -->
+        <!-- Partner Nodes with connecting lines -->
         <div class="absolute inset-0 pointer-events-none">
-          
-          <!-- Connection lines from nodes to earth pulse markers -->
+
+          <!-- Connecting lines -->
           <svg class="absolute inset-0 w-full h-full" viewBox="0 0 500 500" fill="none" preserveAspectRatio="xMidYMid meet">
             <defs>
-              <linearGradient id="lineRed" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id="partnerLine" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="rgba(237,49,56,0.8)"/>
-                <stop offset="100%" stop-color="rgba(237,49,56,0.05)"/>
+                <stop offset="100%" stop-color="rgba(237,49,56,0.1)"/>
               </linearGradient>
             </defs>
+
+            <!-- Safaricom (upper-left) -->
+            <line x1="60" y1="90" x2="220" y2="200" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line"/>
             
-            <!-- Payments (upper-left) → Europe area -->
-            <line x1="30" y1="75" x2="240" y2="140" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line"/>
+            <!-- M-Pesa (top-center) -->
+            <line x1="250" y1="30" x2="250" y2="180" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.3s;"/>
             
-            <!-- Logistics (upper-right) → Africa area -->
-            <line x1="470" y1="55" x2="270" y2="250" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.3s;"/>
+            <!-- Pesapal (upper-right) -->
+            <line x1="440" y1="90" x2="290" y2="200" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.6s;"/>
             
-            <!-- Hosting (middle-right) → North America -->
-            <line x1="480" y1="245" x2="150" y2="170" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.6s;"/>
+            <!-- DPO (right) -->
+            <line x1="470" y1="250" x2="300" y2="250" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.9s;"/>
             
-            <!-- Tenders (lower-right) → Asia -->
-            <line x1="460" y1="420" x2="355" y2="185" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.9s;"/>
+            <!-- DHL (lower-right) -->
+            <line x1="430" y1="420" x2="280" y2="310" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.2s;"/>
             
-            <!-- Fleet (lower-left) → South America -->
-            <line x1="100" y1="450" x2="190" y2="285" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.2s;"/>
-            
-            <!-- IT Support (middle-left) → Australia -->
-            <line x1="20" y1="230" x2="390" y2="330" stroke="url(#lineRed)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.5s;"/>
+            <!-- FabsExpress (lower-left) -->
+            <line x1="70" y1="410" x2="230" y2="300" stroke="url(#partnerLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.5s;"/>
           </svg>
 
-          <!-- Payments -->
-          <div class="absolute left-[3%] top-[12%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Payments
+          <!-- Safaricom -->
+          <div class="absolute left-[2%] top-[14%]">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span> Safaricom
             </span>
           </div>
           
-          <!-- Logistics -->
-          <div class="absolute right-[3%] top-[8%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Logistics
+          <!-- M-Pesa -->
+          <div class="absolute left-1/2 -translate-x-1/2 top-[-2%]">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-green-400 animate-pulse"></span> M-Pesa
             </span>
           </div>
 
-          <!-- Hosting -->
-          <div class="absolute right-[1%] top-[48%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Hosting
+          <!-- Pesapal -->
+          <div class="absolute right-[2%] top-[14%]">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-orange-400 animate-pulse"></span> Pesapal
             </span>
           </div>
 
-          <!-- Tenders -->
-          <div class="absolute right-[8%] bottom-[12%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Tenders
+          <!-- DPO Pay by Network -->
+          <div class="absolute right-[-3%] top-1/2 -translate-y-1/2">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-blue-400 animate-pulse"></span> DPO Pay
             </span>
           </div>
 
-          <!-- Fleet -->
-          <div class="absolute left-[15%] bottom-[8%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Fleet
+          <!-- DHL -->
+          <div class="absolute right-[6%] bottom-[6%]">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-yellow-400 animate-pulse"></span> DHL
             </span>
           </div>
 
-          <!-- IT Support -->
-          <div class="absolute left-[2%] top-[46%]">
-            <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-medium text-white shadow-xl backdrop-blur">
-              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> IT Support
+          <!-- FabsExpress -->
+          <div class="absolute left-[2%] bottom-[8%]">
+            <span class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-950/50 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
+              <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> FabsExpress
             </span>
           </div>
         </div>
 
+      </div>
+    </div>
+  </div>
+
+  <!-- Partners strip below hero content -->
+  <div class="relative border-t border-slate-800/60 bg-slate-900/30 backdrop-blur">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <p class="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 mb-6">Trusted by leading payment &amp; logistics partners</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+        <span class="text-sm font-semibold text-slate-400 hover:text-white transition">Safaricom</span>
+        <span class="text-sm font-semibold text-slate-400 hover:text-white transition">M-Pesa</span>
+        <span class="text-sm font-semibold text-slate-400 hover:text-white transition">Pesapal</span>
+        <span class="text-sm font-semibold text-slate-400 hover:text-white transition">DPO Pay by Network</span>
+        <span class="text-sm font-semibold text-slate-400 hover:text-white transition">DHL</span>
+        <span class="text-sm font-bold text-red-400 hover:text-red-300 transition">FabsExpress</span>
       </div>
     </div>
   </div>
@@ -445,8 +390,6 @@
 <section id="hosting-cta" class="relative overflow-hidden bg-slate-900 py-20 border-y border-slate-800">
   <div class="max-w-7xl mx-auto px-4 sm:px-6">
     <div class="grid items-center gap-12 lg:grid-cols-2">
-      
-      <!-- Copy -->
       <div>
         <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur">
           <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
@@ -484,12 +427,10 @@
         </div>
       </div>
 
-      <!-- Platform UI Preview -->
       <div class="relative">
         <div class="absolute -inset-4 rounded-2xl bg-red-500/5 blur-2xl"></div>
         
         <div class="relative rounded-xl border border-slate-700 bg-slate-950 shadow-2xl overflow-hidden">
-          
           <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900">
             <div class="flex items-center gap-2">
               <span class="w-3 h-3 rounded-full bg-red-500"></span>

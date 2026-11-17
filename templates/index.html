@@ -142,7 +142,6 @@
   .fdw-payments { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
   .fdw-payment { overflow:hidden; border:1px solid var(--fdw-line); border-radius:16px; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
   .fdw-payment:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(15,23,42,.35); border-color:#cbd5e1; }
-  /* FIX: aspect-ratio matches the 1200x800 image exactly -> no crop */
   .fdw-payment-photo { position:relative; aspect-ratio:3/2; overflow:hidden; background:#e2e8f0; }
   .fdw-payment-photo img { width:100%; height:100%; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
   .fdw-payment:hover .fdw-payment-photo img { transform:scale(1.06); }
@@ -167,7 +166,6 @@
   .fdw-feature-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:24px; }
   .fdw-feature { display:flex; flex-direction:column; border:1px solid var(--fdw-line); border-radius:15px; overflow:hidden; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
   .fdw-feature:hover { transform:translateY(-5px); box-shadow:0 30px 60px -30px rgba(15,23,42,.32); border-color:#cbd5e1; }
-  /* FIX: image is now a full-width banner matching 3:2 aspect */
   .fdw-feature>img { width:100%; aspect-ratio:3/2; height:auto; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
   .fdw-feature:hover>img { transform:scale(1.05); }
   .fdw-feature>div { padding:26px 24px; flex:1; display:flex; flex-direction:column; }
@@ -176,18 +174,110 @@
   .fdw-feature p { margin:12px 0 15px; color:var(--fdw-muted); font-size:13px; line-height:1.8; }
   .fdw-feature .fdw-link { margin-top:auto; }
 
-  /* ============ SUB-SERVICES GRID ============ */
-  .fdw-sub-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin:56px 0 22px; }
-  .fdw-sub-heading h3 { font-size:19px; font-weight:750; }
-  .fdw-sub-heading p { margin:0; font-size:12px; color:var(--fdw-muted); }
-  .fdw-sub-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
-  .fdw-sub-card { position:relative; border:1px solid var(--fdw-line); border-radius:14px; overflow:hidden; background:#fff; padding:22px 20px; transition:transform .4s, box-shadow .4s, border-color .4s; display:flex; flex-direction:column; gap:12px; }
-  .fdw-sub-card:hover { transform:translateY(-4px); box-shadow:0 24px 44px -22px rgba(15,23,42,.28); border-color:#cbd5e1; }
-  .fdw-sub-icon { display:grid; place-items:center; width:44px; height:44px; border-radius:11px; background:linear-gradient(135deg,#fef2f2,#fee2e2); color:#b91c1c; border:1px solid #fecaca; transition:transform .4s; }
-  .fdw-sub-card:hover .fdw-sub-icon { transform:rotate(-6deg) scale(1.06); }
-  .fdw-sub-card h4 { margin:0; font-size:14px; font-weight:750; color:#0f172a; letter-spacing:-.01em; }
-  .fdw-sub-card p { margin:0; font-size:12px; line-height:1.65; color:#64748b; }
-  .fdw-sub-card .fdw-link { margin-top:auto; font-size:11px; }
+  /* ============ SUB-SERVICES GRID (rich cards) ============ */
+  .fdw-sub-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin:64px 0 26px; }
+  .fdw-sub-heading > div { max-width:660px; }
+  .fdw-sub-heading h3 { font-size:22px; font-weight:750; letter-spacing:-.02em; margin:0 0 8px; }
+  .fdw-sub-heading p { margin:0; font-size:13px; color:var(--fdw-muted); line-height:1.7; }
+  .fdw-sub-heading .fdw-link { flex-shrink:0; }
+
+  .fdw-sub-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; }
+
+  .fdw-sub-card {
+    position:relative;
+    border:1px solid var(--fdw-line);
+    border-radius:16px;
+    overflow:hidden;
+    background:#fff;
+    padding:24px 22px;
+    transition:transform .45s cubic-bezier(.22,.7,.3,1), box-shadow .45s, border-color .45s;
+    display:flex;
+    flex-direction:column;
+    gap:13px;
+    min-height:350px;
+  }
+  .fdw-sub-card::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+    background:linear-gradient(90deg, #dc2626, #f87171);
+    transform:scaleX(0);
+    transform-origin:left;
+    transition:transform .55s cubic-bezier(.22,.7,.3,1);
+  }
+  .fdw-sub-card:hover::before { transform:scaleX(1); }
+  .fdw-sub-card:hover { transform:translateY(-6px); box-shadow:0 28px 54px -26px rgba(15,23,42,.32); border-color:#cbd5e1; }
+
+  /* Featured card (Hosting & App Servers → FABS Cloud) */
+  .fdw-sub-card.featured {
+    background:linear-gradient(180deg, #fff5f5 0%, #fff 55%);
+    border-color:#fecaca;
+  }
+  .fdw-sub-card.featured::before { transform:scaleX(1); background:linear-gradient(90deg,#dc2626,#b91c1c); }
+  .fdw-sub-card.featured:hover { border-color:#f87171; }
+  .fdw-sub-card.featured .fdw-sub-icon { background:linear-gradient(135deg,#dc2626,#b91c1c); color:#fff; border-color:#b91c1c; }
+  .fdw-sub-card.featured .fdw-sub-badge { color:#b91c1c; background:#fee2e2; border-color:#fecaca; }
+  .fdw-sub-card.featured .fdw-link { color:#b91c1c; font-weight:800; }
+
+  .fdw-sub-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .fdw-sub-icon {
+    display:grid; place-items:center;
+    width:46px; height:46px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#fef2f2,#fee2e2);
+    color:#b91c1c;
+    border:1px solid #fecaca;
+    transition:transform .4s;
+    flex-shrink:0;
+  }
+  .fdw-sub-card:hover .fdw-sub-icon { transform:rotate(-6deg) scale(1.07); }
+  .fdw-sub-badge {
+    font-size:9px; font-weight:800;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:#94a3b8;
+    padding:4px 9px;
+    border-radius:5px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    white-space:nowrap;
+  }
+
+  .fdw-sub-card h4 {
+    margin:0;
+    font-size:16px;
+    font-weight:750;
+    color:#0f172a;
+    letter-spacing:-.015em;
+    line-height:1.3;
+  }
+  .fdw-sub-card > p {
+    margin:0;
+    font-size:12.5px;
+    line-height:1.7;
+    color:#64748b;
+  }
+  .fdw-sub-features {
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:0;
+    margin:0;
+    list-style:none;
+  }
+  .fdw-sub-features li {
+    font-size:10.5px;
+    font-weight:600;
+    color:#475569;
+    padding:4px 9px;
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:999px;
+    line-height:1.4;
+    white-space:nowrap;
+  }
+  .fdw-sub-card.featured .fdw-sub-features li { background:#fff; border-color:#fecaca; color:#991b1b; }
+  .fdw-sub-card .fdw-link { margin-top:auto; font-size:12px; }
 
   /* ============ BIOMETRICS ============ */
   .fdw-biometrics { background:#080f1b; color:#fff; overflow:hidden; position:relative; }
@@ -251,7 +341,6 @@
   .fdw-sector-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:23px; margin-top:38px; }
   .fdw-sector { overflow:hidden; border:1px solid var(--fdw-line); border-radius:14px; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
   .fdw-sector:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(15,23,42,.32); border-color:#cbd5e1; }
-  /* FIX: aspect-ratio matches 1200x800 exactly */
   .fdw-sector>img { width:100%; aspect-ratio:3/2; height:auto; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
   .fdw-sector:hover>img { transform:scale(1.05); }
   .fdw-sector-body { padding:25px; }
@@ -269,7 +358,6 @@
   .fdw-hosting-cta { background:#0b1423; color:#fff; position:relative; overflow:hidden; }
   .fdw-hosting-cta::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 20% 30%,rgba(220,38,38,.14),transparent 45%),radial-gradient(circle at 85% 70%,rgba(59,130,246,.10),transparent 45%); }
   .fdw-hosting-grid { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:55px; align-items:center; }
-  /* FIX: aspect-ratio 3/2 matches image (was 4/3) */
   .fdw-hosting-visual { position:relative; border:1px solid #344154; border-radius:14px; overflow:hidden; aspect-ratio:3/2; background:#060d1a; }
   .fdw-hosting-visual img { width:100%; height:100%; object-fit:cover; opacity:.55; }
   .fdw-hosting-visual::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(6,13,26,.2),rgba(6,13,26,.85)); }
@@ -298,7 +386,6 @@
 
   /* ============ FAQ (image fully visible, 3:2) ============ */
   .fdw-faq-layout { display:grid; grid-template-columns:.9fr 1.2fr; gap:70px; }
-  /* FIX: aspect-ratio 3/2 matches image (was 4/3) */
   .fdw-faq-visual { position:relative; border-radius:14px; overflow:hidden; aspect-ratio:3/2; background:#0b1220; margin-top:30px; }
   .fdw-faq-visual img { width:100%; height:100%; object-fit:cover; opacity:.75; }
   .fdw-faq-visual::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(6,14,24,.15),rgba(6,14,24,.85)); }
@@ -352,7 +439,6 @@
     .fdw-capability strong { font-size:13px; }
     .fdw-capability p { font-size:11px; }
     .fdw-payments,.fdw-feature-pair,.fdw-verification,.fdw-sector-grid,.fdw-sub-grid,.fdw-process { grid-template-columns:1fr; }
-    /* NOTE: feature image stays as top banner - no height rules needed */
     .fdw-scan { border-right:0; border-bottom:1px solid #2a3444; padding:18px; }
     .fdw-system { padding:23px; }
     .fdw-security-notes { grid-template-columns:1fr; gap:23px; }
@@ -360,10 +446,13 @@
     .fdw-erp-band a { margin-top:16px; }
     .fdw-process { gap:28px 23px; }
     .fdw-handover { grid-template-columns:1fr; gap:20px; padding:23px; }
-    /* NOTE: sector cards remain vertical (image on top) - aspect ratio preserved */
-    .fdw-sub-heading { display:block; }
-    .fdw-sub-heading p { margin-top:7px; }
+    .fdw-sub-heading { display:block; margin-top:52px; }
+    .fdw-sub-heading .fdw-link { margin-top:14px; display:inline-flex; }
     .fdw-hosting-card { padding:24px; }
+  }
+  @media(max-width:640px) {
+    .fdw-sub-grid { grid-template-columns:1fr; }
+    .fdw-sub-card { min-height:0; }
   }
   @media(max-width:440px) {
     .fdw-payment-body { padding:22px 19px; }
@@ -631,59 +720,137 @@
       </article>
     </div>
 
+    <!-- Sub-services grid (rich cards) -->
     <div class="fdw-sub-heading fdw-reveal" id="more-services">
-      <h3>More ways we support your organisation</h3>
-      <p>Each service is scoped and documented for your specific needs.</p>
+      <div>
+        <h3>More ways we support your organisation</h3>
+        <p>Each service is scoped and documented around your specific needs — from initial discovery through to handover, training and ongoing support.</p>
+      </div>
+      <a href="#contact" class="fdw-link">Talk through a service <span aria-hidden="true">→</span></a>
     </div>
     <div class="fdw-sub-grid">
+
       <article class="fdw-sub-card fdw-reveal">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18"/></svg></span>
+          <span class="fdw-sub-badge">Payments</span>
+        </div>
         <h4>Cross-Border Transfers</h4>
-        <p>Connect international payment workflows through your approved providers.</p>
+        <p>Collect and disburse funds across international corridors through your approved payment providers. Track FX, fees and settlement in one connected workflow.</p>
+        <ul class="fdw-sub-features">
+          <li>Multi-currency</li>
+          <li>Corridor tracking</li>
+          <li>Beneficiary records</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Cross-border transfers">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal d1">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 20c0-4 3-6 6-6s6 2 6 6M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8M16 4c5 0 5 8 0 8m2 3c3 1 4 3 4 5"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 20c0-4 3-6 6-6s6 2 6 6M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8M16 4c5 0 5 8 0 8m2 3c3 1 4 3 4 5"/></svg></span>
+          <span class="fdw-sub-badge">Payroll</span>
+        </div>
         <h4>Employee Payouts</h4>
-        <p>Payroll and field-team payment workflows with approval controls.</p>
+        <p>Run payroll for staff, contractors and field teams with validation, approval queues and audit trails built into every payment batch.</p>
+        <ul class="fdw-sub-features">
+          <li>Batch prep</li>
+          <li>Approval controls</li>
+          <li>Payment references</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Bulk payouts &amp; payroll">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal d2">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6h12v11H2V6Zm12 4h4l4 4v3h-8M8 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0m12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6h12v11H2V6Zm12 4h4l4 4v3h-8M8 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0m12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/></svg></span>
+          <span class="fdw-sub-badge">Operations</span>
+        </div>
         <h4>Logistics &amp; Transport</h4>
-        <p>Follow shipments from dispatch through to proof of delivery.</p>
+        <p>Coordinate dispatch, shipment milestones and delivery confirmation across your transport operations, with proof of delivery captured at each handoff.</p>
+        <ul class="fdw-sub-features">
+          <li>Carrier integration</li>
+          <li>Milestone tracking</li>
+          <li>Proof of delivery</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Logistics &amp; fleet">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal d3">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l3-7h12l3 7v5H3v-5Zm0 0h18M7 18v3m10-3v3M6 15h2m8 0h2"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l3-7h12l3 7v5H3v-5Zm0 0h18M7 18v3m10-3v3M6 15h2m8 0h2"/></svg></span>
+          <span class="fdw-sub-badge">Operations</span>
+        </div>
         <h4>Fleet Management</h4>
-        <p>Vehicles, drivers, maintenance and operational accountability.</p>
+        <p>Keep vehicles, drivers, fuel and maintenance accountable in one connected system. Connect compatible GPS or telematics when location visibility matters.</p>
+        <ul class="fdw-sub-features">
+          <li>Trip logs</li>
+          <li>Fuel tracking</li>
+          <li>Service reminders</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Logistics &amp; fleet">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6l-6 6 6 6m8-12 6 6-6 6m-2-15-4 18"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6l-6 6 6 6m8-12 6 6-6 6m-2-15-4 18"/></svg></span>
+          <span class="fdw-sub-badge">Technology</span>
+        </div>
         <h4>Website Development</h4>
-        <p>Websites, customer portals and applications built around your work.</p>
+        <p>Design and build responsive websites, customer portals and operational web applications shaped around your actual workflows — not a template.</p>
+        <ul class="fdw-sub-features">
+          <li>UI design</li>
+          <li>CMS integration</li>
+          <li>Deployment</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Website &amp; application development">Discuss <span aria-hidden="true">→</span></a>
       </article>
-      <article class="fdw-sub-card fdw-reveal d1">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v7H3V3Zm0 11h18v7H3v-7ZM7 6h1m-1 11h1"/></svg></span>
+
+      <!-- ⭐ FEATURED: Hosting & App Servers → FABS Cloud -->
+      <article class="fdw-sub-card featured fdw-reveal d1">
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v7H3V3Zm0 11h18v7H3v-7ZM7 6h1m-1 11h1"/></svg></span>
+          <span class="fdw-sub-badge">Infrastructure</span>
+        </div>
         <h4>Hosting &amp; App Servers</h4>
-        <p>Deploy and operate business applications with managed infrastructure.</p>
-        <a href="#contact" class="fdw-link" data-service="Hosting &amp; IT support">Discuss <span aria-hidden="true">→</span></a>
+        <p>Deploy and operate websites, APIs and applications on FABS Cloud with managed runtime, custom domains, SSL and routine backups.</p>
+        <ul class="fdw-sub-features">
+          <li>Managed hosting</li>
+          <li>Custom domains</li>
+          <li>Backups &amp; monitoring</li>
+        </ul>
+        <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer" class="fdw-link" data-service="Hosting &amp; IT support">Visit FABS Cloud <span aria-hidden="true">↗</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal d2">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M4 13v-1a8 8 0 0 1 16 0v1M2 12h4v8H2v-8Zm16 0h4v8h-4v-8Zm2 8c0 2-2 3-5 3"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M4 13v-1a8 8 0 0 1 16 0v1M2 12h4v8H2v-8Zm16 0h4v8h-4v-8Zm2 8c0 2-2 3-5 3"/></svg></span>
+          <span class="fdw-sub-badge">Support</span>
+        </div>
         <h4>IT Support</h4>
-        <p>Keep infrastructure and people working together with managed support.</p>
+        <p>Keep users, servers and applications running with agreed response times, proactive monitoring and a clear record of incidents and recurring issues.</p>
+        <ul class="fdw-sub-features">
+          <li>Helpdesk</li>
+          <li>Monitoring</li>
+          <li>Maintenance</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Hosting &amp; IT support">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
       <article class="fdw-sub-card fdw-reveal d3">
-        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 13h6m-6 4h6"/></svg></span>
+        <div class="fdw-sub-head">
+          <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 13h6m-6 4h6"/></svg></span>
+          <span class="fdw-sub-badge">Procurement</span>
+        </div>
         <h4>Tender Management</h4>
-        <p>Organise procurement documents, reviews and milestones.</p>
+        <p>Track tender opportunities, document checklists and submission milestones in one organised workflow — with reviews, clarifications and award records.</p>
+        <ul class="fdw-sub-features">
+          <li>Document tracking</li>
+          <li>Review queues</li>
+          <li>Deadline reminders</li>
+        </ul>
         <a href="#contact" class="fdw-link" data-service="Tender management">Discuss <span aria-hidden="true">→</span></a>
       </article>
+
     </div>
   </div>
 </section>

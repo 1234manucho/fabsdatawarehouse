@@ -1,626 +1,1061 @@
 {% extends "base.html" %}
-
-{% block title %}{{ company.name if company is defined and company.name else 'Fabs Data Warehouse' }} | Payment Aggregation, Bulk Payouts & Cross-Border Transfers{% endblock %}
-{% block meta_description %}Fabs Data Warehouse helps businesses disburse funds at scale, settle across borders, manage fleets and run critical IT — all from a single compliant, API-first dashboard.{% endblock %}
-
-{% block content %}
-
+{% block title %}{{ company.name if company is defined and company.name else 'Fabs Data Warehouse' }} | Payments, Biometric Security & ERP Systems{% endblock %}
+{% block meta_description %}Fabs Data Warehouse builds payment integrations, iris and biometric security solutions, and ERP systems for hospitals, NGOs and government institutions, with hosting, logistics and IT support.{% endblock %}
+{% block head %}
+{{ super() }}
 <style>
-  @keyframes globe-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-10px); }
+
+  /* ============ KEYFRAMES ============ */
+  @keyframes fdw-float        { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+  @keyframes fdw-float-sm     { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes fdw-spin-y       { from{transform:rotateY(0)} to{transform:rotateY(360deg)} }
+  @keyframes fdw-spin-slow    { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+  @keyframes fdw-spin-rev     { from{transform:rotate(360deg)} to{transform:rotate(0)} }
+  @keyframes fdw-pulse-ring   { 0%{transform:scale(1);opacity:.75} 100%{transform:scale(2.6);opacity:0} }
+  @keyframes fdw-scanline-mv  { 0%{top:14%} 100%{top:86%} }
+  @keyframes fdw-shimmer      { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+  @keyframes fdw-grid-drift   { from{background-position:0 0} to{background-position:40px 40px} }
+  @keyframes fdw-orb-pulse    { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:.85;transform:scale(1.06)} }
+  @keyframes fdw-star-tw      { 0%,100%{opacity:.15} 50%{opacity:.8} }
+
+  /* ============ BASE ============ */
+  .fdw-page { --fdw-red:#dc2626; --fdw-red-2:#b91c1c; --fdw-ink:#0b1220; --fdw-muted:#526174; --fdw-line:#dfe5ec; --fdw-soft:#f5f7fa; color:var(--fdw-ink); font-family:Inter,ui-sans-serif,system-ui,sans-serif; }
+  .fdw-page *, .fdw-page *::before, .fdw-page *::after { box-sizing:border-box; }
+  .fdw-page [hidden] { display:none!important; }
+  .fdw-page img { display:block; max-width:100%; }
+  .fdw-page button, .fdw-page input, .fdw-page select, .fdw-page textarea { font:inherit; }
+  .fdw-page a { text-decoration:none; }
+  .fdw-page button { cursor:pointer; }
+  .fdw-page button:disabled { cursor:wait; opacity:.65; }
+  .fdw-page :is(a,button,input,select,textarea,summary):focus-visible { outline:3px solid #fb7185; outline-offset:4px; }
+  .fdw-page :is(section,article)[id] { scroll-margin-top:110px; }
+  .fdw-shell { width:min(1216px,calc(100% - 48px)); margin-inline:auto; }
+  .fdw-section { padding:96px 0; }
+  .fdw-white { background:#fff; }
+  .fdw-soft { background:var(--fdw-soft); }
+
+  /* ============ REVEAL (scroll in) ============ */
+  .fdw-reveal { opacity:0; transform:translateY(28px); transition:opacity .85s cubic-bezier(.22,.7,.3,1), transform .85s cubic-bezier(.22,.7,.3,1); }
+  .fdw-reveal.is-in { opacity:1; transform:none; }
+  .fdw-reveal.d1 { transition-delay:.09s; }
+  .fdw-reveal.d2 { transition-delay:.18s; }
+  .fdw-reveal.d3 { transition-delay:.27s; }
+  .fdw-reveal.d4 { transition-delay:.36s; }
+  .fdw-reveal.d5 { transition-delay:.45s; }
+
+  /* ============ TYPE & SHARED ============ */
+  .fdw-eyebrow { display:flex; align-items:center; gap:9px; margin:0 0 14px; color:var(--fdw-red); font-size:11px; font-weight:800; letter-spacing:.18em; text-transform:uppercase; }
+  .fdw-eyebrow::before { content:''; width:20px; height:2px; background:currentColor; }
+  .fdw-page h2 { margin:0; font-size:clamp(29px,3.2vw,42px); font-weight:750; letter-spacing:-.045em; line-height:1.17; }
+  .fdw-page h3 { margin:0; letter-spacing:-.025em; }
+  .fdw-intro { max-width:700px; margin:20px 0 0; color:var(--fdw-muted); font-size:16px; line-height:1.8; }
+  .fdw-heading-row { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; }
+  .fdw-heading-row>div { max-width:820px; }
+  .fdw-link { display:inline-flex; align-items:center; gap:9px; color:var(--fdw-red); font-size:13px; font-weight:750; }
+  .fdw-link:hover { text-decoration:underline; text-underline-offset:5px; }
+  .fdw-button { display:inline-flex; align-items:center; justify-content:center; gap:10px; min-height:46px; padding:12px 21px; border:1px solid transparent; border-radius:9px; background:var(--fdw-red); color:#fff; font-size:13px; line-height:1.5; font-weight:700; transition:background .2s,transform .2s,box-shadow .2s; }
+  .fdw-button:hover { background:var(--fdw-red-2); transform:translateY(-1px); box-shadow:0 12px 28px -12px rgba(220,38,38,.6); }
+  .fdw-button-quiet { background:#fff; border-color:var(--fdw-line); color:var(--fdw-ink); }
+  .fdw-button-quiet:hover { background:#f1f5f9; box-shadow:none; }
+  .fdw-icon { width:21px; height:21px; flex-shrink:0; }
+
+  /* ============ HERO / GLOBE ============ */
+  .fdw-hero { position:relative; overflow:hidden; background:#050b17; color:#fff; border-bottom:1px solid #1a2436; }
+  .fdw-hero::before { content:''; position:absolute; inset:0; background-image:linear-gradient(to right,#ffffff08 1px,transparent 1px),linear-gradient(to bottom,#ffffff08 1px,transparent 1px); background-size:44px 44px; animation:fdw-grid-drift 26s linear infinite; }
+  .fdw-hero::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 55% at 75% 45%,rgba(220,38,38,.14),transparent 65%),radial-gradient(ellipse 50% 40% at 15% 80%,rgba(59,130,246,.10),transparent 60%); pointer-events:none; }
+  .fdw-hero-inner { position:relative; z-index:2; max-width:1216px; margin-inline:auto; padding:88px 24px 100px; display:grid; gap:64px; align-items:center; }
+  @media(min-width:1024px){ .fdw-hero-inner { grid-template-columns:1.05fr .95fr; padding:112px 24px 120px; gap:40px; } }
+  .fdw-hero-copy { max-width:640px; }
+  .fdw-hero-badge { display:inline-flex; align-items:center; gap:8px; border:1px solid #2d3a52; background:rgba(30,41,59,.55); backdrop-filter:blur(8px); padding:7px 14px; border-radius:999px; font-size:11px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:#fca5a5; }
+  .fdw-hero-badge i { width:6px; height:6px; border-radius:50%; background:#ef4444; box-shadow:0 0 0 0 rgba(239,68,68,.7); animation:fdw-pulse-ring 2.4s ease-out infinite; }
+  .fdw-hero h1 { margin:24px 0 0; font-size:clamp(36px,5vw,64px); font-weight:850; letter-spacing:-.04em; line-height:1.04; }
+  .fdw-hero h1 .fdw-grad { background:linear-gradient(100deg,#f87171,#dc2626 45%,#f87171); -webkit-background-clip:text; background-clip:text; color:transparent; background-size:200% auto; animation:fdw-shimmer 6s linear infinite; }
+  .fdw-hero p.lede { margin:24px 0 0; font-size:17px; line-height:1.75; color:#c3cddd; max-width:560px; }
+  .fdw-hero-actions { display:flex; flex-wrap:wrap; gap:14px; margin-top:34px; }
+  .fdw-hero-actions .fdw-button { min-height:50px; padding:14px 26px; font-size:14px; border-radius:11px; }
+  .fdw-hero-actions .fdw-button-quiet { background:rgba(30,41,59,.55); border-color:#2d3a52; color:#e2e8f0; backdrop-filter:blur(8px); }
+  .fdw-hero-actions .fdw-button-quiet:hover { background:rgba(30,41,59,.85); border-color:#475569; }
+  .fdw-hero-trust { display:flex; flex-wrap:wrap; gap:10px 22px; margin:34px 0 0; padding:0; list-style:none; font-size:13px; color:#94a3b8; }
+  .fdw-hero-trust li { display:inline-flex; align-items:center; gap:8px; }
+  .fdw-hero-trust svg { color:#ef4444; }
+
+  /* Globe stage */
+  .fdw-globe-stage { position:relative; width:100%; max-width:600px; aspect-ratio:1; margin-inline:auto; perspective:1400px; }
+  .fdw-globe-glow { position:absolute; inset:6%; border-radius:50%; background:radial-gradient(circle,rgba(220,38,38,.28),rgba(220,38,38,.04) 55%,transparent 72%); filter:blur(40px); animation:fdw-orb-pulse 7s ease-in-out infinite; }
+  .fdw-globe-glow.blue { background:radial-gradient(circle,rgba(59,130,246,.22),transparent 62%); animation-delay:-3s; }
+
+  .fdw-orbit { position:absolute; inset:0; border-radius:50%; pointer-events:none; }
+  .fdw-orbit.r1 { inset:2%; border:1px dashed rgba(248,113,113,.20); animation:fdw-spin-slow 55s linear infinite; }
+  .fdw-orbit.r2 { inset:-4%; border:1px solid rgba(248,113,113,.10); animation:fdw-spin-rev 80s linear infinite; }
+  .fdw-orbit.r3 { inset:-10%; border:1px dashed rgba(96,165,250,.10); animation:fdw-spin-slow 110s linear infinite; }
+  .fdw-orbit .dot { position:absolute; width:7px; height:7px; border-radius:50%; background:#ef4444; box-shadow:0 0 12px 2px rgba(239,68,68,.85); top:-3.5px; left:50%; transform:translateX(-50%); }
+  .fdw-orbit.r2 .dot { background:#60a5fa; box-shadow:0 0 12px 2px rgba(96,165,250,.85); top:auto; bottom:-3.5px; }
+  .fdw-orbit.r3 .dot { background:#f87171; box-shadow:0 0 10px 2px rgba(248,113,113,.7); top:50%; left:-3.5px; transform:translateY(-50%); }
+
+  .fdw-globe { position:relative; width:74%; height:74%; margin:13%; animation:fdw-float 9s ease-in-out infinite; transform-style:preserve-3d; }
+  .fdw-globe-spin { width:100%; height:100%; animation:fdw-spin-y 26s linear infinite; transform-style:preserve-3d; }
+  .fdw-globe svg { width:100%; height:100%; display:block; overflow:visible; }
+
+  /* Floating labels */
+  .fdw-hero-labels { position:absolute; inset:0; pointer-events:none; }
+  .fdw-hlabel { position:absolute; display:flex; flex-direction:column; gap:5px; animation:fdw-float-sm 5.5s ease-in-out infinite; }
+  .fdw-hlabel small { font-size:9px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:#fca5a5; }
+  .fdw-hlabel span { display:inline-flex; align-items:center; gap:7px; padding:7px 12px; border-radius:999px; background:rgba(15,23,42,.92); border:1px solid #334155; color:#f1f5f9; font-size:11.5px; font-weight:650; box-shadow:0 14px 34px -12px rgba(0,0,0,.7); backdrop-filter:blur(8px); }
+  .fdw-hlabel span i { width:6px; height:6px; border-radius:50%; background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,.9); animation:fdw-orb-pulse 2.2s ease-in-out infinite; }
+  .fdw-hlabel.pos-tr { top:8%; right:2%; align-items:flex-end; animation-delay:-.4s; }
+  .fdw-hlabel.pos-r  { top:50%; right:-4%; transform:translateY(-50%); align-items:flex-end; animation-delay:-1.6s; }
+  .fdw-hlabel.pos-br { bottom:6%; right:8%; align-items:flex-end; animation-delay:-2.4s; }
+  .fdw-hlabel.pos-bl { bottom:8%; left:2%; align-items:flex-start; animation-delay:-3s; }
+  .fdw-hlabel.pos-l  { top:50%; left:-4%; transform:translateY(-50%); align-items:flex-start; animation-delay:-1s; }
+  .fdw-hlabel.pos-tl { top:8%; left:2%; align-items:flex-start; animation-delay:-2s; }
+
+  .fdw-stars { position:absolute; inset:0; pointer-events:none; }
+  .fdw-stars span { position:absolute; width:2px; height:2px; border-radius:50%; background:#fff; animation:fdw-star-tw 4s ease-in-out infinite; }
+  .fdw-stars span:nth-child(1){top:12%;left:22%;animation-delay:-.4s}
+  .fdw-stars span:nth-child(2){top:28%;left:80%;animation-delay:-1.2s}
+  .fdw-stars span:nth-child(3){top:72%;left:14%;animation-delay:-2s}
+  .fdw-stars span:nth-child(4){top:82%;left:70%;animation-delay:-.8s}
+  .fdw-stars span:nth-child(5){top:48%;left:52%;animation-delay:-2.6s}
+  .fdw-stars span:nth-child(6){top:18%;left:48%;animation-delay:-1.6s}
+  .fdw-stars span:nth-child(7){top:64%;left:90%;animation-delay:-.2s}
+  .fdw-stars span:nth-child(8){top:88%;left:38%;animation-delay:-2.2s}
+
+  /* ============ CAPABILITIES STRIP ============ */
+  .fdw-capabilities { background:#fff; border-bottom:1px solid var(--fdw-line); }
+  .fdw-capabilities .fdw-shell { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); padding-block:30px; }
+  .fdw-capability { padding:4px 26px; border-right:1px solid var(--fdw-line); transition:transform .3s; }
+  .fdw-capability:hover { transform:translateY(-2px); }
+  .fdw-capability:first-child { padding-left:0; }
+  .fdw-capability:last-child { border-right:0; }
+  .fdw-capability .cap-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+  .fdw-capability .cap-icon { display:grid; place-items:center; width:30px; height:30px; border-radius:8px; background:#fef2f2; color:#b91c1c; border:1px solid #fee2e2; }
+  .fdw-capability span { color:var(--fdw-red); font-size:10px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
+  .fdw-capability strong { display:block; margin:7px 0 5px; font-size:15px; letter-spacing:-.02em; }
+  .fdw-capability p { margin:0; color:var(--fdw-muted); font-size:12px; line-height:1.6; }
+
+  /* ============ SERVICE NAV ============ */
+  .fdw-service-nav { display:flex; flex-wrap:wrap; gap:9px; margin:28px 0 40px; }
+  .fdw-service-nav a { padding:10px 16px; border:1px solid var(--fdw-line); border-radius:999px; color:#334155; background:#fff; font-size:12px; font-weight:650; transition:all .2s; }
+  .fdw-service-nav a:hover { border-color:var(--fdw-red); color:var(--fdw-red); transform:translateY(-1px); box-shadow:0 8px 18px -10px rgba(220,38,38,.4); }
+
+  /* ============ PAYMENT CARDS (image fully visible, 3:2) ============ */
+  .fdw-payments { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; }
+  .fdw-payment { overflow:hidden; border:1px solid var(--fdw-line); border-radius:16px; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
+  .fdw-payment:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(15,23,42,.35); border-color:#cbd5e1; }
+  /* FIX: aspect-ratio matches the 1200x800 image exactly -> no crop */
+  .fdw-payment-photo { position:relative; aspect-ratio:3/2; overflow:hidden; background:#e2e8f0; }
+  .fdw-payment-photo img { width:100%; height:100%; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
+  .fdw-payment:hover .fdw-payment-photo img { transform:scale(1.06); }
+  .fdw-payment-photo::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 55%,rgba(6,14,24,.72)); pointer-events:none; }
+  .fdw-photo-tag { position:absolute; bottom:18px; left:22px; z-index:1; display:flex; align-items:center; gap:10px; color:#fff; font-weight:800; font-size:12px; letter-spacing:.08em; }
+  .fdw-photo-tag>span { display:grid; place-items:center; width:34px; height:34px; border-radius:50%; background:#fff; color:#166534; font-size:22px; }
+  .fdw-payment-out .fdw-photo-tag>span { color:#b91c1c; }
+  .fdw-payment-body { padding:28px; }
+  .fdw-payment-body h3 { font-size:24px; font-weight:750; }
+  .fdw-payment-body>p { color:var(--fdw-muted); font-size:14px; line-height:1.8; margin:13px 0 22px; }
+  .fdw-flow { display:flex; align-items:center; gap:7px; margin:0 0 22px; padding:14px 12px; background:#f5f7fa; border:1px solid #e9edf2; border-radius:9px; }
+  .fdw-flow span { flex:1; text-align:center; font-size:10px; line-height:1.5; font-weight:650; color:#334155; }
+  .fdw-flow b { color:#9ca3af; font-weight:400; }
+  .fdw-flow span:nth-of-type(2) { color:#b91c1c; }
+  .fdw-bullets { display:grid; gap:10px; list-style:none; padding:0; margin:0; }
+  .fdw-bullets li { display:flex; gap:9px; color:#526174; font-size:13px; line-height:1.65; }
+  .fdw-bullets li::before { content:'✓'; color:#b91c1c; font-weight:800; flex-shrink:0; }
+  .fdw-payment-body>.fdw-link { margin-top:24px; }
+  .fdw-payment-note { margin:18px 0 0; color:#65748a; font-size:11px; line-height:1.8; }
+
+  /* ============ FEATURE PAIR (image on top, full width, 3:2) ============ */
+  .fdw-feature-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:24px; margin-top:24px; }
+  .fdw-feature { display:flex; flex-direction:column; border:1px solid var(--fdw-line); border-radius:15px; overflow:hidden; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
+  .fdw-feature:hover { transform:translateY(-5px); box-shadow:0 30px 60px -30px rgba(15,23,42,.32); border-color:#cbd5e1; }
+  /* FIX: image is now a full-width banner matching 3:2 aspect */
+  .fdw-feature>img { width:100%; aspect-ratio:3/2; height:auto; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
+  .fdw-feature:hover>img { transform:scale(1.05); }
+  .fdw-feature>div { padding:26px 24px; flex:1; display:flex; flex-direction:column; }
+  .fdw-feature small { display:block; color:#b91c1c; font-size:10px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; margin-bottom:11px; }
+  .fdw-feature h3 { font-size:20px; font-weight:750; line-height:1.3; }
+  .fdw-feature p { margin:12px 0 15px; color:var(--fdw-muted); font-size:13px; line-height:1.8; }
+  .fdw-feature .fdw-link { margin-top:auto; }
+
+  /* ============ SUB-SERVICES GRID ============ */
+  .fdw-sub-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin:56px 0 22px; }
+  .fdw-sub-heading h3 { font-size:19px; font-weight:750; }
+  .fdw-sub-heading p { margin:0; font-size:12px; color:var(--fdw-muted); }
+  .fdw-sub-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px; }
+  .fdw-sub-card { position:relative; border:1px solid var(--fdw-line); border-radius:14px; overflow:hidden; background:#fff; padding:22px 20px; transition:transform .4s, box-shadow .4s, border-color .4s; display:flex; flex-direction:column; gap:12px; }
+  .fdw-sub-card:hover { transform:translateY(-4px); box-shadow:0 24px 44px -22px rgba(15,23,42,.28); border-color:#cbd5e1; }
+  .fdw-sub-icon { display:grid; place-items:center; width:44px; height:44px; border-radius:11px; background:linear-gradient(135deg,#fef2f2,#fee2e2); color:#b91c1c; border:1px solid #fecaca; transition:transform .4s; }
+  .fdw-sub-card:hover .fdw-sub-icon { transform:rotate(-6deg) scale(1.06); }
+  .fdw-sub-card h4 { margin:0; font-size:14px; font-weight:750; color:#0f172a; letter-spacing:-.01em; }
+  .fdw-sub-card p { margin:0; font-size:12px; line-height:1.65; color:#64748b; }
+  .fdw-sub-card .fdw-link { margin-top:auto; font-size:11px; }
+
+  /* ============ BIOMETRICS ============ */
+  .fdw-biometrics { background:#080f1b; color:#fff; overflow:hidden; position:relative; }
+  .fdw-biometrics::before { content:''; position:absolute; inset:0; background-image:linear-gradient(to right,#ffffff06 1px,transparent 1px),linear-gradient(to bottom,#ffffff06 1px,transparent 1px); background-size:56px 56px; }
+  .fdw-biometrics .fdw-shell { position:relative; }
+  .fdw-biometrics .fdw-eyebrow { color:#fb7185; }
+  .fdw-biometrics .fdw-intro { color:#9eacc0; }
+  .fdw-privacy-label { display:inline-flex; align-items:center; gap:8px; color:#b5c1d2; border:1px solid #293243; border-radius:999px; padding:9px 13px; font-size:11px; white-space:nowrap; }
+  .fdw-privacy-label i { width:6px; height:6px; background:#fb7185; border-radius:50%; }
+  .fdw-verification { display:grid; grid-template-columns:1.1fr 1fr; margin-top:38px; border:1px solid #2a3444; border-radius:15px; overflow:hidden; background:#0d1727; }
+  .fdw-scan { position:relative; display:flex; flex-direction:column; min-width:0; padding:22px; background:#0b1320; border-right:1px solid #2a3444; }
+  .fdw-panel-label { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:21px; color:#a7b6c9; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.11em; }
+  .fdw-panel-label span:last-child { color:#cbd5e1; font-size:10px; letter-spacing:.06em; font-weight:500; }
+  .fdw-eye { position:relative; width:100%; aspect-ratio:1.42; overflow:hidden; border:1px solid #344154; border-radius:7px; background:#080e16; }
+  .fdw-eye img { width:100%; height:100%; object-fit:cover; opacity:.8; }
+  .fdw-eye::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at center,transparent 30%,rgba(4,11,23,.6)); }
+  .fdw-eye-corners { position:absolute; inset:12%; z-index:2; border:1px solid rgba(255,255,255,.2); }
+  .fdw-eye-corners::before,.fdw-eye-corners::after { content:''; position:absolute; width:25px; height:25px; border-color:#f8fafc; border-style:solid; }
+  .fdw-eye-corners::before { top:-1px; left:-1px; border-width:2px 0 0 2px; }
+  .fdw-eye-corners::after { bottom:-1px; right:-1px; border-width:0 2px 2px 0; }
+  .fdw-iris-ring { position:absolute; left:50%; top:50%; width:40%; aspect-ratio:1; border:1px solid rgba(251,113,133,.8); border-radius:50%; transform:translate(-50%,-50%); z-index:3; box-shadow:0 0 40px rgba(225,29,72,.12),inset 0 0 30px rgba(225,29,72,.12); }
+  .fdw-iris-ring::after { content:''; position:absolute; inset:-9px; border:1px dashed rgba(255,255,255,.5); border-radius:50%; }
+  .fdw-scanline { position:absolute; inset:15% 12% auto; height:2px; z-index:4; background:#fb7185; opacity:0; box-shadow:0 0 20px 4px #e11d4870; }
+  .fdw-verification[data-state='scanning'] .fdw-scanline { opacity:1; animation:fdw-scanline-mv 2s ease-in-out infinite alternate; }
+  .fdw-verification[data-state='scanning'] .fdw-iris-ring::after { animation:fdw-spin-slow 12s linear infinite; }
+  .fdw-verification[data-state='accepted'] .fdw-iris-ring { border-color:#6ee7b7; box-shadow:0 0 35px #10b98130; }
+  .fdw-eye-caption { position:absolute; bottom:15px; left:16px; z-index:5; color:#fff; font:10px ui-monospace,SFMono-Regular,monospace; letter-spacing:.11em; text-transform:uppercase; }
+  .fdw-scan-footer { display:flex; justify-content:space-between; gap:15px; margin-top:19px; font-size:11px; color:#9cabc0; line-height:1.65; }
+  .fdw-scan-footer strong { display:block; color:#f1f5f9; font-weight:500; font-size:12px; margin-bottom:3px; }
+  .fdw-system { min-width:0; padding:24px 28px 26px; display:flex; flex-direction:column; }
+  .fdw-system h3 { color:#e7edf7; font-size:19px; font-weight:650; }
+  .fdw-system-description { margin:10px 0 21px; color:#93a4bb; font-size:12px; line-height:1.8; }
+  .fdw-events { display:grid; list-style:none; padding:0; margin:0 0 20px; }
+  .fdw-events li { display:grid; grid-template-columns:25px minmax(0,1fr) auto; align-items:center; gap:10px; padding:12px 0; border-bottom:1px solid #223046; font-size:11px; color:#99aac0; transition:color .3s; }
+  .fdw-events li>span { width:21px; height:21px; border:1px solid #3a475a; display:grid; place-items:center; border-radius:50%; color:#8192aa; font-size:9px; transition:all .3s; }
+  .fdw-events li b { color:#7b8da5; font-size:10px; font-weight:500; transition:color .3s; }
+  .fdw-events li[data-status='active'] { color:#fff; }
+  .fdw-events li[data-status='active']>span { border-color:#fb7185; color:#fb7185; box-shadow:0 0 12px rgba(251,113,133,.4); }
+  .fdw-events li[data-status='done']>span { border-color:#6ee7b7; color:#6ee7b7; }
+  .fdw-events li[data-status='done'] b { color:#a7f3d0; }
+  .fdw-events li[data-status='denied']>span,.fdw-events li[data-status='denied'] b { color:#fda4af; border-color:#fda4af; }
+  .fdw-result { margin-top:auto; padding:16px 17px; border:1px solid #334155; border-radius:9px; background:#111d30; transition:all .4s; }
+  .fdw-result small { display:block; color:#9cabc0; font-size:9px; text-transform:uppercase; letter-spacing:.12em; margin-bottom:7px; }
+  .fdw-result strong { display:block; color:#dbe4f0; font-size:17px; letter-spacing:.04em; }
+  .fdw-result p { margin:7px 0 0; font-size:11px; line-height:1.7; color:#a4b2c6; }
+  .fdw-verification[data-state='accepted'] .fdw-result { border-color:#13684f; background:#0b3029; }
+  .fdw-verification[data-state='accepted'] .fdw-result strong { color:#6ee7b7; }
+  .fdw-verification[data-state='denied'] .fdw-result { border-color:#8e3546; background:#301b28; }
+  .fdw-verification[data-state='denied'] .fdw-result strong { color:#fda4af; }
+  .fdw-scan-controls { display:flex; align-items:flex-end; flex-wrap:wrap; gap:14px; margin:22px 0 0; }
+  .fdw-scan-controls label { display:block; margin-bottom:7px; font-size:11px; font-weight:600; color:#c5d0df; }
+  .fdw-scan-controls select { color:#e2e8f0; background:#111d30; border:1px solid #3a475a; border-radius:8px; min-height:46px; padding:11px 35px 11px 13px; font-size:12px; }
+  .fdw-scan-controls .fdw-button-quiet { color:#cbd5e1; background:#111d30; border-color:#344154; }
+  .fdw-illustration-note { margin:16px 0 0; color:#99aac0; font-size:11px; line-height:1.8; max-width:850px; }
+  .fdw-security-notes { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; margin-top:42px; padding-top:30px; border-top:1px solid #263043; }
+  .fdw-security-notes h3 { color:#e2e8f0; font-size:13px; font-weight:700; }
+  .fdw-security-notes p { margin:10px 0 0; color:#98a8bd; font-size:12px; line-height:1.85; }
+  .fdw-security-notes h3 span { color:#fb7185; font:11px ui-monospace,monospace; padding-right:10px; }
+
+  /* ============ INDUSTRIES (image fully visible, 3:2) ============ */
+  .fdw-sector-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:23px; margin-top:38px; }
+  .fdw-sector { overflow:hidden; border:1px solid var(--fdw-line); border-radius:14px; background:#fff; transition:transform .45s, box-shadow .45s, border-color .45s; }
+  .fdw-sector:hover { transform:translateY(-6px); box-shadow:0 30px 60px -30px rgba(15,23,42,.32); border-color:#cbd5e1; }
+  /* FIX: aspect-ratio matches 1200x800 exactly */
+  .fdw-sector>img { width:100%; aspect-ratio:3/2; height:auto; object-fit:cover; transition:transform .9s cubic-bezier(.2,.7,.3,1); }
+  .fdw-sector:hover>img { transform:scale(1.05); }
+  .fdw-sector-body { padding:25px; }
+  .fdw-sector-number { display:block; margin-bottom:12px; color:#b91c1c; font:10px ui-monospace,monospace; letter-spacing:.1em; text-transform:uppercase; }
+  .fdw-sector h3 { font-size:21px; font-weight:750; }
+  .fdw-sector p { margin:12px 0 19px; color:var(--fdw-muted); font-size:13px; line-height:1.8; }
+  .fdw-sector .fdw-bullets { gap:9px; margin-bottom:24px; }
+  .fdw-sector .fdw-bullets li { font-size:12px; }
+  .fdw-erp-band { display:flex; justify-content:space-between; align-items:center; gap:25px; margin-top:25px; padding:24px 28px; border:1px solid #f0d6d9; border-left:3px solid var(--fdw-red); border-radius:10px; background:#fff8f8; }
+  .fdw-erp-band strong { font-size:14px; color:#7f1d1d; }
+  .fdw-erp-band p { margin:7px 0 0; color:#6f5d65; font-size:12px; line-height:1.8; max-width:820px; }
+  .fdw-erp-band a { flex-shrink:0; }
+
+  /* ============ HOSTING CTA (image fully visible, 3:2) ============ */
+  .fdw-hosting-cta { background:#0b1423; color:#fff; position:relative; overflow:hidden; }
+  .fdw-hosting-cta::before { content:''; position:absolute; inset:0; background:radial-gradient(circle at 20% 30%,rgba(220,38,38,.14),transparent 45%),radial-gradient(circle at 85% 70%,rgba(59,130,246,.10),transparent 45%); }
+  .fdw-hosting-grid { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:55px; align-items:center; }
+  /* FIX: aspect-ratio 3/2 matches image (was 4/3) */
+  .fdw-hosting-visual { position:relative; border:1px solid #344154; border-radius:14px; overflow:hidden; aspect-ratio:3/2; background:#060d1a; }
+  .fdw-hosting-visual img { width:100%; height:100%; object-fit:cover; opacity:.55; }
+  .fdw-hosting-visual::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(6,13,26,.2),rgba(6,13,26,.85)); }
+  .fdw-server-stack { position:absolute; inset:0; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:10px; z-index:2; padding:24px; }
+  .fdw-server-row { display:flex; align-items:center; gap:12px; width:100%; max-width:280px; padding:12px 16px; border:1px solid #2a3444; border-radius:8px; background:rgba(15,23,42,.85); backdrop-filter:blur(8px); }
+  .fdw-server-row .led { width:8px; height:8px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,.8); animation:fdw-orb-pulse 2s ease-in-out infinite; }
+  .fdw-server-row:nth-child(2) .led { animation-delay:-.6s; background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,.8); }
+  .fdw-server-row:nth-child(3) .led { animation-delay:-1.2s; }
+  .fdw-server-row span { font-size:11px; color:#cbd5e1; font-family:ui-monospace,monospace; letter-spacing:.04em; }
+  .fdw-hosting-card { border:1px solid #344154; border-radius:14px; padding:32px; background:rgba(11,20,35,.9); backdrop-filter:blur(12px); }
+
+  /* ============ PROCESS ============ */
+  .fdw-process { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:28px; list-style:none; padding:0; margin:42px 0 0; }
+  .fdw-process li { position:relative; border-top:2px solid #dfe5ec; padding-top:20px; transition:border-color .3s; }
+  .fdw-process li:hover { border-color:#dc2626; }
+  .fdw-process li:last-child { border-color:#dc2626; }
+  .fdw-process .step-icon { display:grid; place-items:center; width:44px; height:44px; border-radius:11px; background:#fef2f2; color:#b91c1c; border:1px solid #fee2e2; margin-bottom:16px; transition:transform .4s; }
+  .fdw-process li:hover .step-icon { transform:rotate(-6deg) scale(1.06); }
+  .fdw-process span { display:block; color:#b91c1c; font:12px ui-monospace,monospace; margin-bottom:14px; }
+  .fdw-process h3 { font-size:16px; font-weight:750; }
+  .fdw-process p { font-size:12px; line-height:1.85; color:var(--fdw-muted); margin:12px 0 0; }
+  .fdw-handover { margin-top:40px; padding:28px; background:#fff; border:1px solid var(--fdw-line); border-radius:12px; display:grid; grid-template-columns:.8fr 1.6fr; gap:30px; }
+  .fdw-handover h3 { font-size:18px; font-weight:700; }
+  .fdw-handover p { margin:10px 0 0; color:var(--fdw-muted); font-size:12px; line-height:1.8; }
+  .fdw-handover ul { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 24px; align-content:center; }
+
+  /* ============ FAQ (image fully visible, 3:2) ============ */
+  .fdw-faq-layout { display:grid; grid-template-columns:.9fr 1.2fr; gap:70px; }
+  /* FIX: aspect-ratio 3/2 matches image (was 4/3) */
+  .fdw-faq-visual { position:relative; border-radius:14px; overflow:hidden; aspect-ratio:3/2; background:#0b1220; margin-top:30px; }
+  .fdw-faq-visual img { width:100%; height:100%; object-fit:cover; opacity:.75; }
+  .fdw-faq-visual::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(6,14,24,.15),rgba(6,14,24,.85)); }
+  .fdw-faq-visual .tag { position:absolute; bottom:18px; left:18px; z-index:2; color:#fff; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+  .fdw-faq-list { border-top:1px solid var(--fdw-line); }
+  .fdw-faq { border-bottom:1px solid var(--fdw-line); }
+  .fdw-faq summary { cursor:pointer; padding:21px 5px; font-size:14px; font-weight:650; color:#1e293b; line-height:1.6; transition:color .2s; }
+  .fdw-faq summary:hover { color:#b91c1c; }
+  .fdw-faq p { margin:0; padding:0 5px 22px; color:var(--fdw-muted); font-size:13px; line-height:1.9; }
+
+  /* ============ CONTACT ============ */
+  .fdw-contact { background:var(--fdw-soft); border-top:1px solid var(--fdw-line); position:relative; overflow:hidden; }
+  .fdw-contact::before { content:''; position:absolute; top:-40%; right:-20%; width:600px; height:600px; border-radius:50%; background:radial-gradient(circle,rgba(220,38,38,.06),transparent 70%); pointer-events:none; }
+  .fdw-contact-grid { position:relative; display:grid; grid-template-columns:1fr 1fr; gap:60px; }
+  .fdw-contact-details { display:grid; gap:12px; margin-top:30px; }
+  .fdw-contact-details a,.fdw-contact-details>div { display:flex; align-items:center; gap:16px; padding:16px 19px; background:#fff; border:1px solid var(--fdw-line); border-radius:10px; color:#0f172a; transition:transform .3s, box-shadow .3s, border-color .3s; }
+  .fdw-contact-details a:hover { transform:translateY(-2px); box-shadow:0 16px 30px -18px rgba(15,23,42,.25); border-color:#cbd5e1; }
+  .fdw-contact-details svg { color:#b91c1c; flex-shrink:0; }
+  .fdw-contact-details small { display:block; font-size:10px; color:#64748b; margin-bottom:4px; text-transform:uppercase; letter-spacing:.1em; }
+  .fdw-contact-details strong { font-size:13px; font-weight:650; overflow-wrap:anywhere; }
+  .fdw-contact-form { padding:30px; background:#fff; border:1px solid var(--fdw-line); border-radius:14px; box-shadow:0 20px 50px -30px rgba(15,23,42,.2); }
+  .fdw-contact-form h3 { font-size:20px; font-weight:700; margin-bottom:22px; }
+  .fdw-form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .fdw-field { margin-bottom:17px; min-width:0; }
+  .fdw-field label { display:block; color:#334155; font-size:12px; font-weight:650; margin-bottom:7px; }
+  .fdw-field input,.fdw-field select,.fdw-field textarea { width:100%; min-height:44px; border:1px solid #d1d9e4; padding:11px 12px; color:#1e293b; border-radius:8px; background:#fff; font-size:12px; transition:border-color .2s, box-shadow .2s; }
+  .fdw-field input:focus,.fdw-field select:focus,.fdw-field textarea:focus { border-color:#dc2626; box-shadow:0 0 0 3px rgba(220,38,38,.1); outline:none; }
+  .fdw-field textarea { resize:vertical; }
+  .fdw-form-note { margin:14px 0 0; font-size:11px; color:#64748b; line-height:1.7; }
+
+  /* ============ RESPONSIVE ============ */
+  @media(max-width:1100px) { .fdw-sub-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+  @media(max-width:1024px) {
+    .fdw-hosting-grid { grid-template-columns:1fr; gap:32px; }
+    .fdw-faq-layout { grid-template-columns:1fr; gap:32px; }
+    .fdw-faq-visual { max-width:460px; }
+    .fdw-contact-grid { grid-template-columns:1fr; gap:32px; }
   }
-  @keyframes globe-spin {
-    from { transform: rotateY(0deg); }
-    to   { transform: rotateY(360deg); }
+  @media(max-width:1000px) {
+    .fdw-sector-body { padding:20px; }
+    .fdw-heading-row { display:block; }
+    .fdw-privacy-label { margin-top:22px; }
+    .fdw-system { padding:24px 20px; }
   }
-  @keyframes dash-flow {
-    to { stroke-dashoffset: -30; }
+  @media(max-width:760px) {
+    .fdw-section { padding:66px 0; }
+    .fdw-hero-inner { padding:64px 20px 72px; gap:48px; }
+    .fdw-shell { width:calc(100% - 32px); }
+    .fdw-capabilities .fdw-shell { grid-template-columns:1fr 1fr; gap:23px 15px; }
+    .fdw-capability { padding:0; border:0; }
+    .fdw-capability strong { font-size:13px; }
+    .fdw-capability p { font-size:11px; }
+    .fdw-payments,.fdw-feature-pair,.fdw-verification,.fdw-sector-grid,.fdw-sub-grid,.fdw-process { grid-template-columns:1fr; }
+    /* NOTE: feature image stays as top banner - no height rules needed */
+    .fdw-scan { border-right:0; border-bottom:1px solid #2a3444; padding:18px; }
+    .fdw-system { padding:23px; }
+    .fdw-security-notes { grid-template-columns:1fr; gap:23px; }
+    .fdw-erp-band { display:block; padding:23px; }
+    .fdw-erp-band a { margin-top:16px; }
+    .fdw-process { gap:28px 23px; }
+    .fdw-handover { grid-template-columns:1fr; gap:20px; padding:23px; }
+    /* NOTE: sector cards remain vertical (image on top) - aspect ratio preserved */
+    .fdw-sub-heading { display:block; }
+    .fdw-sub-heading p { margin-top:7px; }
+    .fdw-hosting-card { padding:24px; }
   }
-  @keyframes pulse-ring {
-    0%   { transform: scale(1);   opacity: 0.8; }
-    100% { transform: scale(2.5); opacity: 0; }
+  @media(max-width:440px) {
+    .fdw-payment-body { padding:22px 19px; }
+    .fdw-feature>div { padding:23px 18px; }
+    .fdw-feature h3 { font-size:18px; }
+    .fdw-sector-body { padding:24px; }
+    .fdw-handover ul { grid-template-columns:1fr; }
+    .fdw-contact-form { padding:23px 18px; }
+    .fdw-form-row { grid-template-columns:1fr; gap:0; }
+    .fdw-scan-controls>div { width:100%; }
+    .fdw-scan-controls select { width:100%; }
+    .fdw-flow { gap:5px; padding:12px 7px; }
+    .fdw-flow span { font-size:9px; }
+    .fdw-eye { aspect-ratio:1.2; }
+    .fdw-events li { font-size:10px; gap:8px; }
+    .fdw-events li b { font-size:9px; }
+    .fdw-hlabel span { font-size:10px; padding:6px 10px; }
+    .fdw-hlabel small { font-size:8px; }
   }
-  @keyframes label-float {
-    0%, 100% { transform: translateY(0); }
-    50%      { transform: translateY(-4px); }
+  @media(prefers-reduced-motion:reduce) {
+    .fdw-page *, .fdw-page *::before, .fdw-page *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+    .fdw-verification[data-state='scanning'] .fdw-scanline { top:50%; }
+    .fdw-reveal { opacity:1; transform:none; }
   }
-  .globe-float { animation: globe-float 8s ease-in-out infinite; }
-  .globe-spin  { animation: globe-spin 22s linear infinite; transform-style: preserve-3d; }
-  .dash-line   { animation: dash-flow 2.5s linear infinite; }
-  .pulse-ring  { animation: pulse-ring 3s ease-out infinite; }
-  .label-float { animation: label-float 4s ease-in-out infinite; }
-  .perspective { perspective: 1200px; }
+
 </style>
+{% endblock %}
+{% block content %}
+<div class="fdw-page">
 
-<!-- ============================================================
-     HERO — Holographic globe with geographic service labels
-     ============================================================ -->
-<section class="relative overflow-hidden bg-slate-950 text-white border-b border-slate-800">
-  <div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
-  
-  <div class="absolute top-1/4 -right-32 h-[30rem] w-[30rem] rounded-full bg-red-500/10 blur-[120px]"></div>
-  <div class="absolute -bottom-32 -left-32 h-[24rem] w-[24rem] rounded-full bg-blue-500/10 blur-[100px]"></div>
-
-  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-20 lg:py-28">
-    <div class="grid items-center gap-16 lg:grid-cols-2">
-
-      <!-- Copy -->
-      <div class="max-w-2xl">
-        <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur">
-          <span class="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></span>
-          Payment Aggregator &amp; Enterprise Partner
-        </span>
-
-        <h1 class="mt-6 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]">
-          Unified infrastructure <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">for global enterprise.</span>
-        </h1>
-
-        <p class="mt-6 text-lg text-slate-300 leading-relaxed">
-          {{ company.name if company is defined and company.name else 'Fabs Data Warehouse' }} helps businesses disburse funds at scale, settle across borders, manage fleets and run critical IT — all from a single compliant, API-first dashboard.
-        </p>
-
-        <div class="mt-10 flex flex-col sm:flex-row gap-4">
-          <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-red-600/25 transition hover:bg-red-500">
-            Host your website
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-          <a href="#services" class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:border-slate-500 hover:bg-slate-800">
-            Explore services
-          </a>
-        </div>
-
-        <ul class="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-slate-400">
-          <li class="inline-flex items-center gap-2">
-            <svg class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>
-            Bank-grade encryption
-          </li>
-          <li class="inline-flex items-center gap-2">
-            <svg class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>
-            PCI-DSS aligned
-          </li>
-          <li class="inline-flex items-center gap-2">
-            <svg class="h-4 w-4 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2Z"/></svg>
-            99.9% uptime SLA
-          </li>
-        </ul>
+<!-- ============ HERO ============ -->
+<section class="fdw-hero" aria-labelledby="fdw-hero-title">
+  <div class="fdw-hero-inner">
+    <div class="fdw-hero-copy fdw-reveal">
+      <span class="fdw-hero-badge"><i aria-hidden="true"></i> Payments · Identity · Enterprise Systems</span>
+      <h1 id="fdw-hero-title">Unified infrastructure<br><span class="fdw-grad">for your enterprise.</span></h1>
+      <p class="lede">{{ company.name if company is defined and company.name else 'Fabs Data Warehouse' }} connects payments, biometric security and enterprise systems. We help businesses, hospitals, NGOs and government institutions bring their daily operations together.</p>
+      <div class="fdw-hero-actions">
+        <a href="#contact" class="fdw-button">
+          Discuss your project
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+        <a href="#services" class="fdw-button fdw-button-quiet">Explore services</a>
       </div>
+      <ul class="fdw-hero-trust">
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6l-7-3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 12 2 2 4-4"/></svg>Connected payments</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="m8.5 12.5 2.5 2.5 4.5-5"/></svg>Controlled access</li>
+        <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2Z"/></svg>Modular ERP systems</li>
+      </ul>
+    </div>
 
-      <!-- Globe with Geographic Service Labels -->
-      <div class="relative flex items-center justify-center aspect-square w-full max-w-[580px] mx-auto lg:mx-0">
+    <!-- ============ GLOBE ============ -->
+    <div class="fdw-globe-stage fdw-reveal d1" aria-hidden="true">
+      <div class="fdw-stars">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="fdw-globe-glow"></div>
+      <div class="fdw-globe-glow blue"></div>
 
-        <!-- Outer atmosphere glows -->
-        <div class="absolute inset-0 rounded-full bg-red-500/15 blur-[100px]"></div>
-        <div class="absolute inset-[15%] rounded-full bg-red-600/10 blur-[60px]"></div>
+      <div class="fdw-orbit r3"><i class="dot"></i></div>
+      <div class="fdw-orbit r2"><i class="dot"></i></div>
+      <div class="fdw-orbit r1"><i class="dot"></i></div>
 
-        <!-- Globe wrapper -->
-        <div class="perspective relative w-[72%] h-[72%]">
-          <div class="globe-float w-full h-full relative">
-            <div class="globe-spin w-full h-full relative">
-              
-              <!-- SVG wireframe sphere -->
-              <svg viewBox="0 0 300 300" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <defs>
-                  <radialGradient id="coreGlow" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="rgba(237,49,56,0.35)"/>
-                    <stop offset="40%" stop-color="rgba(237,49,56,0.08)"/>
-                    <stop offset="100%" stop-color="rgba(237,49,56,0)"/>
-                  </radialGradient>
-                  <radialGradient id="sphereFade" cx="50%" cy="50%" r="50%">
-                    <stop offset="0%" stop-color="rgba(15,23,42,0)"/>
-                    <stop offset="70%" stop-color="rgba(15,23,42,0.2)"/>
-                    <stop offset="100%" stop-color="rgba(2,6,23,0.6)"/>
-                  </radialGradient>
-                  <linearGradient id="meridianGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="rgba(237,49,56,0.05)"/>
-                    <stop offset="50%" stop-color="rgba(237,49,56,0.7)"/>
-                    <stop offset="100%" stop-color="rgba(237,49,56,0.05)"/>
-                  </linearGradient>
-                </defs>
-
-                <circle cx="150" cy="150" r="140" fill="url(#coreGlow)"/>
-                
-                <!-- Meridians -->
-                <ellipse cx="150" cy="150" rx="25" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
-                <ellipse cx="150" cy="150" rx="60" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
-                <ellipse cx="150" cy="150" rx="100" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
-                <ellipse cx="150" cy="150" rx="130" ry="140" stroke="url(#meridianGrad)" stroke-width="1"/>
-                
-                <!-- Latitude rings -->
-                <ellipse cx="150" cy="60" rx="75" ry="10" stroke="rgba(96,165,250,0.25)" stroke-width="0.8"/>
-                <ellipse cx="150" cy="95" rx="120" ry="14" stroke="rgba(96,165,250,0.2)" stroke-width="0.8"/>
-                <ellipse cx="150" cy="150" rx="140" ry="16" stroke="rgba(237,49,56,0.9)" stroke-width="1.5"/>
-                <ellipse cx="150" cy="205" rx="120" ry="14" stroke="rgba(96,165,250,0.2)" stroke-width="0.8"/>
-                <ellipse cx="150" cy="240" rx="75" ry="10" stroke="rgba(96,165,250,0.25)" stroke-width="0.8"/>
-                
-                <!-- Outer boundary -->
-                <circle cx="150" cy="150" r="140" stroke="rgba(237,49,56,0.5)" stroke-width="1.2"/>
-                <circle cx="150" cy="150" r="142" stroke="rgba(237,49,56,0.15)" stroke-width="4" opacity="0.5"/>
-                
-                <circle cx="150" cy="150" r="140" fill="url(#sphereFade)"/>
-                
-                <!-- Center pulsing dot -->
-                <circle cx="150" cy="150" r="4" fill="#ED3138"/>
-                <circle cx="150" cy="150" r="4" fill="none" stroke="#ED3138" stroke-width="1" class="pulse-ring" style="transform-origin: 150px 150px;"/>
-                <circle cx="150" cy="150" r="4" fill="none" stroke="#ED3138" stroke-width="1" class="pulse-ring" style="transform-origin: 150px 150px; animation-delay: 1.5s;"/>
-
-                <!-- Geography pulse markers -->
-                <circle cx="235" cy="110" r="3" fill="#ED3138"/>
-                <circle cx="205" cy="140" r="3" fill="#ED3138"/>
-                <circle cx="160" cy="165" r="3" fill="#ED3138"/>
-                <circle cx="140" cy="100" r="3" fill="#ED3138"/>
-                <circle cx="85" cy="130" r="3" fill="#ED3138"/>
-                <circle cx="220" cy="215" r="3" fill="#ED3138"/>
-              </svg>
-            </div>
-            
-            <!-- Outer rotating orbit rings -->
-            <div class="absolute inset-[-8%] rounded-full border border-dashed border-red-500/20" style="animation: globe-spin 40s linear infinite reverse;"></div>
-            <div class="absolute inset-[-16%] rounded-full border border-red-500/10" style="animation: globe-spin 60s linear infinite;"></div>
-            <div class="absolute inset-[-24%] rounded-full border border-dashed border-blue-500/10" style="animation: globe-spin 80s linear infinite reverse;"></div>
-          </div>
-        </div>
-
-        <!-- Service Labels positioned around globe -->
-        <div class="absolute inset-0 pointer-events-none">
-
-          <svg class="absolute inset-0 w-full h-full" viewBox="0 0 500 500" fill="none" preserveAspectRatio="xMidYMid meet">
+      <div class="fdw-globe">
+        <div class="fdw-globe-spin">
+          <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="labelLine" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="rgba(237,49,56,0.8)"/>
-                <stop offset="100%" stop-color="rgba(237,49,56,0.15)"/>
+              <radialGradient id="sphereBody" cx="42%" cy="38%" r="62%">
+                <stop offset="0%"  stop-color="#1e293b"/>
+                <stop offset="55%" stop-color="#0f172a"/>
+                <stop offset="100%" stop-color="#020617"/>
+              </radialGradient>
+              <radialGradient id="sphereRim" cx="50%" cy="50%" r="50%">
+                <stop offset="82%" stop-color="rgba(248,113,113,0)"/>
+                <stop offset="96%" stop-color="rgba(248,113,113,.35)"/>
+                <stop offset="100%" stop-color="rgba(248,113,113,.55)"/>
+              </radialGradient>
+              <radialGradient id="sphereGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="rgba(220,38,38,.20)"/>
+                <stop offset="55%" stop-color="rgba(220,38,38,.04)"/>
+                <stop offset="100%" stop-color="rgba(220,38,38,0)"/>
+              </radialGradient>
+              <linearGradient id="gridLine" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(148,163,184,.05)"/>
+                <stop offset="50%" stop-color="rgba(148,163,184,.30)"/>
+                <stop offset="100%" stop-color="rgba(148,163,184,.05)"/>
+              </linearGradient>
+              <linearGradient id="equator" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(248,113,113,0)"/>
+                <stop offset="50%" stop-color="rgba(248,113,113,.85)"/>
+                <stop offset="100%" stop-color="rgba(248,113,113,0)"/>
+              </linearGradient>
+              <linearGradient id="arcRed" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="rgba(248,113,113,0)"/>
+                <stop offset="50%" stop-color="#f87171"/>
+                <stop offset="100%" stop-color="rgba(248,113,113,0)"/>
+              </linearGradient>
+              <linearGradient id="arcBlue" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="rgba(96,165,250,0)"/>
+                <stop offset="50%" stop-color="#60a5fa"/>
+                <stop offset="100%" stop-color="rgba(96,165,250,0)"/>
               </linearGradient>
             </defs>
 
-            <!-- Asia → Tenders (upper-right) -->
-            <line x1="440" y1="105" x2="360" y2="175" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line"/>
-            
-            <!-- Arabia → Cross-Border (right-center) -->
-            <line x1="455" y1="220" x2="330" y2="235" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.4s;"/>
-            
-            <!-- Africa → Bulk Processing (bottom-center) -->
-            <line x1="290" y1="440" x2="270" y2="310" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 0.8s;"/>
-            
-            <!-- Europe → Hosting (upper-left) -->
-            <line x1="120" y1="90" x2="215" y2="175" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.2s;"/>
-            
-            <!-- Americas → Fleet (left-center) -->
-            <line x1="50" y1="230" x2="160" y2="225" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 1.6s;"/>
-            
-            <!-- Oceania → IT Support (bottom-right) -->
-            <line x1="400" y1="430" x2="320" y2="335" stroke="url(#labelLine)" stroke-width="1" stroke-dasharray="4 4" class="dash-line" style="animation-delay: 2s;"/>
+            <circle cx="200" cy="200" r="190" fill="url(#sphereGlow)"/>
+
+            <circle cx="200" cy="200" r="150" fill="url(#sphereBody)"/>
+            <circle cx="200" cy="200" r="150" fill="url(#sphereRim)"/>
+
+            <ellipse cx="200" cy="90"  rx="85"  ry="11" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="130" rx="130" ry="16" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="200" rx="150" ry="18" stroke="url(#equator)" stroke-width="1.4"/>
+            <ellipse cx="200" cy="270" rx="130" ry="16" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="310" rx="85"  ry="11" stroke="url(#gridLine)" stroke-width=".9"/>
+
+            <ellipse cx="200" cy="200" rx="28"  ry="150" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="200" rx="70"  ry="150" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="200" rx="115" ry="150" stroke="url(#gridLine)" stroke-width=".9"/>
+            <ellipse cx="200" cy="200" rx="150" ry="150" stroke="url(#gridLine)" stroke-width=".9"/>
+
+            <g fill="rgba(248,113,113,.09)" filter="blur(1px)">
+              <path d="M150 120 q20 -12 44 -4 q28 6 22 26 q-4 20 -30 24 q-32 4 -40 -18 q-4 -18 4 -28Z"/>
+              <path d="M230 175 q30 -8 46 6 q18 14 6 32 q-14 22 -44 18 q-22 -4 -24 -26 q-2 -22 16 -30Z"/>
+              <path d="M118 240 q22 -8 34 8 q10 14 -2 28 q-16 18 -38 8 q-16 -8 -12 -24 q4 -14 18 -20Z"/>
+              <path d="M255 255 q18 -4 26 10 q6 12 -4 22 q-14 12 -30 4 q-12 -6 -8 -18 q2 -14 16 -18Z"/>
+            </g>
+
+            <g stroke-linecap="round" fill="none">
+              <path d="M110 165 Q200 55 290 175" stroke="url(#arcRed)" stroke-width="1.6" stroke-dasharray="10 8">
+                <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="2.6s" repeatCount="indefinite"/>
+              </path>
+              <path d="M85 240 Q200 130 320 250" stroke="url(#arcBlue)" stroke-width="1.4" stroke-dasharray="8 10">
+                <animate attributeName="stroke-dashoffset" from="0" to="-36" dur="3.2s" repeatCount="indefinite"/>
+              </path>
+              <path d="M150 300 Q260 240 300 130" stroke="url(#arcRed)" stroke-width="1.2" stroke-dasharray="6 10" opacity=".8">
+                <animate attributeName="stroke-dashoffset" from="0" to="-32" dur="2.8s" repeatCount="indefinite"/>
+              </path>
+            </g>
+
+            <g>
+              <circle cx="110" cy="165" r="4" fill="#f87171"/>
+              <circle cx="110" cy="165" r="4" fill="none" stroke="#f87171" stroke-width="1">
+                <animate attributeName="r" values="4;16;4" dur="2.4s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".9;0;.9" dur="2.4s" repeatCount="indefinite"/>
+              </circle>
+
+              <circle cx="290" cy="175" r="4" fill="#f87171"/>
+              <circle cx="290" cy="175" r="4" fill="none" stroke="#f87171" stroke-width="1">
+                <animate attributeName="r" values="4;16;4" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".9;0;.9" dur="2.4s" begin="0.6s" repeatCount="indefinite"/>
+              </circle>
+
+              <circle cx="85" cy="240" r="4" fill="#60a5fa"/>
+              <circle cx="85" cy="240" r="4" fill="none" stroke="#60a5fa" stroke-width="1">
+                <animate attributeName="r" values="4;16;4" dur="2.6s" begin="1.2s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".9;0;.9" dur="2.6s" begin="1.2s" repeatCount="indefinite"/>
+              </circle>
+
+              <circle cx="320" cy="250" r="4" fill="#60a5fa"/>
+              <circle cx="320" cy="250" r="4" fill="none" stroke="#60a5fa" stroke-width="1">
+                <animate attributeName="r" values="4;16;4" dur="2.6s" begin="1.8s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".9;0;.9" dur="2.6s" begin="1.8s" repeatCount="indefinite"/>
+              </circle>
+
+              <circle cx="200" cy="200" r="4.5" fill="#f87171"/>
+              <circle cx="200" cy="200" r="4.5" fill="none" stroke="#f87171" stroke-width="1">
+                <animate attributeName="r" values="4.5;20;4.5" dur="3s" repeatCount="indefinite"/>
+                <animate attributeName="opacity" values=".85;0;.85" dur="3s" repeatCount="indefinite"/>
+              </circle>
+            </g>
           </svg>
-
-          <!-- Asia -->
-          <div class="label-float absolute right-[2%] top-[14%]">
-            <div class="flex flex-col items-end gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/80">Asia</span>
-              <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Tenders
-              </span>
-            </div>
-          </div>
-
-          <!-- Arabia -->
-          <div class="label-float absolute right-[-2%] top-1/2 -translate-y-1/2" style="animation-delay: 0.8s;">
-            <div class="flex flex-col items-end gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/80">Arabia</span>
-              <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Cross-Border
-              </span>
-            </div>
-          </div>
-
-          <!-- Africa -->
-          <div class="label-float absolute left-1/2 -translate-x-1/2 bottom-[3%]" style="animation-delay: 1.2s;">
-            <div class="flex flex-col items-center gap-1">
-              <span class="inline-flex items-center gap-2 rounded-full border border-red-500/40 bg-red-950/70 px-3.5 py-1.5 text-xs font-bold text-white shadow-xl backdrop-blur ring-1 ring-red-500/20">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Bulk Processing
-              </span>
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400">Africa</span>
-            </div>
-          </div>
-
-          <!-- Europe -->
-          <div class="label-float absolute left-[3%] top-[10%]" style="animation-delay: 1.6s;">
-            <div class="flex flex-col items-start gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/80">Europe</span>
-              <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Hosting
-              </span>
-            </div>
-          </div>
-
-          <!-- Americas -->
-          <div class="label-float absolute left-[-2%] top-1/2 -translate-y-1/2" style="animation-delay: 2s;">
-            <div class="flex flex-col items-start gap-1">
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/80">Americas</span>
-              <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> Fleet
-              </span>
-            </div>
-          </div>
-
-          <!-- Oceania -->
-          <div class="label-float absolute right-[6%] bottom-[4%]" style="animation-delay: 2.4s;">
-            <div class="flex flex-col items-end gap-1">
-              <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-900/95 px-3 py-1.5 text-xs font-semibold text-white shadow-xl backdrop-blur">
-                <span class="h-2 w-2 rounded-full bg-red-500 animate-pulse"></span> IT Support
-              </span>
-              <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-red-400/80">Oceania</span>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     CAPABILITIES BAND
-     ============================================================ -->
-<section class="border-b border-slate-200 bg-white">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-    <div class="grid grid-cols-2 gap-8 lg:grid-cols-4">
-      <div>
-        <p class="text-3xl font-extrabold text-slate-900">9+</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Integrated services</p>
-      </div>
-      <div>
-        <p class="text-3xl font-extrabold text-slate-900">24/7</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Human support</p>
-      </div>
-      <div>
-        <p class="text-3xl font-extrabold text-slate-900">48h</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Avg. onboarding</p>
-      </div>
-      <div>
-        <p class="text-3xl font-extrabold text-slate-900">99.9%</p>
-        <p class="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-500">Uptime SLA</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     SERVICES — WHAT WE DO
-     ============================================================ -->
-<section id="services" class="bg-slate-50 py-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="max-w-2xl">
-      <span class="text-xs font-bold uppercase tracking-[0.2em] text-red-600">What we do</span>
-      <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-        One partner for payments, operations and technology.
-      </h2>
-      <p class="mt-4 text-base text-slate-600 leading-relaxed">
-        Nine integrated services, one account. Scale your payouts, expand across borders and keep your infrastructure running — without juggling vendors.
-      </p>
-    </div>
-
-    <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3 9 4.5-9 4.5-9-4.5L12 3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m3 12 9 4.5 9-4.5"/><path stroke-linecap="round" stroke-linejoin="round" d="m3 16.5 9 4.5 9-4.5"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Bulk Processing</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Upload one file and disburse thousands of payments — salaries, vendor payouts, refunds and commissions, with automatic reconciliation.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M12 3c2.5 2.4 4 5.6 4 9s-1.5 6.6-4 9c-2.5-2.4-4-5.6-4-9s1.5-6.6 4-9Z"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Cross-Border Transfers</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Send and receive funds across African and global corridors with transparent FX rates and same-day settlement on major routes.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 5.2a3.2 3.2 0 0 1 0 6M18 14.2c2.2.6 3.5 2.4 3.5 5.8"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Employee Payouts</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Pay staff, contractors and field agents on schedule — to bank accounts, mobile wallets and cards, anywhere they are.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.5 6.5h11v10h-11zM13.5 10h4l3 3v3.5h-7"/><circle cx="7" cy="18.5" r="1.8"/><circle cx="17.5" cy="18.5" r="1.8"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Logistics &amp; Transport</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Move freight and last-mile deliveries with vetted carriers, live tracking and consolidated billing on one dashboard.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5 5 8h14l2 5.5"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.5h18v4.5H3z"/><circle cx="7" cy="18" r="1.4"/><circle cx="17" cy="18" r="1.4"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Fleet Management</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Track vehicles, fuel, drivers and maintenance in real time — cut costs and keep every asset accountable.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Website Development</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Design and build fast, secure, conversion-focused websites and web apps tailored to your brand and operations.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><rect x="3" y="3.5" width="18" height="6" rx="1.8"/><rect x="3" y="14.5" width="18" height="6" rx="1.8"/><path stroke-linecap="round" d="M7 6.5h.01M7 17.5h.01"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Hosting &amp; App Servers</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Managed hosting for websites, APIs and application servers with SSL, automated backups, monitoring and 24/7 uptime.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 13a8 8 0 0 1 16 0"/><rect x="2.5" y="13" width="4" height="7" rx="1.6"/><rect x="17.5" y="13" width="4" height="7" rx="1.6"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 20a3.5 3.5 0 0 1-3.5 3.5h-2"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">IT Support</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Proactive helpdesk, infrastructure management and on-site support that keeps your business running without downtime.</p>
-      </div>
-
-      <div class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:border-red-300 hover:shadow-md">
-        <span class="grid h-12 w-12 place-items-center rounded-xl bg-red-50 text-red-600 transition group-hover:bg-red-600 group-hover:text-white">
-          <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3.5h8l4 4v13H6z"/><path stroke-linecap="round" stroke-linejoin="round" d="M14 3.5v4h4M9 13l1.8 1.8L14 11.5"/></svg>
-        </span>
-        <h3 class="mt-5 text-lg font-bold text-slate-900">Tender Management</h3>
-        <p class="mt-2 text-sm text-slate-600 leading-relaxed">Source, prepare and submit tenders end-to-end — documentation, compliance checks and bid tracking in one place.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
-     HOST WITH FABS — Platform Preview & CTA
-     ============================================================ -->
-<section id="hosting-cta" class="relative overflow-hidden bg-slate-900 py-20 border-y border-slate-800">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid items-center gap-12 lg:grid-cols-2">
-      <div>
-        <span class="inline-flex items-center gap-2 rounded-full border border-slate-700 bg-slate-800/50 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wider text-red-400 backdrop-blur">
-          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-          Cloud Hosting Platform
-        </span>
-        <h2 class="mt-6 text-3xl sm:text-4xl font-extrabold tracking-tight text-white leading-tight">
-          Host your website on <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-red-600">FABS Cloud.</span>
-        </h2>
-        <p class="mt-4 text-lg text-slate-300 leading-relaxed">
-          Launch your Flask, Node, or Docker applications in minutes. Get automatic SSL, custom domains, managed PostgreSQL, and live logs — all from a single, powerful dashboard.
-        </p>
-        
-        <ul class="mt-8 space-y-3">
-          <li class="flex items-start gap-3 text-sm text-slate-300">
-            <svg class="h-5 w-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            One-click deploy from GitHub
-          </li>
-          <li class="flex items-start gap-3 text-sm text-slate-300">
-            <svg class="h-5 w-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Automatic SSL & custom domains
-          </li>
-          <li class="flex items-start gap-3 text-sm text-slate-300">
-            <svg class="h-5 w-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            Managed PostgreSQL databases
-          </li>
-        </ul>
-
-        <div class="mt-8">
-          <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-red-600/25 transition hover:bg-red-500">
-            Create free account
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"/></svg>
-          </a>
-          <p class="mt-3 text-xs text-slate-500">No credit card required · Free tier included</p>
         </div>
       </div>
 
-      <div class="relative">
-        <div class="absolute -inset-4 rounded-2xl bg-red-500/5 blur-2xl"></div>
-        <div class="relative rounded-xl border border-slate-700 bg-slate-950 shadow-2xl overflow-hidden">
-          <div class="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-900">
-            <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-red-500"></span>
-              <span class="w-3 h-3 rounded-full bg-slate-600"></span>
-              <span class="w-3 h-3 rounded-full bg-slate-600"></span>
-              <span class="ml-3 text-xs text-slate-400 font-mono">platform.fabsdatawarehouse.com</span>
-            </div>
-            <div class="flex items-center gap-2 text-xs text-slate-400">
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-              Secure
-            </div>
+      <div class="fdw-hero-labels">
+        <div class="fdw-hlabel pos-tr"><small>Procurement</small><span><i></i>ERP Systems</span></div>
+        <div class="fdw-hlabel pos-r"><small>Finance</small><span><i></i>Cross-Border</span></div>
+        <div class="fdw-hlabel pos-br"><span><i></i>IT Support</span><small>Operations</small></div>
+        <div class="fdw-hlabel pos-bl"><small>Infrastructure</small><span><i></i>Hosting</span></div>
+        <div class="fdw-hlabel pos-l"><small>Identity</small><span><i></i>Biometrics</span></div>
+        <div class="fdw-hlabel pos-tl"><span><i></i>Bulk Processing</span><small>Disbursements</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPABILITIES ============ -->
+<section class="fdw-capabilities" aria-label="Our areas of expertise">
+  <div class="fdw-shell">
+    <div class="fdw-capability fdw-reveal">
+      <div class="cap-top"><span class="cap-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18v12H3V7Zm0 4h18"/></svg></span><span>01 / Payments</span></div>
+      <strong>Money in. Money out.</strong><p>Collections, payouts and reconciliation.</p>
+    </div>
+    <div class="fdw-capability fdw-reveal d1">
+      <div class="cap-top"><span class="cap-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path stroke-linecap="round" d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></span><span>02 / Identity</span></div>
+      <strong>Verify. Authorise. Protect.</strong><p>Biometrics and security integrations.</p>
+    </div>
+    <div class="fdw-capability fdw-reveal d2">
+      <div class="cap-top"><span class="cap-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21V10l9-7 9 7v11h-6v-7H9v7H3Z"/></svg></span><span>03 / Operations</span></div>
+      <strong>Connect your institution.</strong><p>ERP systems built around your work.</p>
+    </div>
+    <div class="fdw-capability fdw-reveal d3">
+      <div class="cap-top"><span class="cap-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3h14v6H5V3Zm0 12h14v6H5v-6Z"/></svg></span><span>04 / Technology</span></div>
+      <strong>Build. Host. Support.</strong><p>Applications, infrastructure and delivery.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services" class="fdw-section fdw-soft" aria-labelledby="fdw-services-title">
+  <div class="fdw-shell">
+    <div class="fdw-heading-row fdw-reveal"><div>
+      <p class="fdw-eyebrow">What we do</p>
+      <h2 id="fdw-services-title">The systems behind<br>your everyday operations.</h2>
+      <p class="fdw-intro">We build and integrate the technology that moves your money, protects access and connects your teams. From a payment gateway to an institution-wide ERP, each solution is shaped around how your organisation works.</p>
+    </div></div>
+
+    <nav class="fdw-service-nav fdw-reveal" aria-label="Explore our services">
+      <a href="#payment-solutions">Payments &amp; payouts</a>
+      <a href="#biometric-security">Biometrics &amp; security</a>
+      <a href="#industries">Institutional ERP</a>
+      <a href="#more-services">Technology &amp; operations</a>
+    </nav>
+
+    <div id="payment-solutions" class="fdw-payments">
+      <article class="fdw-payment fdw-reveal" id="money-in">
+        <div class="fdw-payment-photo">
+          <img src="{{ url_for('static', filename='images/fabs/money-in.jpg') }}" alt="A customer using a mobile phone beside a merchant payment terminal" width="1200" height="800" loading="lazy" decoding="async">
+          <div class="fdw-photo-tag"><span aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 5 5 19M5 5v14h14" stroke-linecap="round" stroke-linejoin="round"/></svg></span>MONEY IN / COLLECTIONS</div>
+        </div>
+        <div class="fdw-payment-body">
+          <h3>Turn payments into clear records.</h3>
+          <p>Connect customer payments to the order, invoice or account they belong to. We integrate mobile money, card payments and bank collection workflows into websites, apps and business systems.</p>
+          <div class="fdw-flow" aria-label="Collection flow"><span>Customer</span><b aria-hidden="true">→</b><span>Payment provider</span><b aria-hidden="true">→</b><span>Reconciliation</span><b aria-hidden="true">→</b><span>Settlement</span></div>
+          <ul class="fdw-bullets"><li>M-Pesa and card checkout integrations.</li><li>Payment references, confirmed statuses and digital receipts.</li><li>Merchant reporting, reconciliation and settlement visibility.</li></ul>
+          <a href="#contact" class="fdw-link" data-service="Payment collections">Discuss collections <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </article>
+      <article class="fdw-payment fdw-payment-out fdw-reveal d1" id="money-out">
+        <div class="fdw-payment-photo">
+          <img src="{{ url_for('static', filename='images/fabs/money-out.jpg') }}" alt="A person holding a bank card while using a laptop for digital payments" width="1200" height="800" loading="lazy" decoding="async">
+          <div class="fdw-photo-tag"><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span>MONEY OUT / DISBURSEMENTS</div>
+        </div>
+        <div class="fdw-payment-body">
+          <h3>Pay people with accountability.</h3>
+          <p>Bring salaries, supplier payments, beneficiary disbursements and refunds into an organised workflow. Prepare a batch, review recipients, approve the release and follow the outcome of every payment.</p>
+          <div class="fdw-flow" aria-label="Payout flow"><span>Funding</span><b aria-hidden="true">→</b><span>Approval</span><b aria-hidden="true">→</b><span>Payout provider</span><b aria-hidden="true">→</b><span>Recipients</span></div>
+          <ul class="fdw-bullets"><li>Bulk processing for payroll, vendors and field teams.</li><li>Recipient validation, approval controls and payment references.</li><li>Success, pending and failed outcomes with reconciled reports.</li></ul>
+          <a href="#contact" class="fdw-link" data-service="Bulk payouts & payroll">Plan your payouts <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        </div>
+      </article>
+    </div>
+    <p class="fdw-payment-note fdw-reveal">Payment methods, currencies, cross-border corridors and settlement timelines are agreed with the connected provider for each implementation.</p>
+
+    <!-- Feature pair: image on top, full width, 3:2 -->
+    <div class="fdw-feature-pair">
+      <article class="fdw-feature fdw-reveal">
+        <img src="{{ url_for('static', filename='images/fabs/iris-verification.jpg') }}" alt="Close-up photograph of an eye showing the detailed iris pattern" width="1200" height="800" loading="lazy" decoding="async">
+        <div><small>Identity &amp; access</small><h3>Biometric &amp; security integrations</h3><p>Iris identification, fingerprint and face verification integrations that connect identity checks to access rules, attendance and system audit records.</p><a href="#biometric-security" class="fdw-link">See iris verification <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      </article>
+      <article class="fdw-feature fdw-reveal d1">
+        <img src="{{ url_for('static', filename='images/fabs/hospital-erp.jpg') }}" alt="A healthcare professional using a smartphone" width="1200" height="800" loading="lazy" decoding="async">
+        <div><small>Enterprise systems</small><h3>ERP for institutions</h3><p>Connected finance, procurement, inventory, HR and reporting systems for hospitals, NGOs and government institutions, configured to their responsibilities.</p><a href="#industries" class="fdw-link">Explore your sector <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      </article>
+    </div>
+
+    <div class="fdw-sub-heading fdw-reveal" id="more-services">
+      <h3>More ways we support your organisation</h3>
+      <p>Each service is scoped and documented for your specific needs.</p>
+    </div>
+    <div class="fdw-sub-grid">
+      <article class="fdw-sub-card fdw-reveal">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M12 3c5 5 5 13 0 18-5-5-5-13 0-18"/></svg></span>
+        <h4>Cross-Border Transfers</h4>
+        <p>Connect international payment workflows through your approved providers.</p>
+        <a href="#contact" class="fdw-link" data-service="Cross-border transfers">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d1">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 20c0-4 3-6 6-6s6 2 6 6M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8M16 4c5 0 5 8 0 8m2 3c3 1 4 3 4 5"/></svg></span>
+        <h4>Employee Payouts</h4>
+        <p>Payroll and field-team payment workflows with approval controls.</p>
+        <a href="#contact" class="fdw-link" data-service="Bulk payouts &amp; payroll">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d2">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M2 6h12v11H2V6Zm12 4h4l4 4v3h-8M8 18a2 2 0 1 1-4 0 2 2 0 0 1 4 0m12 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0"/></svg></span>
+        <h4>Logistics &amp; Transport</h4>
+        <p>Follow shipments from dispatch through to proof of delivery.</p>
+        <a href="#contact" class="fdw-link" data-service="Logistics &amp; fleet">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d3">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l3-7h12l3 7v5H3v-5Zm0 0h18M7 18v3m10-3v3M6 15h2m8 0h2"/></svg></span>
+        <h4>Fleet Management</h4>
+        <p>Vehicles, drivers, maintenance and operational accountability.</p>
+        <a href="#contact" class="fdw-link" data-service="Logistics &amp; fleet">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M8 6l-6 6 6 6m8-12 6 6-6 6m-2-15-4 18"/></svg></span>
+        <h4>Website Development</h4>
+        <p>Websites, customer portals and applications built around your work.</p>
+        <a href="#contact" class="fdw-link" data-service="Website &amp; application development">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d1">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h18v7H3V3Zm0 11h18v7H3v-7ZM7 6h1m-1 11h1"/></svg></span>
+        <h4>Hosting &amp; App Servers</h4>
+        <p>Deploy and operate business applications with managed infrastructure.</p>
+        <a href="#contact" class="fdw-link" data-service="Hosting &amp; IT support">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d2">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M4 13v-1a8 8 0 0 1 16 0v1M2 12h4v8H2v-8Zm16 0h4v8h-4v-8Zm2 8c0 2-2 3-5 3"/></svg></span>
+        <h4>IT Support</h4>
+        <p>Keep infrastructure and people working together with managed support.</p>
+        <a href="#contact" class="fdw-link" data-service="Hosting &amp; IT support">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+      <article class="fdw-sub-card fdw-reveal d3">
+        <span class="fdw-sub-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path stroke-linecap="round" stroke-linejoin="round" d="M6 3h8l4 4v14H6V3Zm8 0v5h4M9 13h6m-6 4h6"/></svg></span>
+        <h4>Tender Management</h4>
+        <p>Organise procurement documents, reviews and milestones.</p>
+        <a href="#contact" class="fdw-link" data-service="Tender management">Discuss <span aria-hidden="true">→</span></a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ BIOMETRICS ============ -->
+<section id="biometric-security" class="fdw-section fdw-biometrics" aria-labelledby="fdw-biometrics-title">
+  <div class="fdw-shell">
+    <div class="fdw-heading-row fdw-reveal"><div><p class="fdw-eyebrow">Biometrics &amp; security integrations</p><h2 id="fdw-biometrics-title">An identity check.<br>A clear access decision.</h2><p class="fdw-intro">Connect an iris scanner to your application or access-control system. The identity result returns to your system, where permissions determine whether access is accepted or denied.</p></div><span class="fdw-privacy-label"><i aria-hidden="true"></i> Interactive illustration</span></div>
+
+    <div class="fdw-verification fdw-reveal" id="fdw-verification" data-state="idle">
+      <div class="fdw-scan">
+        <div class="fdw-panel-label"><span>01 / Iris capture</span><span id="fdw-sensor-status">Ready for walkthrough</span></div>
+        <div class="fdw-eye"><img src="{{ url_for('static', filename='images/fabs/iris-verification.jpg') }}" alt="Illustrative eye photograph with an iris scanning overlay" width="1200" height="800" loading="lazy" decoding="async"><div class="fdw-eye-corners" aria-hidden="true"></div><div class="fdw-iris-ring" aria-hidden="true"></div><div class="fdw-scanline" aria-hidden="true"></div><span class="fdw-eye-caption" id="fdw-eye-caption">Iris pattern / awaiting scan</span></div>
+        <div class="fdw-scan-footer"><div><strong>Identity verification</strong>Capture → Match → Permissions</div><div><strong>System response</strong>Decision + audit event</div></div>
+      </div>
+      <div class="fdw-system">
+        <div class="fdw-panel-label"><span>02 / Connected system</span><span>Illustrative events</span></div>
+        <h3>From the scanner to your system.</h3>
+        <p class="fdw-system-description">Follow the capture, identity match and access policy check before a result is returned.</p>
+        <ol class="fdw-events" id="fdw-events">
+          <li data-step="capture" data-status="waiting"><span>1</span><div>Capture &amp; quality checks</div><b>Waiting</b></li>
+          <li data-step="match" data-status="waiting"><span>2</span><div>Compare enrolled identity</div><b>Waiting</b></li>
+          <li data-step="policy" data-status="waiting"><span>3</span><div>Check access permissions</div><b>Waiting</b></li>
+          <li data-step="response" data-status="waiting"><span>4</span><div>Return result to system</div><b>Waiting</b></li>
+          <li data-step="audit" data-status="waiting"><span>5</span><div>Record access decision</div><b>Waiting</b></li>
+        </ol>
+        <div class="fdw-result" role="status" aria-live="polite" aria-atomic="true"><small>System access response</small><strong id="fdw-result-title">AWAITING VERIFICATION</strong><p id="fdw-result-description">Choose a scenario and start the walkthrough to see an access decision.</p></div>
+      </div>
+    </div>
+
+    <div class="fdw-scan-controls" id="fdw-scan-controls" hidden>
+      <div><label for="fdw-scenario">Choose an access scenario</label><select id="fdw-scenario"><option value="accepted">Enrolled user · access permitted</option><option value="unmatched">Unrecognised iris · no identity match</option><option value="restricted">Enrolled user · permission restricted</option></select></div>
+      <button type="button" class="fdw-button" id="fdw-start-scan">Start verification <span aria-hidden="true">→</span></button>
+      <button type="button" class="fdw-button fdw-button-quiet" id="fdw-reset-scan">Reset</button>
+    </div>
+    <noscript><p class="fdw-illustration-note">The flow above illustrates capture, identity matching, permission checks and a system response. Enable JavaScript to play the accepted and denied scenarios.</p></noscript>
+    <p class="fdw-illustration-note">Visual walkthrough only. No camera is used and no biometric data is collected. A live implementation connects compatible biometric hardware and a verification service to server-side access controls.</p>
+
+    <div class="fdw-security-notes">
+      <div class="fdw-reveal"><h3><span>01</span> Hardware &amp; identity</h3><p>Integrate supported iris, fingerprint or face verification devices with enrollment, capture quality and device-supported liveness checks. The device and matching service are selected during discovery.</p></div>
+      <div class="fdw-reveal d1"><h3><span>02</span> Permissions &amp; access</h3><p>Connect identity to staff roles, door access, attendance or application sign-in. A matched identity still needs permission for the requested action. Sensitive actions can require an additional approval.</p></div>
+      <div class="fdw-reveal d2"><h3><span>03</span> Privacy &amp; accountability</h3><p>Plan enrollment consent, limited access to biometric templates, protected transport, retention controls and a non-biometric alternative. Keep a record of the decision without exposing raw biometric data.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INDUSTRIES ============ -->
+<section id="industries" class="fdw-section fdw-white" aria-labelledby="fdw-erp-title">
+  <div class="fdw-shell">
+    <div class="fdw-reveal">
+      <p class="fdw-eyebrow">ERP systems for institutions</p>
+      <h2 id="fdw-erp-title">Different mandates.<br>One connected way of working.</h2>
+      <p class="fdw-intro">An enterprise resource planning system should reflect the people, approvals and records behind your work. We design modular ERP systems for hospitals, NGOs and government institutions, connecting departments without losing their individual responsibilities.</p>
+    </div>
+    <div class="fdw-sector-grid">
+      <article class="fdw-sector fdw-reveal">
+        <img src="{{ url_for('static', filename='images/fabs/hospital-erp.jpg') }}" alt="A healthcare professional using a smartphone at work" width="1200" height="800" loading="lazy" decoding="async">
+        <div class="fdw-sector-body"><span class="fdw-sector-number">01 / Healthcare</span><h3>Hospitals &amp; health facilities</h3><p>Connect administrative, financial and service workflows, with access appropriate to each staff member's responsibilities.</p><ul class="fdw-bullets"><li>Patient registration, appointments and billing.</li><li>Pharmacy stock, purchasing and supplier records.</li><li>HR, payroll, accounts and management reports.</li><li>Interfaces to existing clinical systems where required.</li></ul><a href="#contact" class="fdw-link" data-service="Hospital ERP">Plan a hospital ERP <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      </article>
+      <article class="fdw-sector fdw-reveal d1">
+        <img src="{{ url_for('static', filename='images/fabs/ngo-erp.jpg') }}" alt="An organisation's team working together on programme planning" width="1200" height="800" loading="lazy" decoding="async">
+        <div class="fdw-sector-body"><span class="fdw-sector-number">02 / Development</span><h3>NGOs &amp; development partners</h3><p>Bring programme delivery and financial stewardship together, from project budgets to beneficiary disbursements.</p><ul class="fdw-bullets"><li>Grant budgets, cost centres and donor reporting.</li><li>Programme activities and beneficiary records.</li><li>Procurement, assets and field-team expenses.</li><li>Disbursement approvals and supporting documents.</li></ul><a href="#contact" class="fdw-link" data-service="NGO ERP">Plan an NGO ERP <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      </article>
+      <article class="fdw-sector fdw-reveal d2">
+        <img src="{{ url_for('static', filename='images/fabs/government-erp.jpg') }}" alt="Administrative records, documents and a laptop on an office desk" width="1200" height="800" loading="lazy" decoding="async">
+        <div class="fdw-sector-body"><span class="fdw-sector-number">03 / Public sector</span><h3>Government institutions</h3><p>Digitise departmental workflows, revenue records and approvals with clear ownership and traceable actions.</p><ul class="fdw-bullets"><li>Revenue collection, billing and service requests.</li><li>Budget control, procurement and asset registers.</li><li>HR, payroll and document approval workflows.</li><li>Departmental dashboards and audit reporting.</li></ul><a href="#contact" class="fdw-link" data-service="Government ERP">Plan a public-sector ERP <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      </article>
+    </div>
+    <div class="fdw-erp-band fdw-reveal"><div><strong>Your departments. Connected.</strong><p>Choose the modules you need, then connect finance, HR, procurement, inventory and reporting. Payment and biometric integrations are scoped around your existing systems, approved providers and access policies.</p></div><a href="#contact" class="fdw-link" data-service="ERP consultation">Discuss your requirements <span aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+
+<!-- ============ HOSTING CTA ============ -->
+<section id="hosting-cta" class="fdw-section fdw-hosting-cta">
+  <div class="fdw-shell">
+    <div class="fdw-hosting-grid">
+      <div class="fdw-reveal">
+        <p class="fdw-eyebrow" style="color:#fb7185">Hosting &amp; application infrastructure</p>
+        <h2>A home for your<br>business applications.</h2>
+        <p class="fdw-intro" style="color:#aab8cb">Build your application, connect your services and plan how it runs. FABS Cloud brings hosting into the same conversation as your website, payment integrations and enterprise systems.</p>
+        <a href="https://platform.fabsdatawarehouse.com/" target="_blank" rel="noopener noreferrer" class="fdw-button" style="margin-top:25px">Explore FABS Cloud <span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 19 19 5M5 5h14v14" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      </div>
+      <div class="fdw-reveal d1">
+        <div class="fdw-hosting-visual">
+          <img src="{{ url_for('static', filename='images/fabs/government-erp.jpg') }}" alt="Server infrastructure illustration" loading="lazy" decoding="async">
+          <div class="fdw-server-stack" aria-hidden="true">
+            <div class="fdw-server-row"><span class="led"></span><span>api.fabsdatawarehouse.com</span></div>
+            <div class="fdw-server-row"><span class="led"></span><span>app.fabsdatawarehouse.com</span></div>
+            <div class="fdw-server-row"><span class="led"></span><span>db.fabsdatawarehouse.com</span></div>
           </div>
-
-          <div class="p-5 bg-slate-950">
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <div class="text-sm font-semibold text-white">Projects</div>
-                <div class="text-xs text-slate-500">3 running · 1 building</div>
-              </div>
-              <div class="px-3 py-1.5 bg-red-600 text-white text-xs font-medium rounded-md">+ New project</div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 mb-4">
-              <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
-                <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Total</div>
-                <div class="text-xl font-light text-white mt-1">4</div>
-              </div>
-              <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
-                <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Running</div>
-                <div class="text-xl font-light text-emerald-400 mt-1">3</div>
-              </div>
-              <div class="bg-slate-900 rounded-lg p-3 border border-slate-800">
-                <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Deploys</div>
-                <div class="text-xl font-light text-white mt-1">28</div>
-              </div>
-            </div>
-
-            <div class="space-y-2">
-              <div class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-900/50">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-md bg-red-500/20 flex items-center justify-center text-red-400 text-xs font-bold">FD</div>
-                  <div>
-                    <div class="text-sm font-medium text-white">fabsdatawarehouse</div>
-                    <div class="text-xs text-slate-500 font-mono">app.fabsdatawarehouse.com</div>
-                  </div>
-                </div>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-medium">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Running
-                </span>
-              </div>
-
-              <div class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-900/50">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-md bg-red-500/20 flex items-center justify-center text-red-400 text-xs font-bold">FT</div>
-                  <div>
-                    <div class="text-sm font-medium text-white">fabstrading</div>
-                    <div class="text-xs text-slate-500 font-mono">trade.fabsdatawarehouse.com</div>
-                  </div>
-                </div>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full text-xs font-medium">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Running
-                </span>
-              </div>
-
-              <div class="flex items-center justify-between p-3 rounded-lg border border-slate-800 bg-slate-900/50">
-                <div class="flex items-center gap-3">
-                  <div class="w-8 h-8 rounded-md bg-red-500/20 flex items-center justify-center text-red-400 text-xs font-bold">AI</div>
-                  <div>
-                    <div class="text-sm font-medium text-white">fabs-analytics</div>
-                    <div class="text-xs text-slate-500 font-mono">analytics.fabsdatawarehouse.com</div>
-                  </div>
-                </div>
-                <span class="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-500/10 text-amber-400 rounded-full text-xs font-medium">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>Building
-                </span>
-              </div>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-500">
-              <span>Powered by FABS Cloud</span>
-              <span>v1.0.0</span>
-            </div>
-          </div>
+        </div>
+        <div class="fdw-hosting-card" style="margin-top:20px">
+          <p class="fdw-eyebrow" style="color:#aab8cb">Plan your environment</p>
+          <h3 style="font-size:22px;font-weight:700;color:#f1f5f9">From deployment to daily operations.</h3>
+          <ul class="fdw-bullets" style="margin-top:22px">
+            <li style="color:#bac7d8">Website, API and application server configuration.</li>
+            <li style="color:#bac7d8">Database access and environment management.</li>
+            <li style="color:#bac7d8">Custom domains and SSL configuration.</li>
+            <li style="color:#bac7d8">Backups, monitoring and operational support.</li>
+          </ul>
+          <a href="#contact" data-service="Hosting &amp; IT support" class="fdw-link" style="color:#fda4af;margin-top:20px">Discuss a hosting plan <span aria-hidden="true">→</span></a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     HOW IT WORKS
-     ============================================================ -->
-<section id="how" class="bg-white py-20">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="mx-auto max-w-2xl text-center">
-      <span class="text-xs font-bold uppercase tracking-[0.2em] text-red-600">How it works</span>
-      <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-        Live in four simple steps.
-      </h2>
-      <p class="mt-4 text-base text-slate-600 leading-relaxed">
-        From signup to your first disbursement — most businesses go live within 48 hours.
-      </p>
+<!-- ============ PROCESS ============ -->
+<section id="how" class="fdw-section fdw-soft" aria-labelledby="fdw-how-title">
+  <div class="fdw-shell">
+    <div class="fdw-reveal">
+      <p class="fdw-eyebrow">From requirement to rollout</p>
+      <h2 id="fdw-how-title">A clear plan. A documented handover.</h2>
+      <p class="fdw-intro">We start with your operations, agree the scope and deliver in manageable stages. Your team understands what is being built, how it works and how to run it after launch.</p>
     </div>
-
-    <div class="relative mt-14">
-      <div class="absolute left-0 right-0 top-9 hidden h-px bg-slate-200 lg:block"></div>
-      <ol class="grid gap-8 sm:grid-cols-2 lg:grid-cols-4 relative z-10">
-        <li class="text-center">
-          <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-slate-900 text-white shadow-sm">
-            <span class="text-xl font-extrabold">01</span>
-          </div>
-          <h3 class="mt-5 text-lg font-bold text-slate-900">Create your account</h3>
-          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Verify your business and get sandbox keys in minutes.</p>
-        </li>
-        <li class="text-center">
-          <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-slate-900 text-white shadow-sm">
-            <span class="text-xl font-extrabold">02</span>
-          </div>
-          <h3 class="mt-5 text-lg font-bold text-slate-900">Connect &amp; configure</h3>
-          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Use our APIs or dashboard to set up payouts, transfers and services.</p>
-        </li>
-        <li class="text-center">
-          <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-slate-900 text-white shadow-sm">
-            <span class="text-xl font-extrabold">03</span>
-          </div>
-          <h3 class="mt-5 text-lg font-bold text-slate-900">Fund &amp; disburse</h3>
-          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Top up your wallet and trigger bulk or single payments instantly.</p>
-        </li>
-        <li class="text-center">
-          <div class="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-red-600 text-white shadow-lg shadow-red-600/30">
-            <span class="text-xl font-extrabold">04</span>
-          </div>
-          <h3 class="mt-5 text-lg font-bold text-slate-900">Track &amp; reconcile</h3>
-          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Monitor every transaction with real-time reports and exports.</p>
-        </li>
-      </ol>
+    <ol class="fdw-process">
+      <li class="fdw-reveal">
+        <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path stroke-linecap="round" d="m20 20-4.35-4.35"/></svg></div>
+        <span>01 / DISCOVER</span>
+        <h3>Map the requirement</h3>
+        <p>Review users, workflows, data, existing systems and integration needs. Agree the scope, responsibilities and acceptance criteria.</p>
+      </li>
+      <li class="fdw-reveal d1">
+        <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M4 20h16M6 20V8l6-4 6 4v12M10 12h4m-4 4h4"/></svg></div>
+        <span>02 / DESIGN</span>
+        <h3>Define the system</h3>
+        <p>Prepare process maps, modules, permissions, data models and integration specifications before implementation begins.</p>
+      </li>
+      <li class="fdw-reveal d2">
+        <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="m8 8-4 4 4 4m8-8 4 4-4 4m-6 4 4-16"/></svg></div>
+        <span>03 / IMPLEMENT</span>
+        <h3>Build &amp; validate</h3>
+        <p>Configure workflows, connect approved providers and devices, test exceptions and validate the system with your team.</p>
+      </li>
+      <li class="fdw-reveal d3">
+        <div class="step-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M5 12l5 5L20 7"/></svg></div>
+        <span>04 / OPERATE</span>
+        <h3>Launch &amp; support</h3>
+        <p>Complete user training, migration checks and handover. Agree monitoring, maintenance and support responsibilities for ongoing operations.</p>
+      </li>
+    </ol>
+    <div class="fdw-handover fdw-reveal" id="why">
+      <div><h3>Documentation your team can use.</h3><p>Agree the documentation pack as part of your project scope, so knowledge stays with your organisation.</p></div>
+      <ul class="fdw-bullets">
+        <li>Requirements and workflow maps.</li>
+        <li>Integration and API references.</li>
+        <li>Role and permission matrix.</li>
+        <li>User and administrator guides.</li>
+        <li>Testing and acceptance records.</li>
+        <li>Deployment and support runbook.</li>
+      </ul>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     CONTACT
-     ============================================================ -->
-<section id="contact" class="bg-slate-50 py-20 border-t border-slate-200">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6">
-    <div class="grid gap-12 lg:grid-cols-2">
-      <div>
-        <span class="text-xs font-bold uppercase tracking-[0.2em] text-red-600">Get in touch</span>
-        <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
-          Let's talk about your next payout.
-        </h2>
-        <p class="mt-4 text-base text-slate-600 leading-relaxed">
-          Tell us what you need to move — money, goods or projects — and our team will respond within one business day with a tailored plan.
-        </p>
+<!-- ============ FAQ ============ -->
+<section class="fdw-section fdw-white" id="service-guide" aria-labelledby="fdw-guide-title">
+  <div class="fdw-shell fdw-faq-layout">
+    <div class="fdw-reveal">
+      <p class="fdw-eyebrow">Service guide</p>
+      <h2 id="fdw-guide-title">Know what connects.<br>Know what to expect.</h2>
+      <p class="fdw-intro">Practical answers before your project begins.</p>
+      <a class="fdw-link" href="#contact" style="margin-top:22px">Talk through your requirements <span aria-hidden="true">→</span></a>
+      <div class="fdw-faq-visual">
+        <img src="{{ url_for('static', filename='images/fabs/ngo-erp.jpg') }}" alt="A team working together on a project" loading="lazy" decoding="async">
+        <span class="tag">Human-centred delivery</span>
+      </div>
+    </div>
+    <div class="fdw-faq-list fdw-reveal d1">
+      <details class="fdw-faq"><summary>Can you integrate with our existing ERP or application?</summary><p>We review your current system, available APIs and data structure before proposing an integration. The scope can cover payments, identity verification, reporting or a phased replacement of selected modules.</p></details>
+      <details class="fdw-faq"><summary>Does an iris match automatically grant access?</summary><p>No. Identity verification and authorisation are separate steps. After a successful identity match, the connected system checks the person's role and the requested action. Access can still be denied when permission is missing.</p></details>
+      <details class="fdw-faq"><summary>What is needed for a live biometric integration?</summary><p>A compatible capture device, an enrollment process, a matching service and a protected server integration. We agree supported devices, privacy controls, failure handling and an alternative access process during discovery.</p></details>
+      <details class="fdw-faq"><summary>How do you handle money in and money out?</summary><p>Collection integrations associate provider-confirmed payments with invoices or orders. Disbursement integrations route approved instructions to the payout provider and return each payment's outcome for reconciliation. Supported rails and settlement terms are confirmed for the project.</p></details>
+      <details class="fdw-faq"><summary>Can an ERP be delivered in phases?</summary><p>Yes. We can begin with priority departments or modules, validate them with users and expand in stages. The implementation plan defines dependencies, migration needs, training, acceptance criteria and the agreed delivery schedule.</p></details>
+      <details class="fdw-faq"><summary>What do we receive at handover?</summary><p>The agreed solution, user training and documentation for operating it. Your scope should identify administrator guides, integration specifications, deployment instructions, support contacts and responsibility for backups and ongoing maintenance.</p></details>
+    </div>
+  </div>
+</section>
 
-        <div class="mt-8 space-y-4">
-          <a href="mailto:hello@fabsdatawarehouse.com" class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-red-300 hover:shadow-sm">
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-red-50 text-red-600">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path stroke-linecap="round" stroke-linejoin="round" d="m3 7 8.4 6a1 1 0 0 0 1.2 0L21 7"/></svg>
-            </span>
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Email</p>
-              <p class="text-sm font-semibold text-slate-900">hello@fabsdatawarehouse.com</p>
-            </div>
-          </a>
-          <div class="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
-            <span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-red-50 text-red-600">
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21s7-5.4 7-11a7 7 0 1 0-14 0c0 5.6 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
-            </span>
-            <div>
-              <p class="text-xs font-semibold uppercase tracking-wider text-slate-500">Office</p>
-              <p class="text-sm font-semibold text-slate-900">Nairobi, Kenya</p>
-            </div>
-          </div>
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="fdw-section fdw-contact" aria-labelledby="fdw-contact-title">
+  <div class="fdw-shell fdw-contact-grid">
+    <div class="fdw-reveal">
+      <p class="fdw-eyebrow">Let's build your next system</p>
+      <h2 id="fdw-contact-title">Tell us what needs<br>to work better.</h2>
+      <p class="fdw-intro">Whether you need to collect payments, secure access or connect an entire institution, start with your requirements. We'll help shape the scope, integrations and delivery plan.</p>
+      <div class="fdw-contact-details">
+        <a href="mailto:{{ company.email if company is defined and company.email else 'hello@fabsdatawarehouse.com' }}">
+          <svg class="fdw-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18v14H3V5Zm0 2 9 6 9-6"/></svg>
+          <div><small>Email our team</small><strong>{{ company.email if company is defined and company.email else 'hello@fabsdatawarehouse.com' }}</strong></div>
+        </a>
+        <div>
+          <svg class="fdw-icon" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-6 8-13a8 8 0 1 0-16 0c0 7 8 13 8 13Zm0-17a4 4 0 1 0 0 8 4 4 0 0 0 0-8"/></svg>
+          <div><small>Location</small><strong>Nairobi, Kenya</strong></div>
         </div>
       </div>
-
-      <div>
-        <form id="contact-form" method="post" action="" class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <div class="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label for="cf-name" class="block text-sm font-semibold text-slate-900">Full name</label>
-              <input id="cf-name" name="name" type="text" required placeholder="Your name" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20" />
-            </div>
-            <div>
-              <label for="cf-email" class="block text-sm font-semibold text-slate-900">Work email</label>
-              <input id="cf-email" name="email" type="email" required placeholder="you@company.com" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20" />
-            </div>
-          </div>
-          <div class="mt-4">
-            <label for="cf-message" class="block text-sm font-semibold text-slate-900">How can we help?</label>
-            <textarea id="cf-message" name="message" rows="4" required placeholder="Tell us about your volumes, corridors or project…" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20"></textarea>
-          </div>
-          <button type="submit" class="mt-6 w-full rounded-lg bg-red-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-red-500">
-            Send request
-          </button>
-        </form>
-      </div>
+    </div>
+    <div class="fdw-reveal d1">
+      <form id="contact-form" class="fdw-contact-form" method="post" action="">
+        <h3>Start a project conversation</h3>
+        {% if csrf_token is defined %}<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% endif %}
+        <div class="fdw-form-row">
+          <div class="fdw-field"><label for="cf-name">Full name</label><input id="cf-name" name="name" type="text" autocomplete="name" required placeholder="Your name" maxlength="120"></div>
+          <div class="fdw-field"><label for="cf-email">Work email</label><input id="cf-email" name="email" type="email" autocomplete="email" required placeholder="you@organisation.com" maxlength="254"></div>
+        </div>
+        <div class="fdw-field"><label for="cf-organisation">Organisation <span style="font-weight:400;color:#64748b">(optional)</span></label><input id="cf-organisation" name="organisation" type="text" autocomplete="organization" placeholder="Company or institution" maxlength="180"></div>
+        <div class="fdw-field"><label for="cf-service">What would you like to discuss?</label><select id="cf-service" name="service" required>
+          <option value="">Choose a service</option>
+          <option>Payment collections</option>
+          <option>Bulk payouts &amp; payroll</option>
+          <option>Biometrics &amp; security</option>
+          <option>Hospital ERP</option>
+          <option>NGO ERP</option>
+          <option>Government ERP</option>
+          <option>ERP consultation</option>
+          <option>Cross-border transfers</option>
+          <option>Logistics &amp; fleet</option>
+          <option>Website &amp; application development</option>
+          <option>Hosting &amp; IT support</option>
+          <option>Tender management</option>
+          <option>Other project</option>
+        </select></div>
+        <div class="fdw-field"><label for="cf-message">Tell us about your requirements</label><textarea id="cf-message" name="message" rows="4" required maxlength="5000" placeholder="Your current process, systems to connect and what you want to improve…"></textarea></div>
+        <button type="submit" class="fdw-button" style="width:100%">Send project enquiry <span aria-hidden="true">→</span></button>
+        <p class="fdw-form-note">Please share project requirements only. Do not include passwords, payment credentials, patient records or biometric data.</p>
+      </form>
     </div>
   </div>
 </section>
 
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script>
+(() => {
+  'use strict';
+
+  /* ---------- Scroll reveal ---------- */
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fdw-reveal').forEach(el => io.observe(el));
+  } else {
+    document.querySelectorAll('.fdw-reveal').forEach(el => el.classList.add('is-in'));
+  }
+
+  /* ---------- Biometric walkthrough ---------- */
+  const root = document.getElementById('fdw-verification');
+  if (!root) return;
+  const controls = document.getElementById('fdw-scan-controls');
+  const scenario = document.getElementById('fdw-scenario');
+  const start = document.getElementById('fdw-start-scan');
+  const reset = document.getElementById('fdw-reset-scan');
+  const title = document.getElementById('fdw-result-title');
+  const description = document.getElementById('fdw-result-description');
+  const sensor = document.getElementById('fdw-sensor-status');
+  const caption = document.getElementById('fdw-eye-caption');
+  const rows = Object.fromEntries([...root.querySelectorAll('[data-step]')].map(row => [row.dataset.step, row]));
+  let timerIds = [];
+  let running = false;
+
+  function cancelTimers() {
+    timerIds.forEach(window.clearTimeout);
+    timerIds = [];
+  }
+  function setStep(name, state, label) {
+    const row = rows[name];
+    row.dataset.status = state;
+    row.querySelector('b').textContent = label;
+  }
+  function setResult(heading, detail) {
+    title.textContent = heading;
+    description.textContent = detail;
+  }
+  function clear() {
+    cancelTimers();
+    running = false;
+    root.dataset.state = 'idle';
+    start.disabled = false;
+    scenario.disabled = false;
+    start.innerHTML = 'Start verification <span aria-hidden="true">→</span>';
+    Object.keys(rows).forEach(key => setStep(key, 'waiting', 'Waiting'));
+    sensor.textContent = 'Ready for walkthrough';
+    caption.textContent = 'Iris pattern / awaiting scan';
+    setResult('AWAITING VERIFICATION', 'Choose a scenario and start the walkthrough to see an access decision.');
+  }
+  function schedule(fn, ms) {
+    timerIds.push(window.setTimeout(fn, ms));
+  }
+  function play() {
+    if (running) return;
+    clear();
+    running = true;
+    const outcome = scenario.value;
+    start.disabled = true;
+    scenario.disabled = true;
+    start.textContent = 'Verification in progress…';
+    root.dataset.state = 'scanning';
+    sensor.textContent = 'Capture in progress';
+    caption.textContent = 'Capturing iris / quality check';
+    setStep('capture', 'active', 'Capturing');
+    setResult('VERIFICATION IN PROGRESS', 'Illustrating iris capture and quality checks.');
+    const short = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const pace = short ? 300 : 1000;
+    schedule(() => {
+      setStep('capture', 'done', 'Checked');
+      setStep('match', 'active', 'Comparing');
+      sensor.textContent = 'Comparing identity';
+      caption.textContent = 'Checking enrolled iris template';
+      setResult('CHECKING IDENTITY', 'Comparing the illustrated capture with an enrolled identity.');
+    }, pace * 1.2);
+    schedule(() => {
+      const unmatched = outcome === 'unmatched';
+      setStep('match', unmatched ? 'denied' : 'done', unmatched ? 'No match' : 'Matched');
+      setStep('policy', unmatched ? 'denied' : 'active', unmatched ? 'Blocked' : 'Checking');
+      sensor.textContent = unmatched ? 'Identity not recognised' : 'Checking permissions';
+      caption.textContent = unmatched ? 'No enrolled identity match' : 'Identity matched / checking role';
+      setResult(unmatched ? 'IDENTITY NOT RECOGNISED' : 'CHECKING PERMISSIONS',
+        unmatched ? 'No recognised identity. The system keeps access blocked.'
+                  : 'A match alone does not grant access. The system checks the required permission.');
+    }, pace * 2.5);
+    schedule(() => {
+      const accepted = outcome === 'accepted';
+      setStep('policy', accepted ? 'done' : 'denied', accepted ? 'Permitted' : 'Blocked');
+      setStep('response', 'active', 'Returning');
+      sensor.textContent = 'Sending system response';
+      caption.textContent = 'Returning access decision';
+      setResult('RETURNING SYSTEM RESPONSE', 'The connected application receives an accepted or denied result.');
+    }, pace * 3.6);
+    schedule(() => {
+      const accepted = outcome === 'accepted';
+      setStep('response', 'done', 'Received');
+      setStep('audit', 'done', 'Recorded');
+      root.dataset.state = accepted ? 'accepted' : 'denied';
+      sensor.textContent = 'Walkthrough complete';
+      caption.textContent = accepted ? 'Result returned / access accepted' : 'Result returned / access denied';
+      setResult(accepted ? 'ACCESS ACCEPTED' : 'ACCESS DENIED', accepted
+        ? 'Identity matched and permission confirmed. The system accepts access and records the decision.'
+        : outcome === 'unmatched'
+          ? 'No enrolled identity match. The system denies access and records the attempt.'
+          : 'Identity matched, but the required permission is missing. The system denies access and records the decision.');
+      running = false;
+      start.disabled = false;
+      scenario.disabled = false;
+      start.innerHTML = 'Replay verification <span aria-hidden="true">↻</span>';
+      timerIds = [];
+    }, pace * 4.7);
+  }
+
+  controls.hidden = false;
+  start.addEventListener('click', play);
+  reset.addEventListener('click', clear);
+  scenario.addEventListener('change', clear);
+  window.addEventListener('pagehide', cancelTimers);
+  window.addEventListener('pageshow', event => { if (event.persisted) clear(); });
+
+  /* ---------- Service pre-select ---------- */
+  const serviceSelect = document.getElementById('cf-service');
+  document.querySelectorAll('.fdw-page [data-service]').forEach(link => {
+    link.addEventListener('click', () => {
+      if (serviceSelect && [...serviceSelect.options].some(option => option.value === link.dataset.service)) {
+        serviceSelect.value = link.dataset.service;
+      }
+    });
+  });
+})();
+</script>
 {% endblock %}
